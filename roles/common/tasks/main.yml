@@ -4,3 +4,5 @@
   package: name={{ item}} state=present
   with_items:
   - unzip
+  - htop
+  - vim
