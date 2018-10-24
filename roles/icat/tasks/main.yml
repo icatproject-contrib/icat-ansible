@@ -26,3 +26,26 @@
     createhome: true
     shell: /bin/bash
 
+- name: 'Create downloads directory structure for ICAT installation'
+  file:
+    path: /home/glassfish/downloads
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0755
+
+- name: 'Create install directory structure for ICAT installation'
+  file:
+    path: /home/glassfish/install
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0755
+
+- name: 'Create scripts directory structure for ICAT installation'
+  file:
+    path: /home/glassfish/scripts
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0755
