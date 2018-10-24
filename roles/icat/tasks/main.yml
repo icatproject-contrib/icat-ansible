@@ -1,0 +1,28 @@
+---
+
+- name: 'Install common ICAT dependencies'
+  package: name={{ item }} state=present
+  with_items:
+  - python-suds
+  - python-requests
+
+- name: 'Install ICAT dependencies for Red Hat systems'
+  package: name={{ item }} state=present
+  with_items:
+  - MySQL-python
+  - mysql-connector-java
+  when: ansible_os_family == 'RedHat'
+
+- name: 'Install Java packages for Debian systems'
+  package: name={{ item }} state=present
+  with_items:
+  - python-mysqldb
+  - libmysql-java
+  when: ansible_os_family == 'Debian'
+
+- name: 'Create the GlassFish user'
+  user:
+    name: glassfish
+    createhome: true
+    shell: /bin/bash
+
