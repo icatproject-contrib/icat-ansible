@@ -1,0 +1,27 @@
+---
+
+- include_vars: vars/redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include_vars: vars/debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: 'Install MariaDB packages'
+  package: name={{ item }} state=present
+  with_items: '{{ mariadb_pkgs }}'
+
+- name: 'Configure default storage engine'
+  copy:
+    src: ../files/storage-engine.cnf
+    dest: '{{ mariadb_config_dir }}/storage-engine.cnf'
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+  - mariadb-handler
+
+- name: 'Configure DBMS daemon'
+  service:
+    name: '{{ mariadb_daemon }}'
+    state: started
+    enabled: true
