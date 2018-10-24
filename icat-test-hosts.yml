@@ -6,3 +6,4 @@
   - role: common
   - role: java
   - role: mariadb
+  - role: icat
