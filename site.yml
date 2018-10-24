@@ -1,0 +1,3 @@
+---
+
+- import_playbook: icat-test-hosts.yml
