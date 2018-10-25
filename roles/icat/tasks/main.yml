@@ -20,12 +20,6 @@
   - libmysql-java
   when: ansible_os_family == 'Debian'
 
-- name: 'Create the GlassFish user'
-  user:
-    name: glassfish
-    createhome: true
-    shell: /bin/bash
-
 - name: 'Create downloads directory structure for ICAT installation'
   file:
     path: /home/glassfish/downloads
