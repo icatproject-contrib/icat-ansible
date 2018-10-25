@@ -1,0 +1,62 @@
+---
+
+- name: 'Create the GlassFish user'
+  user:
+    name: glassfish
+    createhome: true
+    shell: /bin/bash
+
+- name: 'Check Payara package'
+  stat:
+    path: /home/glassfish/downloads/payara-4.1.2.181.zip
+  register: packageResult
+
+- name: 'Check Payara script'
+  stat:
+    path: /home/glassfish/scripts/setup-glassfish.py
+  register: scriptResult
+
+- name: 'Check Payara installation'
+  stat:
+    path: /home/glassfish/payara41
+  register: installationResult
+
+- name: 'Add path to Payara executable to PATH variable'
+  lineinfile:
+    path: /home/glassfish/.bashrc
+    line: 'export PATH=$HOME/payara41/bin:$PATH'
+
+- name: 'Download Payara'
+  get_url:
+    url: http://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip
+    dest: /home/glassfish/downloads
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: 'Download Glassfish setup script'
+  get_url:
+    url: https://icatproject.org/misc/scripts/setup-glassfish.py
+    dest: /home/glassfish/scripts
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  when: scriptResult.stat.exists is defined and scriptResult.stat.exists == false
+
+- name: 'Unzip Payara if not installed'
+  shell: unzip /home/glassfish/downloads/payara-4.1.2.181.zip
+  become: true
+  become_user: glassfish
+  args:
+    chdir: /home/glassfish
+    executable: /bin/bash
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: 'Create symlink to MySQL Connector library'
+  file:
+    src: /usr/share/java/mysql-connector-java.jar
+    path: /home/glassfish/payara41/glassfish/domains/domain1/lib/ext/mysql-connector-java.jar
+    state: link
+    owner: glassfish
+    group: glassfish
