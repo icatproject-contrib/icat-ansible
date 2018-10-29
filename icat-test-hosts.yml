@@ -7,3 +7,4 @@
   - role: java
   - role: mariadb
   - role: icat
+  - role: payara
