@@ -1,0 +1,29 @@
+---
+
+- name: 'Check Authn package'
+  stat:
+    path: /home/glassfish/downloads/authn.simple-2.0.0-distro.zip
+  register: packageResult
+
+- name: 'Download Authn'
+  get_url:
+    url: https://repo.icatproject.org/repo/org/icatproject/authn.simple/2.0.0/authn.simple-2.0.0-distro.zip
+    dest: /home/glassfish/downloads
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: 'Check Authn installation'
+  stat:
+    path: /home/glassfish/install/authn.simple
+  register: installationResult
+
+- name: 'Unarchive Authn if not installed'
+  unarchive:
+    src: /home/glassfish/downloads/authn.simple-2.0.0-distro.zip
+    dest: /home/glassfish/install
+    remote_src: true
+    owner: glassfish
+    group: glassfish
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
