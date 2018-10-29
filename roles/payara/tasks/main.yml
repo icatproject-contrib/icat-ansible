@@ -1,10 +1,40 @@
 ---
 
 - name: 'Create the GlassFish user'
+  group:
+    name: glassfish
+    state: present
+
+- name: 'Create the GlassFish user'
   user:
     name: glassfish
     createhome: true
+    group: glassfish
     shell: /bin/bash
+
+- name: 'Create downloads directory'
+  file:
+    path: /home/glassfish/downloads
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0755
+
+- name: 'Create install directory'
+  file:
+    path: /home/glassfish/install
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0755
+
+- name: 'Create scripts directory'
+  file:
+    path: /home/glassfish/scripts
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0755
 
 - name: 'Check Payara package'
   stat:
