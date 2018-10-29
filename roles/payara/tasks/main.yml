@@ -1,11 +1,11 @@
 ---
 
-- name: 'Create the GlassFish user'
+- name: 'Create glassfish group'
   group:
     name: glassfish
     state: present
 
-- name: 'Create the GlassFish user'
+- name: 'Create glassfish user'
   user:
     name: glassfish
     createhome: true
@@ -74,13 +74,13 @@
     mode: 0664
   when: scriptResult.stat.exists is defined and scriptResult.stat.exists == false
 
-- name: 'Unzip Payara if not installed'
-  shell: unzip /home/glassfish/downloads/payara-4.1.2.181.zip
-  become: true
-  become_user: glassfish
-  args:
-    chdir: /home/glassfish
-    executable: /bin/bash
+- name: 'Unarchive Payara if not installed'
+  unarchive:
+    src: /home/glassfish/downloads/payara-4.1.2.181.zip
+    dest: /home/glassfish
+    remote_src: true
+    owner: glassfish
+    group: glassfish
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: 'Create symlink to MySQL Connector library'
