@@ -8,3 +8,4 @@
   - role: mariadb
   - role: icat
   - role: payara
+  - role: authn
