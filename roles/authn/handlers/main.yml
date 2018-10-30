@@ -2,5 +2,3 @@
 
 - name: authn-handler
   import_tasks: handlers/authn-handler.yml
-
-# ansible -m shell -b --become-user=glassfish -a '/home/glassfish/payara41/bin/asadmin list-applications'  all
