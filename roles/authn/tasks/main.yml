@@ -27,3 +27,33 @@
     owner: glassfish
     group: glassfish
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: 'Configure Authn setup.properties'
+  copy:
+    src: files/setup.properties
+    dest: /home/glassfish/install/authn.simple/setup.properties
+    owner: glassfish
+    group: glassfish
+    mode: 0600
+  notify:
+  - authn-handler
+
+- name: 'Configure Authn run.properties'
+  copy:
+    src: files/run.properties
+    dest: /home/glassfish/install/authn.simple/run.properties
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - authn-handler
+
+- name: 'Configure Authn logback.xml'
+  copy:
+    src: files/logback.xml
+    dest: /home/glassfish/install/authn.simple/logback.xml
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - authn-handler

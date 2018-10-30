@@ -1,0 +1,9 @@
+---
+
+- name: authn-handler
+  shell: ./setup -vv install
+  become: true
+  become_user: glassfish
+  args:
+    chdir: /home/glassfish/install/authn.simple
+    executable: /bin/bash
