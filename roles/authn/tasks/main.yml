@@ -57,3 +57,12 @@
     mode: 0664
   notify:
   - authn-handler
+
+- name: 'Check Authn setup'
+  stat:
+    path: /home/glassfish/install/authn.simple/setup_utils.pyc
+  register: setupResult
+
+- name: 'Setup Authn'
+  import_tasks: handlers/authn-handler.yml
+  when: setupResult.stat.exists is defined and setupResult.stat.exists == false
