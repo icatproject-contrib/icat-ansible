@@ -1,0 +1,67 @@
+---
+
+- name: 'Check Lucene package'
+  stat:
+    path: /home/glassfish/downloads/icat.lucene-1.1.0-distro.zip
+  register: packageResult
+
+- name: 'Download Lucene'
+  get_url:
+    url: https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.1.0/icat.lucene-1.1.0-distro.zip
+    dest: /home/glassfish/downloads
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: 'Check Lucene installation'
+  stat:
+    path: /home/glassfish/install/icat.lucene
+  register: installationResult
+
+- name: 'Unarchive Lucene if not installed'
+  unarchive:
+    src: /home/glassfish/downloads/icat.lucene-1.1.0-distro.zip
+    dest: /home/glassfish/install
+    remote_src: true
+    owner: glassfish
+    group: glassfish
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: 'Configure Lucene setup.properties'
+  copy:
+    src: roles/authn/files/setup.properties
+    dest: /home/glassfish/install/icat.lucene/setup.properties
+    owner: glassfish
+    group: glassfish
+    mode: 0600
+  notify:
+  - icat-lucene-handler
+
+- name: 'Configure Lucene run.properties'
+  copy:
+    src: files/run.properties
+    dest: /home/glassfish/install/icat.lucene/run.properties
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - icat-lucene-handler
+
+- name: 'Create Lucene data directory'
+  file:
+    path: /home/glassfish/data/lucene
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0775
+
+- name: 'Configure Lucene logback.xml'
+  copy:
+    src: files/logback.xml
+    dest: /home/glassfish/install/icat.lucene/logback.xml
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - icat-lucene-handler

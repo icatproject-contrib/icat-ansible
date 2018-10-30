@@ -1,0 +1,19 @@
+---
+
+- name: 'Check Payara is running'
+  shell: /home/glassfish/payara41/bin/asadmin list-applications
+  register: payaraStatus
+  become: true
+  become_user: glassfish
+  args:
+    chdir: /home/glassfish
+    executable: /bin/bash
+
+- name: 'Re-install ICAT Lucene'
+  shell: ./setup -vv install
+  become: true
+  become_user: glassfish
+  args:
+    chdir: /home/glassfish/install/icat.lucene
+    executable: /bin/bash
+  when: payaraStatus.rc == 0
