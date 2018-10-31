@@ -56,6 +56,19 @@
     group: glassfish
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
+- name: 'Create bin directory for the glassfish user'
+  file:
+    path: /home/glassfish/bin
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0775
+
+- name: 'Add path to glassfish bin directory for ICAT to PATH variable'
+  lineinfile:
+    path: /home/glassfish/.bashrc
+    line: 'export PATH=$PATH:/home/glassfish/bin'
+
 - name: 'Create ICAT Server config directory'
   file:
     path: /home/glassfish/config
