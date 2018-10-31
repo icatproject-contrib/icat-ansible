@@ -1,5 +1,8 @@
 ---
 
 dependencies:
+  - role: java
+  - role: mariadb
   - role: payara
   - role: authn
+  - role: icat-lucene
