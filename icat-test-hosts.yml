@@ -6,7 +6,7 @@
   - role: common
   - role: java
   - role: mariadb
-  - role: icat
   - role: payara
   - role: authn
   - role: icat-lucene
+  - role: icat
