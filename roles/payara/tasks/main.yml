@@ -82,11 +82,3 @@
     owner: glassfish
     group: glassfish
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
-
-- name: 'Create symlink to MySQL Connector library'
-  file:
-    src: /usr/share/java/mysql-connector-java.jar
-    path: /home/glassfish/payara41/glassfish/domains/domain1/lib/ext/mysql-connector-java.jar
-    state: link
-    owner: glassfish
-    group: glassfish
