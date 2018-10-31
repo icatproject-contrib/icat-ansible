@@ -30,7 +30,7 @@
 
 - name: 'Configure Authn setup.properties'
   copy:
-    src: files/setup.properties
+    src: roles/payara/files/setup.properties
     dest: /home/glassfish/install/authn.simple/setup.properties
     owner: glassfish
     group: glassfish

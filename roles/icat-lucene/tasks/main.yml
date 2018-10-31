@@ -30,7 +30,7 @@
 
 - name: 'Configure Lucene setup.properties'
   copy:
-    src: roles/authn/files/setup.properties
+    src: roles/payara/files/setup.properties
     dest: /home/glassfish/install/icat.lucene/setup.properties
     owner: glassfish
     group: glassfish
