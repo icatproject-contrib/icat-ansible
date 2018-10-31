@@ -56,10 +56,35 @@
     group: glassfish
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- name: 'Configure ICAT setup.properties'
+- name: 'Create ICAT config directory'
+  file:
+    path: /home/glassfish/config
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0755
+
+- name: 'Copy over glassfish setup.properties'
   copy:
     src: roles/payara/files/setup.properties
+    dest: /home/glassfish/config/1-part
+    owner: glassfish
+    group: glassfish
+    mode: 0644
+
+- name: 'Copy over ICAT setup.properties'
+  copy:
+    src: files/setup.properties
+    dest: /home/glassfish/config/2-part
+    owner: glassfish
+    group: glassfish
+    mode: 0644
+
+- name: 'Configure ICAT setup.properties by concatenation of files in /home/glassfish/config'
+  assemble:
+    src: /home/glassfish/config
     dest: /home/glassfish/install/icat.server/setup.properties
+    delimiter: '\n'
     owner: glassfish
     group: glassfish
     mode: 0600
