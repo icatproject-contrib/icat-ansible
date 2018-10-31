@@ -9,4 +9,4 @@
   - role: payara
   - role: authn
   - role: icat-lucene
-  - role: icat
+  - role: icat-server
