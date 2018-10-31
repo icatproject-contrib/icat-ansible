@@ -105,8 +105,8 @@
   - icat-server-handler
 
 - name: 'Configure ICAT Server run.properties'
-  copy:
-    src: files/run.properties
+  template:
+    src: templates/run.properties.j2
     dest: /home/glassfish/install/icat.server/run.properties
     owner: glassfish
     group: glassfish
