@@ -19,3 +19,49 @@
   - python-mysqldb
   - libmysql-java
   when: ansible_os_family == 'Debian'
+
+- name: 'Create symlink to MySQL Connector library'
+  file:
+    src: /usr/share/java/mysql-connector-java.jar
+    path: /home/glassfish/payara41/glassfish/domains/domain1/lib/ext/mysql-connector-java.jar
+    state: link
+    owner: glassfish
+    group: glassfish
+
+- name: 'Check ICAT package'
+  stat:
+    path: /home/glassfish/downloads/icat.server-4.9.1-distro.zip
+  register: packageResult
+
+- name: 'Download ICAT'
+  get_url:
+    url: https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.1/icat.server-4.9.1-distro.zip
+    dest: /home/glassfish/downloads
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: 'Check ICAT installation'
+  stat:
+    path: /home/glassfish/install/icat.server
+  register: installationResult
+
+- name: 'Unarchive ICAT if not installed'
+  unarchive:
+    src: /home/glassfish/downloads/icat.server-4.9.1-distro.zip
+    dest: /home/glassfish/install
+    remote_src: true
+    owner: glassfish
+    group: glassfish
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: 'Configure ICAT setup.properties'
+  copy:
+    src: roles/authn/files/setup.properties
+    dest: /home/glassfish/install/icat.server/setup.properties
+    owner: glassfish
+    group: glassfish
+    mode: 0600
+  notify:
+  - icat-server-handler
