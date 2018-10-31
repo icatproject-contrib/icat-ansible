@@ -28,12 +28,12 @@
     owner: glassfish
     group: glassfish
 
-- name: 'Check ICAT package'
+- name: 'Check ICAT Server package'
   stat:
     path: /home/glassfish/downloads/icat.server-4.9.1-distro.zip
   register: packageResult
 
-- name: 'Download ICAT'
+- name: 'Download ICAT Server'
   get_url:
     url: https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.1/icat.server-4.9.1-distro.zip
     dest: /home/glassfish/downloads
@@ -42,12 +42,12 @@
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
-- name: 'Check ICAT installation'
+- name: 'Check ICAT Server installation'
   stat:
     path: /home/glassfish/install/icat.server
   register: installationResult
 
-- name: 'Unarchive ICAT if not installed'
+- name: 'Unarchive ICAT Server if not installed'
   unarchive:
     src: /home/glassfish/downloads/icat.server-4.9.1-distro.zip
     dest: /home/glassfish/install
@@ -56,7 +56,7 @@
     group: glassfish
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- name: 'Create ICAT config directory'
+- name: 'Create ICAT Server config directory'
   file:
     path: /home/glassfish/config
     state: directory
@@ -72,7 +72,7 @@
     group: glassfish
     mode: 0644
 
-- name: 'Copy over ICAT setup.properties'
+- name: 'Copy over ICAT Server setup.properties'
   copy:
     src: files/setup.properties
     dest: /home/glassfish/config/2-part
@@ -80,7 +80,7 @@
     group: glassfish
     mode: 0644
 
-- name: 'Configure ICAT setup.properties by concatenation of files in /home/glassfish/config'
+- name: 'Configure ICAT Server setup.properties by concatenation of files in /home/glassfish/config'
   assemble:
     src: /home/glassfish/config
     dest: /home/glassfish/install/icat.server/setup.properties
@@ -88,5 +88,25 @@
     owner: glassfish
     group: glassfish
     mode: 0600
+  notify:
+  - icat-server-handler
+
+- name: 'Configure ICAT Server run.properties'
+  copy:
+    src: files/run.properties
+    dest: /home/glassfish/install/icat.server/run.properties
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - icat-server-handler
+
+- name: 'Configure ICAT Server logback.xml'
+  copy:
+    src: files/logback.xml
+    dest: /home/glassfish/install/icat.server/logback.xml
+    owner: glassfish
+    group: glassfish
+    mode: 0664
   notify:
   - icat-server-handler
