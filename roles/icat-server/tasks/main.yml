@@ -123,3 +123,12 @@
     mode: 0664
   notify:
   - icat-server-handler
+
+- name: 'Check ICAT Server setup'
+  stat:
+    path: /home/glassfish/install/icat.server/setup_utils.pyc
+  register: setupResult
+
+- name: 'Setup ICAT'
+  import_tasks: handlers/icat-server-handler.yml
+  when: setupResult.stat.exists is defined and setupResult.stat.exists == false
