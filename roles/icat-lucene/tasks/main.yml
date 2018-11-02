@@ -65,3 +65,12 @@
     mode: 0664
   notify:
   - icat-lucene-handler
+
+- name: 'Check Lucene setup'
+  stat:
+    path: /home/glassfish/install/icat.lucene/setup_utils.pyc
+  register: setupResult
+
+- name: 'Setup Lucene'
+  import_tasks: handlers/icat-lucene-handler.yml
+  when: setupResult.stat.exists is defined and setupResult.stat.exists == false
