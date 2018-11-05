@@ -20,6 +20,11 @@
   - libmysql-java
   when: ansible_os_family == 'Debian'
 
+- name: 'Check glassfish domain'
+  stat:
+    path: /home/glassfish/payara41/glassfish/domains/domain1/lib/ext
+  register: domainResult
+
 - name: 'Create symlink to MySQL Connector library'
   file:
     src: /usr/share/java/mysql-connector-java.jar
@@ -27,6 +32,8 @@
     state: link
     owner: glassfish
     group: glassfish
+  when: domainResult.stat.exists is defined and domainResult.stat.exists == true
+  notify: payara-handler
 
 - name: 'Check ICAT Server package'
   stat:

@@ -1,0 +1,19 @@
+---
+
+- name: 'Check Payara is running'
+  shell: /home/glassfish/payara41/bin/asadmin list-applications
+  register: payaraStatus
+  become: true
+  become_user: glassfish
+  args:
+    chdir: /home/glassfish
+    executable: /bin/bash
+
+- name: 'Restart Payara if it is running'
+  shell: '/usr/local/bin/payara-init restart'
+  become: true
+  become_user: root
+  args:
+    chdir: /root
+    executable: /bin/bash
+  when: payaraStatus.rc == 0

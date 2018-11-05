@@ -1,0 +1,4 @@
+---
+
+- name: payara-handler
+  import_tasks: roles/payara/handlers/payara-handler.yml
