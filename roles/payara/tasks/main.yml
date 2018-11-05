@@ -36,17 +36,7 @@
     group: glassfish
     mode: 0755
 
-- name: 'Check Payara package'
-  stat:
-    path: /home/glassfish/downloads/payara-4.1.2.181.zip
-  register: packageResult
-
-- name: 'Check Payara script'
-  stat:
-    path: /home/glassfish/scripts/setup-glassfish.py
-  register: scriptResult
-
-- name: 'Check Payara init script'
+- name: 'Install Payara init script'
   copy:
     src: files/payara-init
     dest: '/usr/local/bin/payara-init'
@@ -54,15 +44,15 @@
     group: root
     mode: 0755
 
-- name: 'Check Payara installation'
-  stat:
-    path: /home/glassfish/payara41
-  register: installationResult
-
 - name: 'Add path to Payara executable to PATH variable'
   lineinfile:
     path: /home/glassfish/.bashrc
     line: 'export PATH=$HOME/payara41/bin:$PATH'
+
+- name: 'Check Payara package'
+  stat:
+    path: /home/glassfish/downloads/payara-4.1.2.181.zip
+  register: packageResult
 
 - name: 'Download Payara'
   get_url:
@@ -73,6 +63,11 @@
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
+- name: 'Check Payara script'
+  stat:
+    path: /home/glassfish/scripts/setup-glassfish.py
+  register: scriptResult
+
 - name: 'Download Glassfish setup script'
   get_url:
     url: https://icatproject.org/misc/scripts/setup-glassfish.py
@@ -81,6 +76,11 @@
     group: glassfish
     mode: 0664
   when: scriptResult.stat.exists is defined and scriptResult.stat.exists == false
+
+- name: 'Check Payara installation'
+  stat:
+    path: /home/glassfish/payara41
+  register: installationResult
 
 - name: 'Unarchive Payara if not installed'
   unarchive:
