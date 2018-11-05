@@ -1,8 +1,9 @@
 ---
 
 - name: 'Installing common packages'
-  package: name={{ item}} state=present
+  package: name={{ item }} state=present
   with_items:
-  - unzip
   - htop
+  - unzip
   - vim
+  - wget
