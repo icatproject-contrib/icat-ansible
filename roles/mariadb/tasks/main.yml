@@ -12,7 +12,7 @@
 
 - name: 'Configure default storage engine'
   copy:
-    src: ../files/storage-engine.cnf
+    src: files/storage-engine.cnf
     dest: '{{ mariadb_config_dir }}/storage-engine.cnf'
     owner: root
     group: root
