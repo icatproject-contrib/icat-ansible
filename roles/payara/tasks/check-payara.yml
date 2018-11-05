@@ -1,0 +1,10 @@
+---
+
+- name: 'Check Payara is running'
+  shell: /home/glassfish/payara41/bin/asadmin list-applications
+  register: payaraStatus
+  become: true
+  become_user: glassfish
+  args:
+    chdir: /home/glassfish
+    executable: /bin/bash
