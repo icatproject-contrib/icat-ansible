@@ -25,3 +25,6 @@
     name: '{{ mariadb_daemon }}'
     state: started
     enabled: true
+
+- import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.mariadb is not defined) or (ansible_local.local.instantiations.mariadb != 'true')

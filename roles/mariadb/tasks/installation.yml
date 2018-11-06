@@ -1,0 +1,12 @@
+---
+
+- name: 'Simulate instantiation'
+  shell: echo "Instantiating MariaDB"
+
+- name: 'Set fact on host that it has been instantiated'
+  lineinfile:
+    path: /etc/ansible/facts.d/local.fact
+    state: present
+    regexp: '^mariadb'
+    insertafter: '^\[instantiations\]$'
+    line: 'mariadb=true'
