@@ -26,5 +26,7 @@
     state: started
     enabled: true
 
+- include_vars: roles/common/vars/main.yml
+
 - import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.mariadb is not defined) or (ansible_local.local.instantiations.mariadb != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ local_fact_file_heading }} is not defined) or (ansible_local.local.{{ local_fact_file_heading }}.{{ mariadb_daemon }} is not defined) or (ansible_local.local.{{ local_fact_file_heading }}.{{ mariadb_daemon }} != 'true')
