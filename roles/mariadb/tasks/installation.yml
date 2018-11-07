@@ -1,9 +1,20 @@
 ---
 
-- name: 'Simulate instantiation'
-  shell: echo "Instantiating MariaDB"
+- name: 'Install script to run mysql_secure_installation'
+  copy:
+    src: files/mariadb-init
+    dest: '/usr/local/bin/mariadb-init'
+    owner: root
+    group: root
+    mode: 0744
 
-- name: 'Set fact on host that it has been instantiated'
+- name: 'Instantiate the MariaDB database'
+  shell: /usr/local/bin/mariadb-init {{ db_root_password }}
+  register: mariadbInitStatus
+  become: true
+  become_user: root
+
+- name: 'Set fact on host to record that MariaDB has been instantiated'
   lineinfile:
     path: /etc/ansible/facts.d/local.fact
     state: present
