@@ -131,6 +131,20 @@
   notify:
   - icat-server-handler
 
+- name: 'Create database for icat-server'
+  mysql_db:
+    name={{ icat_database }}
+    login_user={{ db_root_username }}
+    login_password={{ db_root_password }}
+
+- name: 'Create user for icat-server database'
+  mysql_user:
+    name={{ db_icat_username }}
+    password={{ db_icat_password }}
+    priv='{{ icat_database }}.*:ALL,GRANT'
+    login_user={{ db_root_username }}
+    login_password={{ db_root_password }}
+
 - name: 'Check ICAT Server setup'
   stat:
     path: /home/glassfish/install/icat.server/setup_utils.pyc

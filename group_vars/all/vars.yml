@@ -1,6 +1,7 @@
 ---
 
 # Database 'root' user's password
+db_root_username: '{{ vault_db_root_username }}'
 db_root_password: '{{ vault_db_root_password }}'
 
 # ICAT database hostname
