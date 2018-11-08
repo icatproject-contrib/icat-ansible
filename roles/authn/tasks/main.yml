@@ -39,8 +39,8 @@
   - authn-handler
 
 - name: 'Configure Authn run.properties'
-  copy:
-    src: files/run.properties
+  template:
+    src: templates/run.properties.j2
     dest: /home/glassfish/install/authn.simple/run.properties
     owner: glassfish
     group: glassfish

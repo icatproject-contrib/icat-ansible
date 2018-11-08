@@ -2,7 +2,7 @@
 # are marked with '!'
 
 # Space separated list of user names that this plugin authenticates.
-user.list = root ingest reader icatuser
+user.list = {{ authn_root_username }} {{ authn_ingest_username }} {{ authn_reader_username }} {{ authn_icatuser_username }}
 
 # Password for each user.  This may either be a clear text password or
 # a cryptographic hash of a password.
@@ -14,10 +14,10 @@ user.list = root ingest reader icatuser
 # algorithms are MD5, SHA-256, and SHA-512.
 #
 # A clear text password must not start with a '$' character.
-user.root.password = $ROOT_PASSWD
-user.ingest.password = $INGEST_PASSWD
-user.reader.password = $READER_PASSWD
-user.icatuser.password = $ICATUSER_PASSWD
+user.root.password = {{ authn_root_password }}
+user.ingest.password = {{ authn_ingest_password }}
+user.reader.password = {{ authn_reader_password }}
+user.icatuser.password = {{ authn_icatuser_password }}
 
 # If access to the simple authentication should only be allowed from certain
 # IP addresses then provide a space separated list of allowed values. These

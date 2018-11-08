@@ -1,8 +1,24 @@
 ---
 
+# Database 'root' user's password
 db_root_password: '{{ vault_db_root_password }}'
 
+# ICAT database hostname
 db_icat_hostname: 'localhost'
+
+# Database name, username and password for the icat database
 icat_database: '{{ vault_icat_database }}'
 db_icat_username: '{{ vault_db_icat_username }}'
 db_icat_password: '{{ vault_db_icat_password }}'
+
+# Authn-simple usernames
+authn_root_username: '{{ vault_authn_root_username }}'
+authn_ingest_username: '{{ vault_authn_ingest_username }}'
+authn_reader_username: '{{ vault_authn_reader_username }}'
+authn_icatuser_username: '{{ vault_authn_icatuser_username }}'
+
+# Authn-simple passwords
+authn_root_password: '{{ vault_authn_root_password }}'
+authn_ingest_password: '{{ vault_authn_ingest_password }}'
+authn_reader_password: '{{ vault_authn_reader_password }}'
+authn_icatuser_password: '{{ vault_authn_icatuser_password }}'
