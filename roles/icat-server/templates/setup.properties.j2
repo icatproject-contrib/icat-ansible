@@ -1,0 +1,19 @@
+# Oracle
+!db.driver = oracle.jdbc.pool.OracleDataSource
+!db.url = jdbc:oracle:thin:@//{{ db_icat_hostname }}:1521/XE
+!db.username = {{ db_icat_username }}
+!db.password = {{ db_icat_password }}
+
+# Optional Oracle
+!db.target = Oracle11
+!db.logging = FINE
+
+# MySQL
+db.driver = com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+db.url = jdbc:mysql://{{ db_icat_hostname }}:3306/{{ icat_database }}
+db.username = {{ db_icat_username }}
+db.password = {{ db_icat_password }}
+
+# Optional MySQL
+!db.target = MySQL
+!db.logging = FINE

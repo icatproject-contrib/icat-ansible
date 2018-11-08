@@ -93,8 +93,8 @@
     mode: 0644
 
 - name: 'Copy over ICAT Server setup.properties'
-  copy:
-    src: files/setup.properties
+  template:
+    src: templates/setup.properties.j2
     dest: /home/glassfish/stash/2-part
     owner: glassfish
     group: glassfish
