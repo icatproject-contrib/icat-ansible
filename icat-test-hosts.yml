@@ -9,6 +9,6 @@
   - role: java
   - role: mariadb
   - role: payara
-  - role: authn
+  - role: authn-simple
   - role: icat-lucene
   - role: icat-server

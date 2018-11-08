@@ -1,11 +1,11 @@
 ---
 
-- name: 'Check Authn package'
+- name: 'Check authn-simple package'
   stat:
     path: /home/glassfish/downloads/authn.simple-2.0.0-distro.zip
   register: packageResult
 
-- name: 'Download Authn'
+- name: 'Download authn-simple'
   get_url:
     url: https://repo.icatproject.org/repo/org/icatproject/authn.simple/2.0.0/authn.simple-2.0.0-distro.zip
     dest: /home/glassfish/downloads
@@ -14,12 +14,12 @@
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
-- name: 'Check Authn installation'
+- name: 'Check authn-simple installation'
   stat:
     path: /home/glassfish/install/authn.simple
   register: installationResult
 
-- name: 'Unarchive Authn if not installed'
+- name: 'Unarchive authn-simple if not installed'
   unarchive:
     src: /home/glassfish/downloads/authn.simple-2.0.0-distro.zip
     dest: /home/glassfish/install
@@ -28,7 +28,7 @@
     group: glassfish
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- name: 'Configure Authn setup.properties'
+- name: 'Configure authn-simple setup.properties'
   copy:
     src: roles/payara/files/setup.properties
     dest: /home/glassfish/install/authn.simple/setup.properties
@@ -36,9 +36,9 @@
     group: glassfish
     mode: 0600
   notify:
-  - authn-handler
+  - authn-simple-handler
 
-- name: 'Configure Authn run.properties'
+- name: 'Configure authn-simple run.properties'
   template:
     src: templates/run.properties.j2
     dest: /home/glassfish/install/authn.simple/run.properties
@@ -46,9 +46,9 @@
     group: glassfish
     mode: 0664
   notify:
-  - authn-handler
+  - authn-simple-handler
 
-- name: 'Configure Authn logback.xml'
+- name: 'Configure authn-simple logback.xml'
   copy:
     src: files/logback.xml
     dest: /home/glassfish/install/authn.simple/logback.xml
@@ -56,13 +56,13 @@
     group: glassfish
     mode: 0664
   notify:
-  - authn-handler
+  - authn-simple-handler
 
-- name: 'Check Authn setup'
+- name: 'Check authn-simple setup'
   stat:
     path: /home/glassfish/install/authn.simple/setup_utils.pyc
   register: setupResult
 
-- name: 'Setup Authn'
-  import_tasks: handlers/authn-handler.yml
+- name: 'Setup authn-simple'
+  import_tasks: handlers/authn-simple-handler.yml
   when: setupResult.stat.exists is defined and setupResult.stat.exists == false

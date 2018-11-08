@@ -1,4 +1,0 @@
----
-
-- name: authn-handler
-  import_tasks: handlers/authn-handler.yml
