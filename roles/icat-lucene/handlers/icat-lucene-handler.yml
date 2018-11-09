@@ -1,6 +1,7 @@
 ---
 
-- import_tasks: roles/payara/tasks/check-payara.yml
+- name: 'Import: Check payara is running'
+  import_tasks: roles/payara/tasks/check-payara.yml
 
 - name: 'Re-install icat-lucene'
   shell: 'su -l glassfish -c "cd /home/glassfish/install/icat.lucene; ./setup -vv install"'

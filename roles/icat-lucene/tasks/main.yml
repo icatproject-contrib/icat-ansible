@@ -66,11 +66,6 @@
   notify:
   - icat-lucene-handler
 
-- name: 'Check Lucene setup'
-  stat:
-    path: /home/glassfish/install/icat.lucene/setup_utils.pyc
-  register: setupResult
-
-- name: 'Setup Lucene'
-  import_tasks: handlers/icat-lucene-handler.yml
-  when: setupResult.stat.exists is defined and setupResult.stat.exists == false
+- name: 'Setup icat-lucene if not setup'
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.icat_lucene is not defined) or (ansible_local.local.{{ heading }}.icat_lucene != 'true')

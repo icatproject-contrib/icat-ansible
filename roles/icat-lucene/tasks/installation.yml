@@ -1,0 +1,12 @@
+---
+
+- name: 'Setup icat-lucene'
+  import_tasks: handlers/icat-lucene-handler.yml
+
+- name: 'Set fact on host to record that icat-lucene has been instantiated'
+  lineinfile:
+    path: /etc/ansible/facts.d/local.fact
+    state: present
+    regexp: '^icat_lucene'
+    insertafter: '^\[instantiations\]$'
+    line: 'icat_lucene=true'
