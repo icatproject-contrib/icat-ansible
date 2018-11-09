@@ -1,5 +1,11 @@
 ---
 
+# Payara admin user's password
+payara_admin_password: '{{ vault_payara_admin_password }}'
+
+# Payara domain
+payara_domain: 'domain1'
+
 # Database 'root' user's password
 db_root_username: '{{ vault_db_root_username }}'
 db_root_password: '{{ vault_db_root_password }}'

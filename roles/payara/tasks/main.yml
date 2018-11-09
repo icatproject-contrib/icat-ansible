@@ -90,3 +90,6 @@
     owner: glassfish
     group: glassfish
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ local_fact_file_heading }} is not defined) or (ansible_local.local.{{ local_fact_file_heading }}.payara is not defined) or (ansible_local.local.{{ local_fact_file_heading }}.payara != 'true')
