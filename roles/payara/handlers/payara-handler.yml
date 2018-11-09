@@ -1,9 +1,9 @@
 ---
 
-- name: 'Import: Check Payara is running'
+- name: 'Import: Check payara is running'
   import_tasks: roles/payara/tasks/check-payara.yml
 
-- name: 'Restart Payara if it is running'
+- name: 'Restart payara if it is running'
   shell: '/usr/local/bin/payara-init restart'
   become: true
   become_user: root
