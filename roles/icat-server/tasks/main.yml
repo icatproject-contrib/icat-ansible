@@ -1,19 +1,19 @@
 ---
 
-- name: 'Install common ICAT dependencies'
+- name: 'Install common icat-server dependencies'
   package: name={{ item }} state=present
   with_items:
   - python-suds
   - python-requests
 
-- name: 'Install ICAT dependencies for Red Hat systems'
+- name: 'Install icat-server dependencies for Red Hat systems'
   package: name={{ item }} state=present
   with_items:
   - MySQL-python
   - mysql-connector-java
   when: ansible_os_family == 'RedHat'
 
-- name: 'Install Java packages for Debian systems'
+- name: 'Install icat-server packages for Debian systems'
   package: name={{ item }} state=present
   with_items:
   - python-mysqldb
@@ -25,7 +25,7 @@
     path: /home/glassfish/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
   register: domainResult
 
-- name: 'Create symlink to MySQL Connector library'
+- name: 'Create symlink to mysql connector library'
   file:
     src: /usr/share/java/mysql-connector-java.jar
     path: /home/glassfish/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/mysql-connector-java.jar
@@ -35,12 +35,12 @@
   when: domainResult.stat.exists is defined and domainResult.stat.exists == true
   notify: payara-handler
 
-- name: 'Check ICAT Server package'
+- name: 'Check icat-server package'
   stat:
     path: /home/glassfish/downloads/icat.server-4.9.1-distro.zip
   register: packageResult
 
-- name: 'Download ICAT Server'
+- name: 'Download icat-server'
   get_url:
     url: https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.1/icat.server-4.9.1-distro.zip
     dest: /home/glassfish/downloads
@@ -49,12 +49,12 @@
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
-- name: 'Check ICAT Server installation'
+- name: 'Check icat-server installation'
   stat:
     path: /home/glassfish/install/icat.server
   register: installationResult
 
-- name: 'Unarchive ICAT Server if not installed'
+- name: 'Unarchive icat-server if not installed'
   unarchive:
     src: /home/glassfish/downloads/icat.server-4.9.1-distro.zip
     dest: /home/glassfish/install
@@ -71,12 +71,12 @@
     group: glassfish
     mode: 0775
 
-- name: 'Add path to glassfish bin directory for ICAT to PATH variable'
+- name: 'Add path to glassfish bin directory for icat-server to PATH variable'
   lineinfile:
     path: /home/glassfish/.bashrc
     line: 'export PATH=$PATH:/home/glassfish/bin'
 
-- name: 'Create ICAT Server stash directory for configs'
+- name: 'Create icat-server stash directory for configs'
   file:
     path: /home/glassfish/stash
     state: directory
@@ -92,7 +92,7 @@
     group: glassfish
     mode: 0644
 
-- name: 'Copy over ICAT Server setup.properties'
+- name: 'Copy over icat-server setup.properties'
   template:
     src: templates/setup.properties.j2
     dest: /home/glassfish/stash/2-part
@@ -100,7 +100,7 @@
     group: glassfish
     mode: 0644
 
-- name: 'Configure ICAT Server setup.properties by concatenation of files in /home/glassfish/stash'
+- name: 'Configure icat-server setup.properties by concatenation of files in /home/glassfish/stash'
   assemble:
     src: /home/glassfish/stash
     dest: /home/glassfish/install/icat.server/setup.properties
@@ -111,7 +111,7 @@
   notify:
   - icat-server-handler
 
-- name: 'Configure ICAT Server run.properties'
+- name: 'Configure icat-server run.properties'
   template:
     src: templates/run.properties.j2
     dest: /home/glassfish/install/icat.server/run.properties
@@ -121,7 +121,7 @@
   notify:
   - icat-server-handler
 
-- name: 'Configure ICAT Server logback.xml'
+- name: 'Configure icat-server logback.xml'
   copy:
     src: files/logback.xml
     dest: /home/glassfish/install/icat.server/logback.xml
@@ -145,11 +145,11 @@
     login_user: '{{ db_root_username }}'
     login_password: '{{ db_root_password }}'
 
-- name: 'Check ICAT Server setup'
+- name: 'Check icat-server setup'
   stat:
     path: /home/glassfish/install/icat.server/setup_utils.pyc
   register: setupResult
 
-- name: 'Setup ICAT'
+- name: 'Setup icat-server'
   import_tasks: handlers/icat-server-handler.yml
   when: setupResult.stat.exists is defined and setupResult.stat.exists == false
