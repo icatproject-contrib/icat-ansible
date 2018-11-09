@@ -58,11 +58,6 @@
   notify:
   - authn-simple-handler
 
-- name: 'Check authn-simple setup'
-  stat:
-    path: /home/glassfish/install/authn.simple/setup_utils.pyc
-  register: setupResult
-
-- name: 'Setup authn-simple'
-  import_tasks: handlers/authn-simple-handler.yml
-  when: setupResult.stat.exists is defined and setupResult.stat.exists == false
+- name: 'Setup authn-simple if not setup'
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.authn_simple is not defined) or (ansible_local.local.{{ heading }}.authn_simple != 'true')

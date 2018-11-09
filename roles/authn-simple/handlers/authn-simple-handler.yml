@@ -1,6 +1,7 @@
 ---
 
-- import_tasks: roles/payara/tasks/check-payara.yml
+- name: 'Import: Check payara is running'
+  import_tasks: roles/payara/tasks/check-payara.yml
 
 - name: 'Re-install authn-simple'
   shell: 'su -l glassfish -c "cd /home/glassfish/install/authn.simple; ./setup -vv install"'
