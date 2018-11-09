@@ -1,0 +1,15 @@
+---
+
+- name: 'Restart payara'
+  import_tasks: roles/payara/handlers/payara-handler.yml
+
+- name: 'Setup icat-server'
+  import_tasks: handlers/icat-server-handler.yml
+
+- name: 'Set fact on host to record that icat-server has been instantiated'
+  lineinfile:
+    path: /etc/ansible/facts.d/local.fact
+    state: present
+    regexp: '^icat_server'
+    insertafter: '^\[instantiations\]$'
+    line: 'icat_server=true'
