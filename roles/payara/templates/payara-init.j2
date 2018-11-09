@@ -12,13 +12,13 @@
 # customize values for your needs
 NAME=glassfish
 GLASSFISH_USER=$NAME
-GLASSFISH_DIR="/home/$NAME/payara41"
+GLASSFISH_DIR="/home/$NAME/{{ payara_directory }}"
 ASADMIN="$GLASSFISH_DIR/glassfish/bin/asadmin"
 GF_DOMAIN=$2
 
 if [ -z "$GF_DOMAIN" ]
   then
-    GF_DOMAIN="domain1"
+    GF_DOMAIN="{{ payara_domain }}"
 fi
 
 case "$1" in

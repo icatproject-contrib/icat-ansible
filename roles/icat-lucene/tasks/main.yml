@@ -29,8 +29,8 @@
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: 'Configure Lucene setup.properties'
-  copy:
-    src: roles/payara/files/setup.properties
+  template:
+    src: roles/payara/templates/setup.properties.j2
     dest: /home/glassfish/install/icat.lucene/setup.properties
     owner: glassfish
     group: glassfish

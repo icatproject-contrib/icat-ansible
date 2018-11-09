@@ -22,13 +22,13 @@
 
 - name: 'Check glassfish domain'
   stat:
-    path: /home/glassfish/payara41/glassfish/domains/domain1/lib/ext
+    path: /home/glassfish/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
   register: domainResult
 
 - name: 'Create symlink to MySQL Connector library'
   file:
     src: /usr/share/java/mysql-connector-java.jar
-    path: /home/glassfish/payara41/glassfish/domains/domain1/lib/ext/mysql-connector-java.jar
+    path: /home/glassfish/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/mysql-connector-java.jar
     state: link
     owner: glassfish
     group: glassfish
@@ -85,8 +85,8 @@
     mode: 0755
 
 - name: 'Copy over glassfish setup.properties'
-  copy:
-    src: roles/payara/files/setup.properties
+  template:
+    src: roles/payara/templates/setup.properties.j2
     dest: /home/glassfish/stash/1-part
     owner: glassfish
     group: glassfish

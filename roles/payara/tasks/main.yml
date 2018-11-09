@@ -37,8 +37,8 @@
     mode: 0755
 
 - name: 'Install payara init script'
-  copy:
-    src: files/payara-init
+  template:
+    src: templates/payara-init.j2
     dest: '/usr/local/bin/payara-init'
     owner: root
     group: root
@@ -47,7 +47,7 @@
 - name: 'Add path to payara executable to PATH variable'
   lineinfile:
     path: /home/glassfish/.bashrc
-    line: 'export PATH=$HOME/payara41/bin:$PATH'
+    line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
 
 - name: 'Check payara package'
   stat:
@@ -79,7 +79,7 @@
 
 - name: 'Check payara installation'
   stat:
-    path: /home/glassfish/payara41
+    path: /home/glassfish/{{ payara_directory }}
   register: installationResult
 
 - name: 'Unarchive payara if not installed'

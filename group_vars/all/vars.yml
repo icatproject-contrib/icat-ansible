@@ -3,7 +3,8 @@
 # Payara admin user's password
 payara_admin_password: '{{ vault_payara_admin_password }}'
 
-# Payara domain
+# Payara config
+payara_directory: 'payara41'
 payara_domain: 'domain1'
 
 # Database 'root' user's password
