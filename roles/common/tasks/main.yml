@@ -24,8 +24,8 @@
 - name: 'Install and initialise local fact file on remote hosts'
   lineinfile:
     path: '/etc/ansible/facts.d/local.fact'
-    line: '[{{ local_fact_file_heading }}]'
-    regexp: '^\[{{ local_fact_file_heading }}\]$'
+    line: '[{{ heading }}]'
+    regexp: '^\[{{ heading }}\]$'
     insertbefore: BOF
     owner: root
     group: root
