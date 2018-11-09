@@ -8,13 +8,13 @@
     group: root
     mode: 0744
 
-- name: 'Instantiate the MariaDB database'
+- name: 'Instantiate the mariadb database'
   shell: /usr/local/bin/mariadb-init {{ db_root_password }}
   register: mariadbInitStatus
   become: true
   become_user: root
 
-- name: 'Set fact on host to record that MariaDB has been instantiated'
+- name: 'Set fact on host to record that mariadb has been instantiated'
   lineinfile:
     path: /etc/ansible/facts.d/local.fact
     state: present
