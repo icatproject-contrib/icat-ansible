@@ -30,3 +30,9 @@ authn_root_password: '{{ vault_authn_root_password }}'
 authn_ingest_password: '{{ vault_authn_ingest_password }}'
 authn_reader_password: '{{ vault_authn_reader_password }}'
 authn_icatuser_password: '{{ vault_authn_icatuser_password }}'
+
+# Authn-simple URL
+authn_simple_url: '{{ ansible_fqdn }}'
+
+# Lucene URL
+lucene_url: '{{ ansible_fqdn }}'
