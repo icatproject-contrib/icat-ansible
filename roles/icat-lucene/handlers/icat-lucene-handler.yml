@@ -1,19 +1,11 @@
 ---
 
-- name: 'Check Payara is running'
-  shell: /home/glassfish/payara41/bin/asadmin list-applications
-  register: payaraStatus
-  become: true
-  become_user: glassfish
-  args:
-    chdir: /home/glassfish
-    executable: /bin/bash
+- import_tasks: roles/payara/tasks/check-payara.yml
 
-- name: 'Re-install ICAT Lucene'
-  shell: ./setup -vv install
+- name: 'Re-install icat-lucene'
+  shell: 'su -l glassfish -c "cd /home/glassfish/install/icat.lucene; ./setup -vv install"'
   become: true
-  become_user: glassfish
+  become_user: root
   args:
-    chdir: /home/glassfish/install/icat.lucene
     executable: /bin/bash
   when: payaraStatus.rc == 0

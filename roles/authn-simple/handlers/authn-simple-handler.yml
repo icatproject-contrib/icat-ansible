@@ -1,13 +1,11 @@
 ---
 
-- name: 'Check if payara is running'
-  import_tasks: roles/payara/tasks/check-payara.yml
+- import_tasks: roles/payara/tasks/check-payara.yml
 
 - name: 'Re-install authn-simple'
-  shell: ./setup -vv install
+  shell: 'su -l glassfish -c "cd /home/glassfish/install/authn.simple; ./setup -vv install"'
   become: true
-  become_user: glassfish
+  become_user: root
   args:
-    chdir: /home/glassfish/install/authn.simple
     executable: /bin/bash
   when: payaraStatus.rc == 0
