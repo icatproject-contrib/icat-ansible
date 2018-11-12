@@ -12,3 +12,5 @@
   - role: authn-simple
   - role: icat-lucene
   - role: icat-server
+  - role: ids-storage_file
+  - role: ids-server
