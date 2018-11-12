@@ -1,0 +1,4 @@
+---
+
+- name: ids-storage_file-handler
+  import_tasks: handlers/ids-storage_file-handler.yml
