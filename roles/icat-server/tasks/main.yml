@@ -76,9 +76,9 @@
     path: /home/glassfish/.bashrc
     line: 'export PATH=$PATH:/home/glassfish/bin'
 
-- name: 'Create icat-server stash directory for configs'
+- name: 'Create icat-server icat-server-stash directory for configs'
   file:
-    path: /home/glassfish/stash
+    path: /home/glassfish/icat-server-stash
     state: directory
     owner: glassfish
     group: glassfish
@@ -87,7 +87,7 @@
 - name: 'Copy over glassfish setup.properties'
   template:
     src: roles/payara/templates/setup.properties.j2
-    dest: /home/glassfish/stash/1-part
+    dest: /home/glassfish/icat-server-stash/1-part
     owner: glassfish
     group: glassfish
     mode: 0644
@@ -95,14 +95,14 @@
 - name: 'Copy over icat-server setup.properties'
   template:
     src: templates/setup.properties.j2
-    dest: /home/glassfish/stash/2-part
+    dest: /home/glassfish/icat-server-stash/2-part
     owner: glassfish
     group: glassfish
     mode: 0644
 
-- name: 'Configure icat-server setup.properties by concatenation of files in /home/glassfish/stash'
+- name: 'Configure icat-server setup.properties by concatenation of files in /home/glassfish/icat-server-stash'
   assemble:
-    src: /home/glassfish/stash
+    src: /home/glassfish/icat-server-stash
     dest: /home/glassfish/install/icat.server/setup.properties
     delimiter: '\n'
     owner: glassfish
