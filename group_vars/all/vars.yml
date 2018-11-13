@@ -1,20 +1,16 @@
 ---
 
-# Payara admin user's password
-payara_admin_password: '{{ vault_payara_admin_password }}'
-
-# Payara config
+# Payara directory, domain and admin user's password
 payara_directory: 'payara41'
 payara_domain: 'domain1'
+payara_admin_password: '{{ vault_payara_admin_password }}'
 
-# Database 'root' user's password
+# Database root user's username and password
 db_root_username: '{{ vault_db_root_username }}'
 db_root_password: '{{ vault_db_root_password }}'
 
-# ICAT database hostname
+# ICAT database hostname, database name, username and password
 db_icat_hostname: 'localhost'
-
-# Database name, username and password for the icat database
 icat_database: '{{ vault_icat_database }}'
 db_icat_username: '{{ vault_db_icat_username }}'
 db_icat_password: '{{ vault_db_icat_password }}'
@@ -31,11 +27,11 @@ authn_ingest_password: '{{ vault_authn_ingest_password }}'
 authn_reader_password: '{{ vault_authn_reader_password }}'
 authn_icatuser_password: '{{ vault_authn_icatuser_password }}'
 
-# Authn-simple URL
+# Authn-simple server URL
 authn_simple_url: '{{ ansible_fqdn }}'
 
-# Lucene URL
+# ICAT Lucene server URL
 lucene_url: '{{ ansible_fqdn }}'
 
-# ICAT URL
+# ICAT server URL
 icat_url: '{{ ansible_fqdn }}'
