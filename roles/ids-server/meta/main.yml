@@ -1,0 +1,7 @@
+---
+
+dependencies:
+  - role: common
+  - role: payara
+  - role: icat-server
+  - role: ids-storage_file

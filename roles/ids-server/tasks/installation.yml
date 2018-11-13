@@ -1,0 +1,12 @@
+---
+
+- name: 'Setup ids-server'
+  import_tasks: handlers/ids-server-handler.yml
+
+- name: 'Set fact on host to record that ids-server has been instantiated'
+  lineinfile:
+    path: /etc/ansible/facts.d/local.fact
+    state: present
+    regexp: '^ids_server'
+    insertafter: '^\[instantiations\]$'
+    line: 'ids_server=true'

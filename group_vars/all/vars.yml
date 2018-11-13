@@ -36,3 +36,6 @@ authn_simple_url: '{{ ansible_fqdn }}'
 
 # Lucene URL
 lucene_url: '{{ ansible_fqdn }}'
+
+# ICAT URL
+icat_url: '{{ ansible_fqdn }}'
