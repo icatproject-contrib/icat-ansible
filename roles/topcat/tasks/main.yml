@@ -1,0 +1,155 @@
+---
+
+- name: 'Install jq package'
+  package:
+    name: jq
+    state: present
+
+- name: 'Check topcat package'
+  stat:
+    path: /home/glassfish/downloads/topcat-2.4.0-distro.zip
+  register: packageResult
+
+- name: 'Download topcat'
+  get_url:
+    url: https://repo.icatproject.org/repo/org/icatproject/topcat/2.4.0/topcat-2.4.0-distro.zip
+    dest: /home/glassfish/downloads
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: 'Check topcat installation'
+  stat:
+    path: /home/glassfish/install/topcat
+  register: installationResult
+
+- name: 'Unarchive topcat if not installed'
+  unarchive:
+    src: /home/glassfish/downloads/topcat-2.4.0-distro.zip
+    dest: /home/glassfish/install
+    remote_src: true
+    owner: glassfish
+    group: glassfish
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: 'Create database for topcat'
+  mysql_db:
+    name: '{{ topcat_database }}'
+    login_user: '{{ db_root_username }}'
+    login_password: '{{ db_root_password }}'
+
+- name: 'Create user for topcat database'
+  mysql_user:
+    name: '{{ db_topcat_username }}'
+    password: '{{ db_topcat_password }}'
+    priv: '{{ topcat_database }}.*:ALL,GRANT'
+    login_user: '{{ db_root_username }}'
+    login_password: '{{ db_root_password }}'
+
+- name: 'Create topcat-stash directory for configs'
+  file:
+    path: /home/glassfish/topcat-stash
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0775
+
+- name: 'Copy over glassfish setup.properties'
+  template:
+    src: roles/payara/templates/setup.properties.j2
+    dest: /home/glassfish/topcat-stash/1-part
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+
+- name: 'Copy over topcat-setup.properties'
+  template:
+    src: templates/topcat-setup.properties.j2
+    dest: /home/glassfish/topcat-stash/2-part
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+
+- name: 'Configure topcat-setup.properties by concatenation of files in /home/glassfish/topcat-stash'
+  assemble:
+    src: /home/glassfish/topcat-stash
+    dest: /home/glassfish/install/topcat/topcat-setup.properties
+    delimiter: '\n'
+    owner: glassfish
+    group: glassfish
+    mode: 0600
+  notify:
+  - topcat-handler
+
+- name: 'Configure topcat.properties'
+  template:
+    src: templates/topcat.properties.j2
+    dest: /home/glassfish/install/topcat/topcat.properties
+    owner: glassfish
+    group: glassfish
+    mode: 0600
+  notify:
+  - topcat-handler
+
+- name: 'Check topcat.json'
+  stat:
+    path: /home/glassfish/install/topcat/topcat.json
+  register: topcatJsonResult
+
+- name: 'Create topcat.json'
+  import_tasks: tasks/create-topcat-json.yml
+  when: topcatJsonResult.stat.exists is defined and topcatJsonResult.stat.exists == false
+  notify:
+  - topcat-handler
+
+- name: 'Configure lang.json'
+  copy:
+    src: /home/glassfish/install/topcat/lang.json.example
+    dest: /home/glassfish/install/topcat/lang.json
+    remote_src: true
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - topcat-handler
+
+- name: 'Configure topcat.css'
+  copy:
+    src: /home/glassfish/install/topcat/topcat.css.example
+    dest: /home/glassfish/install/topcat/topcat.css
+    remote_src: true
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - topcat-handler
+
+- name: 'Check content directory'
+  stat:
+    path: /home/glassfish/install/topcat/content
+  register: contentResult
+
+- name: 'Configure content directory'
+  shell: 'su -l glassfish -c "cd /home/glassfish/install/topcat; cp -r content.example content"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: contentResult.stat.exists is defined and contentResult.stat.exists == false
+  notify:
+  - topcat-handler
+
+- name: 'Configure topcat logback.xml'
+  copy:
+    src: files/logback.xml
+    dest: /home/glassfish/install/topcat/logback.xml
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - topcat-handler
+
+- name: 'Setup topcat if not setup'
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.topcat is not defined) or (ansible_local.local.{{ heading }}.topcat != 'true')

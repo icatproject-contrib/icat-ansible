@@ -1,0 +1,62 @@
+---
+
+- name: 'Create topcat.json part 1'
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat.json.example | jq '.site.topcatUrl = \"https://{{ topcat_url }}:8181\"' > topcat-intermediate1.json"
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+
+- name: 'Create topcat.json part 2'
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate1.json | jq '.facilities[0].idsUrl = \"https://{{ ids_url }}:8181\"' > topcat-intermediate2.json"
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+
+- name: 'Create topcat.json part 3'
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate2.json | jq '.facilities[0].icatUrl = \"https://{{ icat_url }}:8181\"' > topcat-intermediate3.json"
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+
+- name: 'Create topcat.json part 4'
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate3.json | jq '.facilities[0].downloadTransportTypes[0].type = \"http\"' > topcat-intermediate4.json"
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+
+- name: 'Create topcat.json part 5'
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate4.json | jq '.facilities[0].downloadTransportTypes[0].idsUrl = \"http://{{ ids_url }}:8080\"' > topcat-intermediate5.json"
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+
+- name: 'Create topcat.json part 6'
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate5.json | jq '.facilities[0].downloadTransportTypes[1].type = \"https\"' > topcat-intermediate6.json"
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+
+- name: 'Create topcat.json part 7'
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate6.json | jq '.facilities[0].downloadTransportTypes[1].idsUrl = \"https://{{ ids_url }}:8181\"' > topcat.json"
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+
+- name: 'Remove intermediate files'
+  shell: 'su -l glassfish -c "cd /home/glassfish/install/topcat; rm topcat-intermediate*"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+
+- name: 'Set mode of topcat.json'
+  file:
+    path: /home/glassfish/install/topcat/topcat.json
+    mode: 0664

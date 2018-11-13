@@ -35,3 +35,15 @@ lucene_url: '{{ ansible_fqdn }}'
 
 # ICAT server URL
 icat_url: '{{ ansible_fqdn }}'
+
+# IDS server URL
+ids_url: '{{ ansible_fqdn }}'
+
+# TopCat server URL
+topcat_url: '{{ ansible_fqdn }}'
+
+# TopCat database hostname, database name, username and password
+db_topcat_hostname: 'localhost'
+topcat_database: '{{ vault_topcat_database }}'
+db_topcat_username: '{{ vault_db_topcat_username }}'
+db_topcat_password: '{{ vault_db_topcat_password }}'
