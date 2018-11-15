@@ -18,7 +18,7 @@
     state: directory
     owner: glassfish
     group: glassfish
-    mode: 0755
+    mode: 0775
 
 - name: 'Create install directory'
   file:
@@ -26,7 +26,7 @@
     state: directory
     owner: glassfish
     group: glassfish
-    mode: 0755
+    mode: 0775
 
 - name: 'Create scripts directory'
   file:
@@ -34,7 +34,7 @@
     state: directory
     owner: glassfish
     group: glassfish
-    mode: 0755
+    mode: 0775
 
 - name: 'Install payara init script'
   template:
@@ -42,7 +42,7 @@
     dest: '/usr/local/bin/payara-init'
     owner: root
     group: root
-    mode: 0755
+    mode: 0775
 
 - name: 'Add path to payara executable to PATH variable'
   lineinfile:
