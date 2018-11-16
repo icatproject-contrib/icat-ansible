@@ -47,9 +47,17 @@
     login_user: '{{ db_root_username }}'
     login_password: '{{ db_root_password }}'
 
-- name: 'Create topcat-stash directory for configs'
+- name: 'Create a stash directory for assembling configurations'
   file:
-    path: /home/glassfish/topcat-stash
+    path: /home/glassfish/stash
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0775
+
+- name: 'Create a stash directory for topcat configs'
+  file:
+    path: /home/glassfish/stash/topcat
     state: directory
     owner: glassfish
     group: glassfish
@@ -58,7 +66,7 @@
 - name: 'Copy over glassfish setup.properties'
   template:
     src: roles/payara/templates/setup.properties.j2
-    dest: /home/glassfish/topcat-stash/1-part
+    dest: /home/glassfish/stash/topcat/1-part
     owner: glassfish
     group: glassfish
     mode: 0664
@@ -66,14 +74,14 @@
 - name: 'Copy over topcat-setup.properties'
   template:
     src: templates/topcat-setup.properties.j2
-    dest: /home/glassfish/topcat-stash/2-part
+    dest: /home/glassfish/stash/topcat/2-part
     owner: glassfish
     group: glassfish
     mode: 0664
 
-- name: 'Configure topcat-setup.properties by concatenation of files in /home/glassfish/topcat-stash'
+- name: 'Configure topcat-setup.properties by concatenation of files in the stash'
   assemble:
-    src: /home/glassfish/topcat-stash
+    src: /home/glassfish/stash/topcat
     dest: /home/glassfish/install/topcat/topcat-setup.properties
     delimiter: '\n'
     owner: glassfish
