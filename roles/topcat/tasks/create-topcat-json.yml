@@ -22,28 +22,35 @@
     executable: /bin/bash
 
 - name: 'Create topcat.json part 4'
-  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate3.json | jq '.facilities[0].downloadTransportTypes[0].type = \"http\"' > topcat-intermediate4.json"
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate3.json | jq 'del(.facilities[0].authenticationTypes[1])' > topcat-intermediate4.json"
   become: true
   become_user: root
   args:
     executable: /bin/bash
 
 - name: 'Create topcat.json part 5'
-  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate4.json | jq '.facilities[0].downloadTransportTypes[0].idsUrl = \"http://{{ ids_url }}:8080\"' > topcat-intermediate5.json"
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate4.json | jq '.facilities[0].downloadTransportTypes[0].type = \"http\"' > topcat-intermediate5.json"
   become: true
   become_user: root
   args:
     executable: /bin/bash
 
 - name: 'Create topcat.json part 6'
-  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate5.json | jq '.facilities[0].downloadTransportTypes[1].type = \"https\"' > topcat-intermediate6.json"
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate5.json | jq '.facilities[0].downloadTransportTypes[0].idsUrl = \"http://{{ ids_url }}:8080\"' > topcat-intermediate6.json"
   become: true
   become_user: root
   args:
     executable: /bin/bash
 
 - name: 'Create topcat.json part 7'
-  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate6.json | jq '.facilities[0].downloadTransportTypes[1].idsUrl = \"https://{{ ids_url }}:8181\"' > topcat.json"
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate6.json | jq '.facilities[0].downloadTransportTypes[1].type = \"https\"' > topcat-intermediate7.json"
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+
+- name: 'Create topcat.json part 8'
+  shell: su -l glassfish -c "cd /home/glassfish/install/topcat; cat topcat-intermediate7.json | jq '.facilities[0].downloadTransportTypes[1].idsUrl = \"https://{{ ids_url }}:8181\"' > topcat.json"
   become: true
   become_user: root
   args:
