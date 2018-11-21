@@ -39,8 +39,8 @@
   - icat-lucene-handler
 
 - name: 'Configure icat-lucene run.properties'
-  copy:
-    src: files/run.properties
+  template:
+    src: templates/run.properties.j2
     dest: /home/glassfish/install/icat.lucene/run.properties
     owner: glassfish
     group: glassfish
