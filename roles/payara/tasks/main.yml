@@ -43,11 +43,23 @@
     owner: root
     group: root
     mode: 0775
+     
+- name: 'Check if .bash_profile exists'
+  stat:
+    path: /home/glassfish/.bash_profile
+  register: bashProfileResult
 
-- name: 'Add path to payara executable to PATH variable'
+- name: 'Add path to payara executable to PATH variable in .bash_profile'
   lineinfile:
-    path: /home/glassfish/.bashrc
+    path: /home/glassfish/.bash_profile
     line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
+  when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == true
+
+- name: 'Add path to payara executable to PATH variable in .profile'
+  lineinfile:
+    path: /home/glassfish/.profile
+    line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
+  when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == false
 
 - name: 'Check payara package'
   stat:
