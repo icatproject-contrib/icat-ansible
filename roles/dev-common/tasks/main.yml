@@ -1,0 +1,47 @@
+---
+
+- name: 'Installing common dev packages'
+  package: name={{ item }} state=present
+  with_items:
+  - git
+  - maven
+
+- name: 'Create .m2 directory'
+  file:
+    path: /home/glassfish/.m2
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0775
+
+- name: 'Add maven settings file to maven home'
+  template:
+    src: templates/settings.xml.j2
+    dest: /home/glassfish/.m2/settings.xml
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+
+- name: 'Make test ids main folder'
+  file:
+    path: /home/glassfish/test/data/ids/main
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0775
+
+- name: 'Make test ids archive folder'
+  file:
+    path: /home/glassfish/test/data/ids/archive
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0775
+
+- name: 'Make test ids cache folder'
+  file:
+    path: /home/glassfish/test/data/ids/cache
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0775
