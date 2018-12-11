@@ -1,0 +1,4 @@
+---
+
+- name: icat-server-dev-handler
+  import_tasks: handlers/icat-server-dev-handler.yml

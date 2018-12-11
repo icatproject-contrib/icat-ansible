@@ -1,0 +1,20 @@
+---
+
+- name: 'Import: Check payara is running'
+  import_tasks: roles/payara/tasks/check-payara.yml
+
+- name: 'Undeploy any previous icat-server'
+  shell: 'su -l glassfish -c "asadmin undeploy icat.server-4.9.1"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: payaraStatus.rc == 0 and (payaraStatus.stdout is search("icat.server-4.9.1"))
+
+- name: 'Perform maven install of icat-server'
+  shell: 'su -l glassfish -c "cd /home/glassfish/code/icat.server; mvn install"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: payaraStatus.rc == 0

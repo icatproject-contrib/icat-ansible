@@ -30,6 +30,9 @@ authn_icatuser_password: '{{ vault_authn_icatuser_password }}'
 # Authn-simple server URL
 authn_simple_url: '{{ ansible_fqdn }}'
 
+# Authn-db server URL
+authn_db_url: '{{ ansible_fqdn }}'
+
 # ICAT Lucene server URL
 lucene_url: '{{ ansible_fqdn }}'
 
