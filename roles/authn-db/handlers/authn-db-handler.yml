@@ -1,0 +1,12 @@
+---
+
+- name: 'Import: Check payara is running'
+  import_tasks: roles/payara/tasks/check-payara.yml
+
+- name: 'Re-install authn-db'
+  shell: 'su -l glassfish -c "cd /home/glassfish/install/authn.db; ./setup -vv install"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: payaraStatus.rc == 0

@@ -1,0 +1,81 @@
+---
+
+- name: 'Check authn-db package'
+  stat:
+    path: /home/glassfish/downloads/authn.db-2.0.0-distro.zip
+  register: packageResult
+
+- name: 'Download authn-db'
+  get_url:
+    url: https://repo.icatproject.org/repo/org/icatproject/authn.db/2.0.0/authn.db-2.0.0-distro.zip
+    dest: /home/glassfish/downloads
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: 'Check authn-db installation'
+  stat:
+    path: /home/glassfish/install/authn.db
+  register: installationResult
+
+- name: 'Unarchive authn-db if not installed'
+  unarchive:
+    src: /home/glassfish/downloads/authn.db-2.0.0-distro.zip
+    dest: /home/glassfish/install
+    remote_src: true
+    owner: glassfish
+    group: glassfish
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: 'Configure authn-db setup.properties'
+  template:
+    src: templates/setup.properties.j2
+    dest: /home/glassfish/install/authn.db/setup.properties
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - authn-db-handler
+
+- name: 'Configure authn-db run.properties'
+  copy:
+    src: files/run.properties
+    dest: /home/glassfish/install/authn.db/run.properties
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - authn-db-handler
+
+- name: 'Configure authn-db logback.xml'
+  copy:
+    src: files/logback.xml
+    dest: /home/glassfish/install/authn.db/logback.xml
+    owner: glassfish
+    group: glassfish
+    mode: 0664
+  notify:
+  - authn-db-handler
+
+- name: 'Setup authn-db if not setup'
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.authn_db is not defined) or (ansible_local.local.{{ heading }}.authn_db != 'true')
+
+- name: 'Add "notroot" user to database'
+  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('notroot', 'password');"
+
+- name: 'Add "piOne" user to database'
+  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('piOne', 'piOne');"
+
+- name: 'Add "piTwo" user to database'
+  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('piTwo', 'piTwo');"
+
+- name: 'Add "root" user to database'
+  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('root', 'password');"
+
+- name: 'Add "guest" user to database'
+  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('guest', 'guess');"
+
+- name: 'Add "CIC" user to database'
+  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('CIC','password');"

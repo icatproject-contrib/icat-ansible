@@ -1,0 +1,4 @@
+---
+
+- name: authn-db-handler
+  import_tasks: handlers/authn-db-handler.yml
