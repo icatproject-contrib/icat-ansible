@@ -62,20 +62,50 @@
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.authn_db is not defined) or (ansible_local.local.{{ heading }}.authn_db != 'true')
 
+- name: 'Check if "notroot" user is already in database'
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='notroot'" {{ icat_database }}
+  register: notrootResult
+
 - name: 'Add "notroot" user to database'
-  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('notroot', 'password');"
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "INSERT INTO PASSWD VALUES ('notroot', 'password');" {{ icat_database }}
+  when: notrootResult.stdout == ""
+
+- name: 'Check if "piOne" user is already in database'
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='piOne'" {{ icat_database }}
+  register: piOneResult
 
 - name: 'Add "piOne" user to database'
-  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('piOne', 'piOne');"
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "INSERT INTO PASSWD VALUES ('piOne', 'piOne');" {{ icat_database }}
+  when: piOneResult.stdout == ""
+
+- name: 'Check if "piTwo" user is already in database'
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='piTwo'" {{ icat_database }}
+  register: piTwoResult
 
 - name: 'Add "piTwo" user to database'
-  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('piTwo', 'piTwo');"
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "INSERT INTO PASSWD VALUES ('piTwo', 'piTwo');" {{ icat_database }}
+  when: piTwoResult.stdout == ""
+
+- name: 'Check if "root" user is already in database'
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='root'" {{ icat_database }}
+  register: rootResult
 
 - name: 'Add "root" user to database'
-  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('root', 'password');"
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "INSERT INTO PASSWD VALUES ('root', 'password');" {{ icat_database }}
+  when: rootResult.stdout == ""
+
+- name: 'Check if "guest" user is already in database'
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='guest'" {{ icat_database }}
+  register: guestResult
 
 - name: 'Add "guest" user to database'
-  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('guest', 'guess');"
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "INSERT INTO PASSWD VALUES ('guest', 'guess');" {{ icat_database }}
+  when: guestResult.stdout == ""
+
+- name: 'Check if "CIC" user is already in database'
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='CIC'" {{ icat_database }}
+  register: CICResult
 
 - name: 'Add "CIC" user to database'
-  command: mysql --user {{ db_root_username }} --password {{ db_root_password }} {{ icat_database }} -e "INSERT INTO PASSWD VALUES ('CIC','password');"
+  command: mysql --user={{ db_root_username }} --password={{ db_root_password }} -e "INSERT INTO PASSWD VALUES ('CIC','password');" {{ icat_database }}
+  when: CICResult.stdout == ""
