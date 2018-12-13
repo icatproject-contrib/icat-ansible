@@ -49,3 +49,6 @@
 - name: 'Setup mariadb if not setup'
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.{{ mariadb_daemon }} is not defined) or (ansible_local.local.{{ heading }}.{{ mariadb_daemon }} != 'true')
+
+- name: "Flush handlers so that mariadb daemon has been restarted before any databases are created if config has changed"
+  meta: flush_handlers
