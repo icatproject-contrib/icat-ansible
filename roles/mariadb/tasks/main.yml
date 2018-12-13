@@ -32,6 +32,14 @@
   notify:
   - mariadb-handler
 
+- name: 'Remove any mariadb specific conf as these defaults override our own'
+  lineinfile:
+    path: '{{ mariadb_config_dir }}/../mycnf.cnf'
+    regexp: '^\!includedir {{ mariadb_config_dir }}/mariadb.conf.d/'
+    state: absent
+  notify:
+  - mariadb-handler
+
 - name: 'Enable and start dbms daemon'
   service:
     name: '{{ mariadb_daemon }}'
