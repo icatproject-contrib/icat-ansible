@@ -22,7 +22,7 @@
     group: glassfish
     mode: 0664
 
-- debug: msg="the value of settings.xml is {{lookup('file', '/home/glassfish/settings.xml') }}"
+- debug: msg="the value of settings.xml is {{lookup('file', '/home/glassfish/.m2/settings.xml') }}"
 
 - name: 'Make test ids main folder'
   file:
