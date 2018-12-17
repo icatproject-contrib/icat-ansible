@@ -4,9 +4,10 @@
   import_tasks: handlers/ids-storage_file-handler.yml
 
 - name: 'Set fact on host to record that ids-storage_file has been instantiated'
-  lineinfile:
+  ini_file:
     path: /etc/ansible/facts.d/local.fact
-    state: present
-    regexp: '^ids_storage_file'
-    insertafter: '^\[instantiations\]$'
-    line: 'ids_storage_file=true'
+    section: 'instantiations'
+    option: 'ids_storage_file'
+    value: 'true'
+    no_extra_spaces: true
+    create: false

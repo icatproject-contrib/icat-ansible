@@ -68,4 +68,4 @@
 
 - name: 'Setup icat-lucene if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.icat_lucene is not defined) or (ansible_local.local.{{ heading }}.icat_lucene != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.icat_lucene is not defined) or (ansible_local.local.instantiations.icat_lucene != 'true')

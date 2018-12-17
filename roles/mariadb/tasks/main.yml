@@ -6,8 +6,6 @@
 - include_vars: vars/debian.yml
   when: ansible_os_family == 'Debian'
 
-- include_vars: roles/common/vars/main.yml
-
 - name: 'Install mariadb packages'
   package: name={{ item }} state=present
   with_items: '{{ mariadb_pkgs }}'
@@ -30,4 +28,4 @@
 
 - name: 'Setup mariadb if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.{{ mariadb_daemon }} is not defined) or (ansible_local.local.{{ heading }}.{{ mariadb_daemon }} != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.{{ mariadb_daemon }} is not defined) or (ansible_local.local.instantiations.{{ mariadb_daemon }} != 'true')

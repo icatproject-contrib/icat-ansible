@@ -21,14 +21,17 @@
     path: /etc/ansible/facts.d/local.fact
   register: factFileResult
 
-- name: 'Install and initialise local fact file on remote hosts'
-  lineinfile:
+- name: 'Create local fact file on remote hosts to record instantiated software'
+  blockinfile:
     path: '/etc/ansible/facts.d/local.fact'
-    line: '[{{ heading }}]'
-    regexp: '^\[{{ heading }}\]$'
+    block: |
+      [instantiations]
     insertbefore: BOF
+    marker: ''
+    marker_begin: ''
+    marker_end: ''
+    create: true
     owner: root
     group: root
     mode: 0644
-    create: true
   when: factFileResult.stat.exists is defined and factFileResult.stat.exists == false

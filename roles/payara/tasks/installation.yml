@@ -8,9 +8,10 @@
     executable: /bin/bash
 
 - name: 'Set fact on host to record that payara has been instantiated'
-  lineinfile:
+  ini_file:
     path: /etc/ansible/facts.d/local.fact
-    state: present
-    regexp: '^payara'
-    insertafter: '^\[instantiations\]$'
-    line: 'payara=true'
+    section: 'instantiations'
+    option: 'payara'
+    value: 'true'
+    no_extra_spaces: true
+    create: false

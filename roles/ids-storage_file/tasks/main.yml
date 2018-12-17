@@ -40,4 +40,4 @@
 
 - name: 'Setup ids-storage_file if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.ids_storage_file is not defined) or (ansible_local.local.{{ heading }}.ids_storage_file != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.ids_storage_file is not defined) or (ansible_local.local.instantiations.ids_storage_file != 'true')

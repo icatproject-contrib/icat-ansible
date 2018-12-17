@@ -160,4 +160,4 @@
 
 - name: 'Setup topcat if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.topcat is not defined) or (ansible_local.local.{{ heading }}.topcat != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.topcat is not defined) or (ansible_local.local.instantiations.topcat != 'true')

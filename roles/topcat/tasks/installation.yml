@@ -4,9 +4,10 @@
   import_tasks: handlers/topcat-handler.yml
 
 - name: 'Set fact on host to record that topcat has been instantiated'
-  lineinfile:
+  ini_file:
     path: /etc/ansible/facts.d/local.fact
-    state: present
-    regexp: '^topcat'
-    insertafter: '^\[instantiations\]$'
-    line: 'topcat=true'
+    section: 'instantiations'
+    option: 'topcat'
+    value: 'true'
+    no_extra_spaces: true
+    create: false

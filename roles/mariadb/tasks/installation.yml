@@ -15,9 +15,10 @@
   become_user: root
 
 - name: 'Set fact on host to record that mariadb has been instantiated'
-  lineinfile:
+  ini_file:
     path: /etc/ansible/facts.d/local.fact
-    state: present
-    regexp: '^mariadb'
-    insertafter: '^\[instantiations\]$'
-    line: 'mariadb=true'
+    section: 'instantiations'
+    option: 'mariadb'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
