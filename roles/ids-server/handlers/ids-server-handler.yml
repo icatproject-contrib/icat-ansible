@@ -1,7 +1,7 @@
 ---
 
 - name: 'Import: Check payara is running'
-  import_tasks: roles/payara/tasks/check-payara.yml
+  import_tasks: roles/payara/tasks/status.yml
 
 - name: 'Re-install ids-server'
   shell: 'su -l glassfish -c "cd /home/glassfish/install/ids.server; ./setup -vv install"'
