@@ -53,22 +53,24 @@
   lineinfile:
     path: /home/glassfish/.bash_profile
     line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
+    regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
   when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == true
 
 - name: 'Add path to payara executable to PATH variable in .profile'
   lineinfile:
     path: /home/glassfish/.profile
     line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
+    regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
   when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == false
 
 - name: 'Check payara package'
   stat:
-    path: /home/glassfish/downloads/payara-4.1.2.181.zip
+    path: /home/glassfish/downloads/payara-{{ payara_version }}.zip
   register: packageResult
 
 - name: 'Download payara'
   get_url:
-    url: http://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip
+    url: http://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/{{ payara_version }}/payara-{{ payara_version }}.zip
     dest: /home/glassfish/downloads
     owner: glassfish
     group: glassfish
@@ -96,7 +98,7 @@
 
 - name: 'Unarchive payara if not installed'
   unarchive:
-    src: /home/glassfish/downloads/payara-4.1.2.181.zip
+    src: /home/glassfish/downloads/payara-{{ payara_version }}.zip
     dest: /home/glassfish
     remote_src: true
     owner: glassfish
