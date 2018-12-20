@@ -36,6 +36,14 @@
     group: glassfish
     mode: 0775
 
+- name: 'Create unpackage directory'
+  file:
+    path: /home/glassfish/unpackage
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0775
+
 - name: 'Install payara init script'
   template:
     src: templates/payara-init.j2
@@ -96,13 +104,29 @@
     path: /home/glassfish/{{ payara_directory }}
   register: installationResult
 
+- name: 'Delete contents of /home/glassfish/unpackage'
+  shell: 'su -l glassfish -c "rm -rf /home/glassfish/unpackage/*"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
 - name: 'Unarchive payara if not installed'
   unarchive:
     src: /home/glassfish/downloads/payara-{{ payara_version }}.zip
-    dest: /home/glassfish
+    dest: /home/glassfish/unpackage
     remote_src: true
     owner: glassfish
     group: glassfish
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: 'Move contents of /home/glassfish/unpackage'
+  shell: 'su -l glassfish -c "mv /home/glassfish/unpackage/payara* /home/glassfish/payara{{ payara_version }}"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: 'Setup payara if not setup'
