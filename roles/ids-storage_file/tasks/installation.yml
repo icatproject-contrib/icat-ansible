@@ -11,3 +11,12 @@
     value: 'true'
     no_extra_spaces: true
     create: false
+
+- name: 'Set fact on host to record version of ids-storage_file that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'ids_storage_file'
+    value: '{{ ids_storage_file_version }}'
+    no_extra_spaces: true
+    create: false

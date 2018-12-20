@@ -2,12 +2,12 @@
 
 - name: 'Check ids-storage_file package'
   stat:
-    path: /home/glassfish/downloads/ids.storage_file-1.4.1-distro.zip
+    path: /home/glassfish/downloads/ids.storage_file-{{ ids_storage_file_version }}-distro.zip
   register: packageResult
 
 - name: 'Download ids-storage_file'
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/1.4.1/ids.storage_file-1.4.1-distro.zip
+    url: https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/{{ ids_storage_file_version }}/ids.storage_file-{{ ids_storage_file_version }}-distro.zip
     dest: /home/glassfish/downloads
     owner: glassfish
     group: glassfish
@@ -21,7 +21,7 @@
 
 - name: 'Unarchive ids-storage_file if not installed'
   unarchive:
-    src: /home/glassfish/downloads/ids.storage_file-1.4.1-distro.zip
+    src: /home/glassfish/downloads/ids.storage_file-{{ ids_storage_file_version }}-distro.zip
     dest: /home/glassfish/install
     remote_src: true
     owner: glassfish

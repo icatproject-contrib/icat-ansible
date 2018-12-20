@@ -2,12 +2,12 @@
 
 - name: 'Check icat-lucene package'
   stat:
-    path: /home/glassfish/downloads/icat.lucene-1.1.0-distro.zip
+    path: /home/glassfish/downloads/icat.lucene-{{ icat_lucene_version }}-distro.zip
   register: packageResult
 
 - name: 'Download icat-lucene'
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.1.0/icat.lucene-1.1.0-distro.zip
+    url: https://repo.icatproject.org/repo/org/icatproject/icat.lucene/{{ icat_lucene_version }}/icat.lucene-{{ icat_lucene_version }}-distro.zip
     dest: /home/glassfish/downloads
     owner: glassfish
     group: glassfish
@@ -21,7 +21,7 @@
 
 - name: 'Unarchive icat-lucene if not installed'
   unarchive:
-    src: /home/glassfish/downloads/icat.lucene-1.1.0-distro.zip
+    src: /home/glassfish/downloads/icat.lucene-{{ icat_lucene_version }}-distro.zip
     dest: /home/glassfish/install
     remote_src: true
     owner: glassfish

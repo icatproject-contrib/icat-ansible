@@ -2,12 +2,12 @@
 
 - name: 'Check authn-simple package'
   stat:
-    path: /home/glassfish/downloads/authn.simple-2.0.0-distro.zip
+    path: /home/glassfish/downloads/authn.simple-{{ authn_simple_version }}-distro.zip
   register: packageResult
 
 - name: 'Download authn-simple'
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/authn.simple/2.0.0/authn.simple-2.0.0-distro.zip
+    url: https://repo.icatproject.org/repo/org/icatproject/authn.simple/{{ authn_simple_version }}/authn.simple-{{ authn_simple_version }}-distro.zip
     dest: /home/glassfish/downloads
     owner: glassfish
     group: glassfish
@@ -21,7 +21,7 @@
 
 - name: 'Unarchive authn-simple if not installed'
   unarchive:
-    src: /home/glassfish/downloads/authn.simple-2.0.0-distro.zip
+    src: /home/glassfish/downloads/authn.simple-{{ authn_simple_version }}-distro.zip
     dest: /home/glassfish/install
     remote_src: true
     owner: glassfish

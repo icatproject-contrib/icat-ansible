@@ -2,12 +2,12 @@
 
 - name: 'Check ids-server package'
   stat:
-    path: /home/glassfish/downloads/ids.server-1.9.0-distro.zip
+    path: /home/glassfish/downloads/ids.server-{{ ids_server_version }}-distro.zip
   register: packageResult
 
 - name: 'Download ids-server'
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/ids.server/1.9.0/ids.server-1.9.0-distro.zip
+    url: https://repo.icatproject.org/repo/org/icatproject/ids.server/{{ ids_server_version }}/ids.server-{{ ids_server_version }}-distro.zip
     dest: /home/glassfish/downloads
     owner: glassfish
     group: glassfish
@@ -21,7 +21,7 @@
 
 - name: 'Unarchive ids-server if not installed'
   unarchive:
-    src: /home/glassfish/downloads/ids.server-1.9.0-distro.zip
+    src: /home/glassfish/downloads/ids.server-{{ ids_server_version }}-distro.zip
     dest: /home/glassfish/install
     remote_src: true
     owner: glassfish

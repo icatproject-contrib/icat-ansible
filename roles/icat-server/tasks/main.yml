@@ -37,12 +37,12 @@
 
 - name: 'Check icat-server package'
   stat:
-    path: /home/glassfish/downloads/icat.server-4.9.1-distro.zip
+    path: /home/glassfish/downloads/icat.server-{{ icat_server_version }}-distro.zip
   register: packageResult
 
 - name: 'Download icat-server'
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.1/icat.server-4.9.1-distro.zip
+    url: https://repo.icatproject.org/repo/org/icatproject/icat.server/{{ icat_server_version }}/icat.server-{{ icat_server_version }}-distro.zip
     dest: /home/glassfish/downloads
     owner: glassfish
     group: glassfish
@@ -56,7 +56,7 @@
 
 - name: 'Unarchive icat-server if not installed'
   unarchive:
-    src: /home/glassfish/downloads/icat.server-4.9.1-distro.zip
+    src: /home/glassfish/downloads/icat.server-{{ icat_server_version }}-distro.zip
     dest: /home/glassfish/install
     remote_src: true
     owner: glassfish
