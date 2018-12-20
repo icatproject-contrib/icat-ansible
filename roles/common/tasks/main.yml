@@ -26,6 +26,8 @@
     path: '/etc/ansible/facts.d/local.fact'
     block: |
       [instantiations]
+      
+      [versions]
     insertbefore: BOF
     marker: ''
     marker_begin: ''
