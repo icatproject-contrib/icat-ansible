@@ -38,10 +38,10 @@
 
 - name: 'Create unpackage directory'
   file:
-    path: /home/glassfish/unpackage
+    path: /home/{{ payara_user }}/unpackage
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Install payara init script'
@@ -54,7 +54,7 @@
      
 - name: 'Check if .bash_profile exists'
   stat:
-    path: /home/glassfish/.bash_profile
+    path: /home/{{ payara_user }}/.bash_profile
   register: bashProfileResult
 
 - name: 'Add path to payara executable to PATH variable in .bash_profile'
@@ -66,7 +66,7 @@
 
 - name: 'Add path to payara executable to PATH variable in .profile'
   lineinfile:
-    path: /home/glassfish/.profile
+    path: /home/{{ payara_user }}/.profile
     line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
     regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
   when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == false
@@ -104,8 +104,8 @@
     path: /home/{{ payara_user }}/{{ payara_directory }}
   register: installationResult
 
-- name: 'Delete contents of /home/glassfish/unpackage'
-  shell: 'su -l glassfish -c "rm -rf /home/glassfish/unpackage/*"'
+- name: 'Delete contents of /home/{{ payara_user }}/unpackage'
+  shell: 'su -l {{ payara_user }} -c "rm -rf /home/{{ payara_user }}/unpackage/*"'
   become: true
   become_user: root
   args:
@@ -121,8 +121,8 @@
     group: '{{ payara_user }}'
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- name: 'Move contents of /home/glassfish/unpackage'
-  shell: 'su -l glassfish -c "mv /home/glassfish/unpackage/payara* /home/glassfish/payara{{ payara_version }}"'
+- name: 'Move contents of /home/{{ payara_user }}/unpackage'
+  shell: 'su -l {{ payara_user }} -c "mv /home/{{ payara_user }}/unpackage/payara* /home/{{ payara_user }}/payara{{ payara_version }}"'
   become: true
   become_user: root
   args:
