@@ -7,9 +7,19 @@
   import_tasks: handlers/icat-server-handler.yml
 
 - name: 'Set fact on host to record that icat-server has been instantiated'
-  lineinfile:
+  ini_file:
     path: /etc/ansible/facts.d/local.fact
-    state: present
-    regexp: '^icat_server'
-    insertafter: '^\[instantiations\]$'
-    line: 'icat_server=true'
+    section: 'instantiations'
+    option: 'icat_server'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
+
+- name: 'Set fact on host to record version of icat-server that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'icat_server'
+    value: '{{ icat_server_version }}'
+    no_extra_spaces: true
+    create: false

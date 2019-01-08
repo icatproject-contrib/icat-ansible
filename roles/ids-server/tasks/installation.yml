@@ -4,9 +4,19 @@
   import_tasks: handlers/ids-server-handler.yml
 
 - name: 'Set fact on host to record that ids-server has been instantiated'
-  lineinfile:
+  ini_file:
     path: /etc/ansible/facts.d/local.fact
-    state: present
-    regexp: '^ids_server'
-    insertafter: '^\[instantiations\]$'
-    line: 'ids_server=true'
+    section: 'instantiations'
+    option: 'ids_server'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
+
+- name: 'Set fact on host to record version of ids-server that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'ids_server'
+    value: '{{ ids_server_version }}'
+    no_extra_spaces: true
+    create: false

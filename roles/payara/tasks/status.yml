@@ -1,6 +1,6 @@
 ---
 
-- name: 'Check payara is running'
+- name: 'Check payara status'
   shell: 'su -l {{ payara_user }} -c "asadmin list-applications"'
   register: payaraStatus
   become: true

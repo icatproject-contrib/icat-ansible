@@ -36,6 +36,14 @@
     group: '{{ payara_user }}'
     mode: 0775
 
+- name: 'Create unpackage directory'
+  file:
+    path: /home/glassfish/unpackage
+    state: directory
+    owner: glassfish
+    group: glassfish
+    mode: 0775
+
 - name: 'Install payara init script'
   template:
     src: templates/payara-init.j2
@@ -43,20 +51,34 @@
     owner: root
     group: root
     mode: 0775
+     
+- name: 'Check if .bash_profile exists'
+  stat:
+    path: /home/glassfish/.bash_profile
+  register: bashProfileResult
 
-- name: 'Add path to payara executable to PATH variable'
+- name: 'Add path to payara executable to PATH variable in .bash_profile'
   lineinfile:
-    path: /home/{{ payara_user }}/.bashrc
+    path: /home/{{ payara_user }}/.bash_profile
     line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
+    regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
+  when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == true
+
+- name: 'Add path to payara executable to PATH variable in .profile'
+  lineinfile:
+    path: /home/glassfish/.profile
+    line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
+    regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
+  when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == false
 
 - name: 'Check payara package'
   stat:
-    path: /home/{{ payara_user }}/downloads/payara-4.1.2.181.zip
+    path: /home/{{ payara_user }}/downloads/payara-{{ payara_version }}.zip
   register: packageResult
 
 - name: 'Download payara'
   get_url:
-    url: http://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip
+    url: http://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/{{ payara_version }}/payara-{{ payara_version }}.zip
     dest: /home/{{ payara_user }}/downloads
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
@@ -82,15 +104,31 @@
     path: /home/{{ payara_user }}/{{ payara_directory }}
   register: installationResult
 
+- name: 'Delete contents of /home/glassfish/unpackage'
+  shell: 'su -l glassfish -c "rm -rf /home/glassfish/unpackage/*"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
 - name: 'Unarchive payara if not installed'
   unarchive:
-    src: /home/{{ payara_user }}/downloads/payara-4.1.2.181.zip
+    src: /home/{{ payara_user }}/downloads/payara-{{ payara_version }}.zip
     dest: /home/{{ payara_user }}
     remote_src: true
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
+- name: 'Move contents of /home/glassfish/unpackage'
+  shell: 'su -l glassfish -c "mv /home/glassfish/unpackage/payara* /home/glassfish/payara{{ payara_version }}"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
 - name: 'Setup payara if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.payara is not defined) or (ansible_local.local.{{ heading }}.payara != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.payara is not defined) or (ansible_local.local.instantiations.payara != 'true')
