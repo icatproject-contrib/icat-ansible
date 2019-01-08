@@ -1,16 +1,26 @@
 ---
 
 - name: 'Setup payara'
-  shell: 'su -l glassfish -c "python scripts/setup-glassfish.py {{ payara_domain }} 75% {{ payara_admin_password }}"'
+  shell: 'su -l {{ payara_user }} -c "python scripts/setup-glassfish.py {{ payara_domain }} 75% {{ payara_admin_password }}"'
   become: true
   become_user: root
   args:
     executable: /bin/bash
 
 - name: 'Set fact on host to record that payara has been instantiated'
-  lineinfile:
+  ini_file:
     path: /etc/ansible/facts.d/local.fact
-    state: present
-    regexp: '^payara'
-    insertafter: '^\[instantiations\]$'
-    line: 'payara=true'
+    section: 'instantiations'
+    option: 'payara'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
+
+- name: 'Set fact on host to record version of payara that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'payara'
+    value: '{{ payara_version }}'
+    no_extra_spaces: true
+    create: false

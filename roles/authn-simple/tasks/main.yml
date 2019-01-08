@@ -2,38 +2,38 @@
 
 - name: 'Check authn-simple package'
   stat:
-    path: /home/glassfish/downloads/authn.simple-2.0.0-distro.zip
+    path: /home/{{ payara_user }}/downloads/authn.simple-{{ authn_simple_version }}-distro.zip
   register: packageResult
 
 - name: 'Download authn-simple'
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/authn.simple/2.0.0/authn.simple-2.0.0-distro.zip
-    dest: /home/glassfish/downloads
-    owner: glassfish
-    group: glassfish
+    url: https://repo.icatproject.org/repo/org/icatproject/authn.simple/{{ authn_simple_version }}/authn.simple-{{ authn_simple_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
 - name: 'Check authn-simple installation'
   stat:
-    path: /home/glassfish/install/authn.simple
+    path: /home/{{ payara_user }}/install/authn.simple
   register: installationResult
 
 - name: 'Unarchive authn-simple if not installed'
   unarchive:
-    src: /home/glassfish/downloads/authn.simple-2.0.0-distro.zip
-    dest: /home/glassfish/install
+    src: /home/{{ payara_user }}/downloads/authn.simple-{{ authn_simple_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
     remote_src: true
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: 'Configure authn-simple setup.properties'
   template:
     src: roles/payara/templates/setup.properties.j2
-    dest: /home/glassfish/install/authn.simple/setup.properties
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/authn.simple/setup.properties
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0600
   notify:
   - authn-simple-handler
@@ -41,9 +41,9 @@
 - name: 'Configure authn-simple run.properties'
   template:
     src: templates/run.properties.j2
-    dest: /home/glassfish/install/authn.simple/run.properties
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/authn.simple/run.properties
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - authn-simple-handler
@@ -51,13 +51,13 @@
 - name: 'Configure authn-simple logback.xml'
   copy:
     src: files/logback.xml
-    dest: /home/glassfish/install/authn.simple/logback.xml
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/authn.simple/logback.xml
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - authn-simple-handler
 
 - name: 'Setup authn-simple if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.authn_simple is not defined) or (ansible_local.local.{{ heading }}.authn_simple != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_simple is not defined) or (ansible_local.local.instantiations.authn_simple != 'true')

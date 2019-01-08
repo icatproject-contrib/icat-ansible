@@ -1,7 +1,7 @@
 ---
 
-- name: 'Check payara is running'
-  shell: 'su -l glassfish -c "asadmin list-applications"'
+- name: 'Check payara status'
+  shell: 'su -l {{ payara_user }} -c "asadmin list-applications"'
   register: payaraStatus
   become: true
   become_user: root

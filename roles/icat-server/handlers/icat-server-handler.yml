@@ -1,10 +1,10 @@
 ---
 
 - name: 'Import: Check payara is running'
-  import_tasks: roles/payara/tasks/check-payara.yml
+  import_tasks: roles/payara/tasks/status.yml
 
 - name: 'Re-install icat-server'
-  shell: 'su -l glassfish -c "cd /home/glassfish/install/icat.server; ./setup -vv install"'
+  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/icat.server; ./setup -vv install"'
   become: true
   become_user: root
   args:

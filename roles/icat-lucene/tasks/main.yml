@@ -2,38 +2,38 @@
 
 - name: 'Check icat-lucene package'
   stat:
-    path: /home/glassfish/downloads/icat.lucene-1.1.0-distro.zip
+    path: /home/{{ payara_user }}/downloads/icat.lucene-{{ icat_lucene_version }}-distro.zip
   register: packageResult
 
 - name: 'Download icat-lucene'
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/icat.lucene/1.1.0/icat.lucene-1.1.0-distro.zip
-    dest: /home/glassfish/downloads
-    owner: glassfish
-    group: glassfish
+    url: https://repo.icatproject.org/repo/org/icatproject/icat.lucene/{{ icat_lucene_version }}/icat.lucene-{{ icat_lucene_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
 - name: 'Check icat-lucene installation'
   stat:
-    path: /home/glassfish/install/icat.lucene
+    path: /home/{{ payara_user }}/install/icat.lucene
   register: installationResult
 
 - name: 'Unarchive icat-lucene if not installed'
   unarchive:
-    src: /home/glassfish/downloads/icat.lucene-1.1.0-distro.zip
-    dest: /home/glassfish/install
+    src: /home/{{ payara_user }}/downloads/icat.lucene-{{ icat_lucene_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
     remote_src: true
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: 'Configure icat-lucene setup.properties'
   template:
     src: roles/payara/templates/setup.properties.j2
-    dest: /home/glassfish/install/icat.lucene/setup.properties
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/icat.lucene/setup.properties
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0600
   notify:
   - icat-lucene-handler
@@ -41,31 +41,31 @@
 - name: 'Configure icat-lucene run.properties'
   template:
     src: templates/run.properties.j2
-    dest: /home/glassfish/install/icat.lucene/run.properties
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/icat.lucene/run.properties
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - icat-lucene-handler
 
 - name: 'Create icat-lucene data directory'
   file:
-    path: /home/glassfish/data/lucene
+    path: /home/{{ payara_user }}/data/lucene
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Configure icat-lucene logback.xml'
   copy:
     src: files/logback.xml
-    dest: /home/glassfish/install/icat.lucene/logback.xml
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/icat.lucene/logback.xml
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - icat-lucene-handler
 
 - name: 'Setup icat-lucene if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.icat_lucene is not defined) or (ansible_local.local.{{ heading }}.icat_lucene != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.icat_lucene is not defined) or (ansible_local.local.instantiations.icat_lucene != 'true')

@@ -7,30 +7,30 @@
 
 - name: 'Check topcat package'
   stat:
-    path: /home/glassfish/downloads/topcat-2.4.0-distro.zip
+    path: /home/{{ payara_user }}/downloads/topcat-{{ topcat_version }}-distro.zip
   register: packageResult
 
 - name: 'Download topcat'
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/topcat/2.4.0/topcat-2.4.0-distro.zip
-    dest: /home/glassfish/downloads
-    owner: glassfish
-    group: glassfish
+    url: https://repo.icatproject.org/repo/org/icatproject/topcat/{{ topcat_version }}/topcat-{{ topcat_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
 - name: 'Check topcat installation'
   stat:
-    path: /home/glassfish/install/topcat
+    path: /home/{{ payara_user }}/install/topcat
   register: installationResult
 
 - name: 'Unarchive topcat if not installed'
   unarchive:
-    src: /home/glassfish/downloads/topcat-2.4.0-distro.zip
-    dest: /home/glassfish/install
+    src: /home/{{ payara_user }}/downloads/topcat-{{ topcat_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
     remote_src: true
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: 'Create database for topcat'
@@ -49,43 +49,43 @@
 
 - name: 'Create a stash directory for assembling configurations'
   file:
-    path: /home/glassfish/stash
+    path: /home/{{ payara_user }}/stash
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Create a stash directory for topcat configs'
   file:
-    path: /home/glassfish/stash/topcat
+    path: /home/{{ payara_user }}/stash/topcat
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
-- name: 'Copy over glassfish setup.properties'
+- name: 'Copy over {{ payara_user }} setup.properties'
   template:
     src: roles/payara/templates/setup.properties.j2
-    dest: /home/glassfish/stash/topcat/1-part
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/stash/topcat/1-part
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
 
 - name: 'Copy over topcat-setup.properties'
   template:
     src: templates/topcat-setup.properties.j2
-    dest: /home/glassfish/stash/topcat/2-part
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/stash/topcat/2-part
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
 
 - name: 'Configure topcat-setup.properties by concatenation of files in the stash'
   assemble:
-    src: /home/glassfish/stash/topcat
-    dest: /home/glassfish/install/topcat/topcat-setup.properties
+    src: /home/{{ payara_user }}/stash/topcat
+    dest: /home/{{ payara_user }}/install/topcat/topcat-setup.properties
     delimiter: '\n'
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0600
   notify:
   - topcat-handler
@@ -93,16 +93,16 @@
 - name: 'Configure topcat.properties'
   template:
     src: templates/topcat.properties.j2
-    dest: /home/glassfish/install/topcat/topcat.properties
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/topcat/topcat.properties
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0600
   notify:
   - topcat-handler
 
 - name: 'Check topcat.json'
   stat:
-    path: /home/glassfish/install/topcat/topcat.json
+    path: /home/{{ payara_user }}/install/topcat/topcat.json
   register: topcatJsonResult
 
 - name: 'Create topcat.json'
@@ -113,33 +113,33 @@
 
 - name: 'Configure lang.json'
   copy:
-    src: /home/glassfish/install/topcat/lang.json.example
-    dest: /home/glassfish/install/topcat/lang.json
+    src: /home/{{ payara_user }}/install/topcat/lang.json.example
+    dest: /home/{{ payara_user }}/install/topcat/lang.json
     remote_src: true
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - topcat-handler
 
 - name: 'Configure topcat.css'
   copy:
-    src: /home/glassfish/install/topcat/topcat.css.example
-    dest: /home/glassfish/install/topcat/topcat.css
+    src: /home/{{ payara_user }}/install/topcat/topcat.css.example
+    dest: /home/{{ payara_user }}/install/topcat/topcat.css
     remote_src: true
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - topcat-handler
 
 - name: 'Check content directory'
   stat:
-    path: /home/glassfish/install/topcat/content
+    path: /home/{{ payara_user }}/install/topcat/content
   register: contentResult
 
 - name: 'Configure content directory'
-  shell: 'su -l glassfish -c "cd /home/glassfish/install/topcat; cp -r content.example content"'
+  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cp -r content.example content"'
   become: true
   become_user: root
   args:
@@ -151,13 +151,13 @@
 - name: 'Configure topcat logback.xml'
   copy:
     src: files/logback.xml
-    dest: /home/glassfish/install/topcat/logback.xml
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/topcat/logback.xml
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - topcat-handler
 
 - name: 'Setup topcat if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.topcat is not defined) or (ansible_local.local.{{ heading }}.topcat != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.topcat is not defined) or (ansible_local.local.instantiations.topcat != 'true')
