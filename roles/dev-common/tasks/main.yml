@@ -8,42 +8,40 @@
 
 - name: 'Create .m2 directory'
   file:
-    path: /home/glassfish/.m2
+    path: /home/{{ payara_user }}/.m2
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Add maven settings file to maven home'
   template:
     src: templates/settings.xml.j2
-    dest: /home/glassfish/.m2/settings.xml
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/.m2/settings.xml
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
-
-- debug: msg="the value of settings.xml is {{lookup('file', '/home/glassfish/.m2/settings.xml') }}"
 
 - name: 'Make test ids main folder'
   file:
-    path: /home/glassfish/test/data/ids/main
+    path: /home/{{ payara_user }}/test/data/ids/main
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Make test ids archive folder'
   file:
-    path: /home/glassfish/test/data/ids/archive
+    path: /home/{{ payara_user }}/test/data/ids/archive
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Make test ids cache folder'
   file:
-    path: /home/glassfish/test/data/ids/cache
+    path: /home/{{ payara_user }}/test/data/ids/cache
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775

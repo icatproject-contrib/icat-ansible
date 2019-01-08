@@ -2,26 +2,26 @@
 
 - name: 'Create code directory'
   file:
-    path: /home/glassfish/code
+    path: /home/{{ payara_user }}/code
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Clone icat-server repository'
   git:
     repo: https://github.com/icatproject/icat.server.git
-    dest: /home/glassfish/code/icat.server
+    dest: /home/{{ payara_user }}/code/icat.server
     force: yes
   become: true
-  become_user: glassfish
+  become_user: '{{ payara_user }}'
 
 - name: 'Configure development icat-server run.properties'
   template:
     src: templates/run.properties.j2
-    dest: /home/glassfish/code/icat.server/src/main/resources/run.properties
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/code/icat.server/src/main/resources/run.properties
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - icat-server-dev-handler
@@ -29,9 +29,9 @@
 - name: 'Configure icat-server logback.xml'
   copy:
     src: files/logback.xml
-    dest: /home/glassfish/code/icat.server/src/main/resources/logback.xml
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/code/icat.server/src/main/resources/logback.xml
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - icat-server-dev-handler

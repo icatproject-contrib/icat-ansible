@@ -2,38 +2,38 @@
 
 - name: 'Check authn-db package'
   stat:
-    path: /home/glassfish/downloads/authn.db-2.0.0-distro.zip
+    path: /home/{{ payara_user }}/downloads/authn.db-{{ authn_db_version }}-distro.zip
   register: packageResult
 
 - name: 'Download authn-db'
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/authn.db/2.0.0/authn.db-2.0.0-distro.zip
-    dest: /home/glassfish/downloads
-    owner: glassfish
-    group: glassfish
+    url: https://repo.icatproject.org/repo/org/icatproject/authn.db/{{ authn_db_version }}/authn.db-{{ authn_db_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
 - name: 'Check authn-db installation'
   stat:
-    path: /home/glassfish/install/authn.db
+    path: /home/{{ payara_user }}/install/authn.db
   register: installationResult
 
 - name: 'Unarchive authn-db if not installed'
   unarchive:
-    src: /home/glassfish/downloads/authn.db-2.0.0-distro.zip
-    dest: /home/glassfish/install
+    src: /home/{{ payara_user }}/downloads/authn.db-{{ authn_db_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
     remote_src: true
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: 'Configure authn-db setup.properties'
   template:
     src: templates/setup.properties.j2
-    dest: /home/glassfish/install/authn.db/setup.properties
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/authn.db/setup.properties
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - authn-db-handler
@@ -41,9 +41,9 @@
 - name: 'Configure authn-db run.properties'
   copy:
     src: files/run.properties
-    dest: /home/glassfish/install/authn.db/run.properties
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/authn.db/run.properties
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - authn-db-handler
@@ -51,9 +51,9 @@
 - name: 'Configure authn-db logback.xml'
   copy:
     src: files/logback.xml
-    dest: /home/glassfish/install/authn.db/logback.xml
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/authn.db/logback.xml
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - authn-db-handler
