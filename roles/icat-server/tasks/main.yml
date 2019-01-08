@@ -20,101 +20,101 @@
   - libmysql-java
   when: ansible_os_family == 'Debian'
 
-- name: 'Check glassfish domain'
+- name: 'Check payara domain'
   stat:
-    path: /home/glassfish/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
   register: domainResult
 
 - name: 'Create symlink to mysql connector library'
   file:
     src: /usr/share/java/mysql-connector-java.jar
-    path: /home/glassfish/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/mysql-connector-java.jar
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/mysql-connector-java.jar
     state: link
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
   when: domainResult.stat.exists is defined and domainResult.stat.exists == true
   notify: payara-handler
 
 - name: 'Check icat-server package'
   stat:
-    path: /home/glassfish/downloads/icat.server-4.9.1-distro.zip
+    path: /home/{{ payara_user }}/downloads/icat.server-4.9.1-distro.zip
   register: packageResult
 
 - name: 'Download icat-server'
   get_url:
     url: https://repo.icatproject.org/repo/org/icatproject/icat.server/4.9.1/icat.server-4.9.1-distro.zip
-    dest: /home/glassfish/downloads
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/downloads
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
 - name: 'Check icat-server installation'
   stat:
-    path: /home/glassfish/install/icat.server
+    path: /home/{{ payara_user }}/install/icat.server
   register: installationResult
 
 - name: 'Unarchive icat-server if not installed'
   unarchive:
-    src: /home/glassfish/downloads/icat.server-4.9.1-distro.zip
-    dest: /home/glassfish/install
+    src: /home/{{ payara_user }}/downloads/icat.server-4.9.1-distro.zip
+    dest: /home/{{ payara_user }}/install
     remote_src: true
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- name: 'Create bin directory for the glassfish user'
+- name: 'Create bin directory for the payara user'
   file:
-    path: /home/glassfish/bin
+    path: /home/{{ payara_user }}/bin
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
-- name: 'Add path to glassfish bin directory for icat-server to PATH variable'
+- name: 'Add path to payara user bin directory for icat-server to PATH variable'
   lineinfile:
-    path: /home/glassfish/.bashrc
-    line: 'export PATH=$PATH:/home/glassfish/bin'
+    path: /home/{{ payara_user }}/.bashrc
+    line: 'export PATH=$PATH:/home/{{ payara_user }}/bin'
 
 - name: 'Create a stash directory for assembling configurations'
   file:
-    path: /home/glassfish/stash
+    path: /home/{{ payara_user }}/stash
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Create a stash directory for icat-server configs'
   file:
-    path: /home/glassfish/stash/icat-server
+    path: /home/{{ payara_user }}/stash/icat-server
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
-- name: 'Copy over glassfish setup.properties'
+- name: 'Copy over payara setup.properties'
   template:
     src: roles/payara/templates/setup.properties.j2
-    dest: /home/glassfish/stash/icat-server/1-part
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/stash/icat-server/1-part
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
 
 - name: 'Copy over icat-server setup.properties'
   template:
     src: templates/setup.properties.j2
-    dest: /home/glassfish/stash/icat-server/2-part
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/stash/icat-server/2-part
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
 
 - name: 'Configure icat-server setup.properties by concatenation of files in the stash'
   assemble:
-    src: /home/glassfish/stash/icat-server
-    dest: /home/glassfish/install/icat.server/setup.properties
+    src: /home/{{ payara_user }}/stash/icat-server
+    dest: /home/{{ payara_user }}/install/icat.server/setup.properties
     delimiter: '\n'
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0600
   notify:
   - icat-server-handler
@@ -122,9 +122,9 @@
 - name: 'Configure icat-server run.properties'
   template:
     src: templates/run.properties.j2
-    dest: /home/glassfish/install/icat.server/run.properties
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/icat.server/run.properties
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - icat-server-handler
@@ -132,9 +132,9 @@
 - name: 'Configure icat-server logback.xml'
   copy:
     src: files/logback.xml
-    dest: /home/glassfish/install/icat.server/logback.xml
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/install/icat.server/logback.xml
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   notify:
   - icat-server-handler

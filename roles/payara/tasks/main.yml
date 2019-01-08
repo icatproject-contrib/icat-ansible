@@ -1,39 +1,39 @@
 ---
 
-- name: 'Create glassfish group'
+- name: 'Create payara user group'
   group:
-    name: glassfish
+    name: '{{ payara_user }}'
     state: present
 
-- name: 'Create glassfish user'
+- name: 'Create payara user'
   user:
-    name: glassfish
+    name: '{{ payara_user }}'
     createhome: true
-    group: glassfish
+    group: '{{ payara_user }}'
     shell: /bin/bash
 
 - name: 'Create downloads directory'
   file:
-    path: /home/glassfish/downloads
+    path: /home/{{ payara_user }}/downloads
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Create install directory'
   file:
-    path: /home/glassfish/install
+    path: /home/{{ payara_user }}/install
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Create scripts directory'
   file:
-    path: /home/glassfish/scripts
+    path: /home/{{ payara_user }}/scripts
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Install payara init script'
@@ -46,49 +46,49 @@
 
 - name: 'Add path to payara executable to PATH variable'
   lineinfile:
-    path: /home/glassfish/.bashrc
+    path: /home/{{ payara_user }}/.bashrc
     line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
 
 - name: 'Check payara package'
   stat:
-    path: /home/glassfish/downloads/payara-4.1.2.181.zip
+    path: /home/{{ payara_user }}/downloads/payara-4.1.2.181.zip
   register: packageResult
 
 - name: 'Download payara'
   get_url:
     url: http://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/4.1.2.181/payara-4.1.2.181.zip
-    dest: /home/glassfish/downloads
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/downloads
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
 - name: 'Check payara setup script'
   stat:
-    path: /home/glassfish/scripts/setup-glassfish.py
+    path: /home/{{ payara_user }}/scripts/setup-glassfish.py
   register: scriptResult
 
 - name: 'Download payara setup script'
   get_url:
     url: https://icatproject.org/misc/scripts/setup-glassfish.py
-    dest: /home/glassfish/scripts
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/scripts
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   when: scriptResult.stat.exists is defined and scriptResult.stat.exists == false
 
 - name: 'Check payara installation'
   stat:
-    path: /home/glassfish/{{ payara_directory }}
+    path: /home/{{ payara_user }}/{{ payara_directory }}
   register: installationResult
 
 - name: 'Unarchive payara if not installed'
   unarchive:
-    src: /home/glassfish/downloads/payara-4.1.2.181.zip
-    dest: /home/glassfish
+    src: /home/{{ payara_user }}/downloads/payara-4.1.2.181.zip
+    dest: /home/{{ payara_user }}
     remote_src: true
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: 'Setup payara if not setup'
