@@ -129,11 +129,11 @@
     executable: /bin/bash
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- name: 'Make sure we are using the correct java version'
+- name: 'Ensure that Payara uses the version of Java we want it to use via JAVA_HOME'
   lineinfile:
     path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/config/asenv.conf
-    line: 'AS_JAVA="/usr/lib/jvm/java-1.8.0-openjdk-amd64"'
-    regexp: '^AS_JAVA="\/usr\/lib\/jvm\/java-1\.8\.0-openjdk-amd64"$'
+    line: 'AS_JAVA=$JAVA_HOME'
+    regexp: '^AS_JAVA=\$JAVA_HOME$'
 
 - name: 'Setup payara if not setup'
   import_tasks: tasks/installation.yml
