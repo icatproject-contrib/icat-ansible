@@ -129,7 +129,11 @@
     executable: /bin/bash
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- debug: msg="{{ lookup('env','JAVA_HOME') }}"
+- name: 'Make sure we are using the correct java version'
+  lineinfile:
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/config/asenv.conf
+    line: 'AS_JAVA="/usr/lib/jvm/java-1.8.0-openjdk-amd64"'
+    regexp: '^AS_JAVA="\/usr\/lib\/jvm\/java-1\.8\.0-openjdk-amd64"$'
 
 - name: 'Setup payara if not setup'
   import_tasks: tasks/installation.yml
