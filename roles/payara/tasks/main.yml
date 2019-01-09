@@ -115,7 +115,7 @@
 - name: 'Unarchive payara if not installed'
   unarchive:
     src: /home/{{ payara_user }}/downloads/payara-{{ payara_version }}.zip
-    dest: /home/{{ payara_user }}
+    dest: /home/{{ payara_user }}/unpackage
     remote_src: true
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
