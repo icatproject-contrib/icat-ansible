@@ -60,7 +60,7 @@
 
 - name: 'Setup authn-db if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.authn_db is not defined) or (ansible_local.local.{{ heading }}.authn_db != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_simple is not defined) or (ansible_local.local.instantiations.authn_simple != 'true')
 
 - name: 'Check if "notroot" user is already in database'
   command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='notroot'" {{ icat_database }}
