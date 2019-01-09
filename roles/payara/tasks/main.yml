@@ -64,23 +64,11 @@
     regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
   when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == true
 
-- name: 'Ensure we reload .bash_profile in case the payara_user is the logged in user'
-  shell: 'source ~/.bash_profile'
-  args:
-    executable: /bin/bash
-  when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == true
-
 - name: 'Add path to payara executable to PATH variable in .profile'
   lineinfile:
     path: /home/{{ payara_user }}/.profile
     line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
     regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
-  when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == false
-
-- name: 'Ensure we reload .profile in case the payara_user is the logged in user'
-  shell: 'source ~/.profile'
-  args:
-    executable: /bin/bash
   when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == false
 
 - name: 'Check payara package'
