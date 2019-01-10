@@ -5,7 +5,7 @@
 lifetimeMinutes = 120
 
 # Provide CRUD access to authz tables
-rootUserNames = {% if authn_simple_install %}simple/root {% endif %}{% if authn_db_install %}db/root {% endif %}
+rootUserNames = simple/root
 
 # Restrict total number of entities to return in a search call
 maxEntities = 10000
@@ -20,22 +20,17 @@ importCacheSize = 50
 exportCacheSize = 50
 
 # Desired authentication plugin mnemonics
-authn.list = {% if authn_simple_install %}simple {% endif %}{% if authn_db_install %}db {% endif %}
+authn.list = simple
 
 # Parameters for each of the four plugins
-{% if authn_db_install %}
-authn.db.url = https://{{ authn_db_url }}:8181
-authn.db.friendly = Database
-{% endif %}
+!authn.db.url = https://localhost:8181
 
 !authn.ldap.url = https://localhost:8181
 !authn.ldap.admin = true
 !authn.ldap.friendly = Federal Id
 
-{% if authn_simple_install %}
 authn.simple.url = https://{{ authn_simple_url }}:8181 
 authn.simple.friendly = Simple
-{% endif %}
 
 !authn.anon.url = https://localhost:8181
 !authn.anon.friendly = Anonymous
