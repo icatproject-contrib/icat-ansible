@@ -5,6 +5,11 @@
   with_items:
   - git
   - maven
+  - python-pip
+
+- name: 'Installing common dev python packages'
+  pip:
+    name: requests-toolbelt
 
 - name: 'Create .m2 directory'
   file:
