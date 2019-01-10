@@ -4,9 +4,10 @@
   import_tasks: handlers/authn-db-handler.yml
 
 - name: 'Set fact on host to record that authn-db has been instantiated'
-  lineinfile:
+  ini_file:
     path: /etc/ansible/facts.d/local.fact
-    state: present
-    regexp: '^authn_db'
-    insertafter: '^\[instantiations\]$'
-    line: 'authn_db=true'
+    section: 'instantiations'
+    option: 'authn_db'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
