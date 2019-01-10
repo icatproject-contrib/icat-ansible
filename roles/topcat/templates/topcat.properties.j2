@@ -57,7 +57,7 @@ poll.delay = 600
 poll.interval.wait = 600
 
 # A list of usernames that can use the admin REST API and Topcat admin user interface
-adminUserNames = simple/root
+adminUserNames = {% if ansible_local.local.instantiations.authn_simple %} simple/root{% endif %} {% if ansible_local.local.instantiations.authn_db %}db/root{% endif %}
 
 # The maximum number objects that can be cached before pruning will take place
 maxCacheSize = 100000
