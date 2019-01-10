@@ -4,6 +4,9 @@
   become: true
   vars_files:
   - 'group_vars/all/vars.yml'
+  vars:
+    authn_simple_install: true
+    authn_db_install: true
   roles:
   - role: common
   - role: java
