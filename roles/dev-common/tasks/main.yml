@@ -1,0 +1,52 @@
+---
+
+- name: 'Installing common dev packages'
+  package: name={{ item }} state=present
+  with_items:
+  - git
+  - maven
+  - python-pip
+
+- name: 'Installing common dev python packages'
+  pip:
+    name: requests-toolbelt
+
+- name: 'Create .m2 directory'
+  file:
+    path: /home/{{ payara_user }}/.m2
+    state: directory
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+    mode: 0775
+
+- name: 'Add maven settings file to maven home'
+  template:
+    src: templates/settings.xml.j2
+    dest: /home/{{ payara_user }}/.m2/settings.xml
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+    mode: 0664
+
+- name: 'Make test ids main folder'
+  file:
+    path: /home/{{ payara_user }}/test/data/ids/main
+    state: directory
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+    mode: 0775
+
+- name: 'Make test ids archive folder'
+  file:
+    path: /home/{{ payara_user }}/test/data/ids/archive
+    state: directory
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+    mode: 0775
+
+- name: 'Make test ids cache folder'
+  file:
+    path: /home/{{ payara_user }}/test/data/ids/cache
+    state: directory
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+    mode: 0775

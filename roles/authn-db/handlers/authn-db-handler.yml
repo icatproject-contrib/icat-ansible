@@ -3,8 +3,8 @@
 - name: 'Import: Check payara is running'
   import_tasks: roles/payara/tasks/status.yml
 
-- name: 'Re-install icat-lucene'
-  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/icat.lucene; ./setup -vv install"'
+- name: 'Re-install authn-db'
+  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/authn.db; ./setup -vv install"'
   become: true
   become_user: root
   args:

@@ -1,47 +1,47 @@
 ---
 
-- name: 'Create glassfish group'
+- name: 'Create payara user group'
   group:
-    name: glassfish
+    name: '{{ payara_user }}'
     state: present
 
-- name: 'Create glassfish user'
+- name: 'Create payara user'
   user:
-    name: glassfish
+    name: '{{ payara_user }}'
     createhome: true
-    group: glassfish
+    group: '{{ payara_user }}'
     shell: /bin/bash
 
 - name: 'Create downloads directory'
   file:
-    path: /home/glassfish/downloads
+    path: /home/{{ payara_user }}/downloads
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Create install directory'
   file:
-    path: /home/glassfish/install
+    path: /home/{{ payara_user }}/install
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Create scripts directory'
   file:
-    path: /home/glassfish/scripts
+    path: /home/{{ payara_user }}/scripts
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Create unpackage directory'
   file:
-    path: /home/glassfish/unpackage
+    path: /home/{{ payara_user }}/unpackage
     state: directory
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0775
 
 - name: 'Install payara init script'
@@ -54,58 +54,58 @@
      
 - name: 'Check if .bash_profile exists'
   stat:
-    path: /home/glassfish/.bash_profile
+    path: /home/{{ payara_user }}/.bash_profile
   register: bashProfileResult
 
 - name: 'Add path to payara executable to PATH variable in .bash_profile'
   lineinfile:
-    path: /home/glassfish/.bash_profile
+    path: /home/{{ payara_user }}/.bash_profile
     line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
     regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
   when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == true
 
 - name: 'Add path to payara executable to PATH variable in .profile'
   lineinfile:
-    path: /home/glassfish/.profile
+    path: /home/{{ payara_user }}/.profile
     line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
     regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
   when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == false
 
 - name: 'Check payara package'
   stat:
-    path: /home/glassfish/downloads/payara-{{ payara_version }}.zip
+    path: /home/{{ payara_user }}/downloads/payara-{{ payara_version }}.zip
   register: packageResult
 
 - name: 'Download payara'
   get_url:
     url: http://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/{{ payara_version }}/payara-{{ payara_version }}.zip
-    dest: /home/glassfish/downloads
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/downloads
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
 - name: 'Check payara setup script'
   stat:
-    path: /home/glassfish/scripts/setup-glassfish.py
+    path: /home/{{ payara_user }}/scripts/setup-glassfish.py
   register: scriptResult
 
 - name: 'Download payara setup script'
   get_url:
     url: https://icatproject.org/misc/scripts/setup-glassfish.py
-    dest: /home/glassfish/scripts
-    owner: glassfish
-    group: glassfish
+    dest: /home/{{ payara_user }}/scripts
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
     mode: 0664
   when: scriptResult.stat.exists is defined and scriptResult.stat.exists == false
 
 - name: 'Check payara installation'
   stat:
-    path: /home/glassfish/{{ payara_directory }}
+    path: /home/{{ payara_user }}/{{ payara_directory }}
   register: installationResult
 
-- name: 'Delete contents of /home/glassfish/unpackage'
-  shell: 'su -l glassfish -c "rm -rf /home/glassfish/unpackage/*"'
+- name: 'Delete contents of /home/{{ payara_user }}/unpackage'
+  shell: 'su -l {{ payara_user }} -c "rm -rf /home/{{ payara_user }}/unpackage/*"'
   become: true
   become_user: root
   args:
@@ -114,20 +114,34 @@
 
 - name: 'Unarchive payara if not installed'
   unarchive:
-    src: /home/glassfish/downloads/payara-{{ payara_version }}.zip
-    dest: /home/glassfish/unpackage
+    src: /home/{{ payara_user }}/downloads/payara-{{ payara_version }}.zip
+    dest: /home/{{ payara_user }}/unpackage
     remote_src: true
-    owner: glassfish
-    group: glassfish
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- name: 'Move contents of /home/glassfish/unpackage'
-  shell: 'su -l glassfish -c "mv /home/glassfish/unpackage/payara* /home/glassfish/payara{{ payara_version }}"'
+- name: 'Move contents of /home/{{ payara_user }}/unpackage'
+  shell: 'su -l {{ payara_user }} -c "mv /home/{{ payara_user }}/unpackage/payara* /home/{{ payara_user }}/payara{{ payara_version }}"'
   become: true
   become_user: root
   args:
     executable: /bin/bash
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: 'Make sure we are using the correct java version for payara for Debian systems (Ubuntu 16.04)'
+  lineinfile:
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/config/asenv.conf
+    line: 'AS_JAVA="/usr/lib/jvm/java-1.8.0-openjdk-amd64"'
+    regexp: '^AS_JAVA="\/usr\/lib\/jvm\/java-1\.8\.0-openjdk-amd64"$'
+  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '16'
+
+- name: 'Make sure we are using the correct java version for payara for Red Hat systems (EL 7)'
+  lineinfile:
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/config/asenv.conf
+    line: 'AS_JAVA="/usr/lib/jvm/java-1.8.0-openjdk"'
+    regexp: '^AS_JAVA="\/usr\/lib\/jvm\/java-1\.8\.0-openjdk"$'
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
 
 - name: 'Setup payara if not setup'
   import_tasks: tasks/installation.yml

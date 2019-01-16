@@ -1,6 +1,7 @@
 ---
 
-# Payara directory, domain and admin user's password
+# Payara user and admin user's password
+payara_user: 'glassfish'
 payara_admin_password: '{{ vault_payara_admin_password }}'
 
 # Database root user's username and password
@@ -27,6 +28,9 @@ authn_icatuser_password: '{{ vault_authn_icatuser_password }}'
 
 # Authn-simple server URL
 authn_simple_url: '{{ ansible_fqdn }}'
+
+# Authn-db server URL
+authn_db_url: '{{ ansible_fqdn }}'
 
 # ICAT Lucene server URL
 lucene_url: '{{ ansible_fqdn }}'

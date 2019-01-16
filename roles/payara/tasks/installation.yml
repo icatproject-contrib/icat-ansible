@@ -1,7 +1,7 @@
 ---
 
 - name: 'Setup payara'
-  shell: 'su -l glassfish -c "python scripts/setup-glassfish.py {{ payara_domain }} 75% {{ payara_admin_password }}"'
+  shell: 'su -l {{ payara_user }} -c "python scripts/setup-glassfish.py {{ payara_domain }} 75% {{ payara_admin_password }}"'
   become: true
   become_user: root
   args:

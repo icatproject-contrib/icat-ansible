@@ -4,7 +4,7 @@
   import_tasks: roles/payara/tasks/status.yml
 
 - name: 'Re-install ids-server'
-  shell: 'su -l glassfish -c "cd /home/glassfish/install/ids.server; ./setup -vv install"'
+  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/ids.server; ./setup -vv install"'
   become: true
   become_user: root
   args:

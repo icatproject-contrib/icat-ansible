@@ -29,7 +29,7 @@ authn.list = simple
 !authn.ldap.admin = true
 !authn.ldap.friendly = Federal Id
 
-authn.simple.url = https://{{ authn_simple_url }}:8181
+authn.simple.url = https://{{ authn_simple_url }}:8181 
 authn.simple.friendly = Simple
 
 !authn.anon.url = https://localhost:8181
@@ -46,7 +46,7 @@ log.list = SESSION WRITE READ INFO
 # Lucene
 lucene.url = https://{{ lucene_url }}:8181
 lucene.populateBlockSize = 1000
-lucene.directory = /home/glassfish/data/lucene
+lucene.directory = /home/{{ payara_user }}/data/lucene
 lucene.backlogHandlerIntervalSeconds = 60
 lucene.enqueuedRequestIntervalSeconds = 5
 lucene.entitiesToIndex = Dataset Investigation InvestigationUser DatasetParameter InvestigationParameter Sample
