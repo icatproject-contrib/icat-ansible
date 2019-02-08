@@ -1,5 +1,4 @@
 ---
-
 - name: 'Check authn-db package'
   stat:
     path: /home/{{ payara_user }}/downloads/authn.db-{{ authn_db_version }}-distro.zip
@@ -36,7 +35,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - authn-db-handler
+    - authn-db-handler
 
 - name: 'Configure authn-db run.properties'
   copy:
@@ -46,7 +45,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - authn-db-handler
+    - authn-db-handler
 
 - name: 'Configure authn-db logback.xml'
   copy:
@@ -56,35 +55,14 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - authn-db-handler
+    - authn-db-handler
 
 - name: 'Setup authn-db if not setup'
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_db is not defined) or (ansible_local.local.instantiations.authn_db != 'true')
 
-- name: 'Configure icat server run.properties to enable db mnemonic'
-  lineinfile:
-    path: /home/{{ payara_user }}/install/icat.server/run.properties
-    line: 'authn.list = simple db'
-    regexp: '^authn\.list = (.+)$'
-  notify:
-  - icat-server-handler
-
-- name: 'Configure icat server run.properties to set authn db url'
-  lineinfile:
-    path: /home/{{ payara_user }}/install/icat.server/run.properties
-    line: 'authn.db.url = https://{{ authn_db_url }}:8181'
-    regexp: '^!?authn\.db\.url = (.+)$'
-  notify:
-  - icat-server-handler
-
-- name: 'Configure icat server run.properties to add db/root to rootUserNames'
-  lineinfile:
-    path: /home/{{ payara_user }}/install/icat.server/run.properties
-    line: 'rootUserNames = simple/root db/root'
-    regexp: '^rootUserNames = (.+)$'
-  notify:
-  - icat-server-handler
+- name: 'Create PASSWD table if it doesnt exist'
+  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "create table IF NOT EXISTS PASSWD (UserName VARCHAR(20), encodedPassword VARCHAR(20));" {{ icat_database }}
 
 - name: 'Check if "notroot" user is already in database'
   command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='notroot'" {{ icat_database }}

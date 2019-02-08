@@ -1,6 +1,5 @@
 ---
-
 dependencies:
   - role: common
   - role: payara
-  - role: icat-server
+  - role: icatdb

@@ -1,7 +1,7 @@
 ---
-
 dependencies:
   - role: mariadb
+  - role: icatdb
   - role: payara
   - role: authn-simple
   - role: icat-lucene
