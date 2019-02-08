@@ -1,5 +1,4 @@
 ---
-
 - name: 'Create payara user group'
   group:
     name: '{{ payara_user }}'
@@ -51,7 +50,7 @@
     owner: root
     group: root
     mode: 0775
-     
+
 - name: 'Check if .bash_profile exists'
   stat:
     path: /home/{{ payara_user }}/.bash_profile
@@ -146,3 +145,18 @@
 - name: 'Setup payara if not setup'
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.payara is not defined) or (ansible_local.local.instantiations.payara != 'true')
+
+- name: 'Check payara domain'
+  stat:
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
+  register: domainResult
+
+- name: 'Create symlink to mysql connector library'
+  file:
+    src: /usr/share/java/mysql-connector-java.jar
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/mysql-connector-java.jar
+    state: link
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+  when: domainResult.stat.exists is defined and domainResult.stat.exists == true
+  notify: payara-handler

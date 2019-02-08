@@ -1,39 +1,9 @@
 ---
-
 - name: 'Install common icat-server dependencies'
   package: name={{ item }} state=present
   with_items:
-  - python-suds
-  - python-requests
-
-- name: 'Install icat-server dependencies for Red Hat systems'
-  package: name={{ item }} state=present
-  with_items:
-  - MySQL-python
-  - mysql-connector-java
-  when: ansible_os_family == 'RedHat'
-
-- name: 'Install icat-server packages for Debian systems'
-  package: name={{ item }} state=present
-  with_items:
-  - python-mysqldb
-  - libmysql-java
-  when: ansible_os_family == 'Debian'
-
-- name: 'Check payara domain'
-  stat:
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
-  register: domainResult
-
-- name: 'Create symlink to mysql connector library'
-  file:
-    src: /usr/share/java/mysql-connector-java.jar
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/mysql-connector-java.jar
-    state: link
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
-  when: domainResult.stat.exists is defined and domainResult.stat.exists == true
-  notify: payara-handler
+    - python-suds
+    - python-requests
 
 - name: 'Check icat-server package'
   stat:
@@ -117,7 +87,7 @@
     group: '{{ payara_user }}'
     mode: 0600
   notify:
-  - icat-server-handler
+    - icat-server-handler
 
 - name: 'Configure icat-server run.properties'
   template:
@@ -127,7 +97,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - icat-server-handler
+    - icat-server-handler
 
 - name: 'Configure icat-server logback.xml'
   copy:
@@ -137,7 +107,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - icat-server-handler
+    - icat-server-handler
 
 - name: 'Create database for icat-server'
   mysql_db:
