@@ -1,19 +1,15 @@
 ---
-
 - hosts: icat-dev-base-hosts
   become: true
   vars_files:
-  - 'group_vars/all/vars.yml'
+    - 'group_vars/all/vars.yml'
   roles:
-  - role: common
-  - role: java
-  - role: mariadb
-  - role: payara
-  - role: authn-simple
-  - role: icat-lucene
-  - role: icat-server
-  - role: authn-db
-  - role: ids-storage_file
-  - role: ids-server
-  - role: topcat
-  - role: dev-common
+    - role: common
+    - role: java
+    - role: mariadb
+    - role: icatdb
+    - role: payara
+    - role: authn-simple
+    - role: authn-db
+    - role: icat-lucene
+    - role: dev-common
