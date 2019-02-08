@@ -85,7 +85,7 @@ Get the ICAT Ansible Code from GitHub
 ```Shell
 mkdir Development
 cd Development
-git clone https://github.com/stuartpullinger/icat-ansible
+git clone https://github.com/icatproject-contrib/icat-ansible
 cd icat-ansible/
 touch hosts
 ```
