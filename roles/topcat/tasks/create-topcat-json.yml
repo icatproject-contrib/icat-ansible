@@ -23,6 +23,22 @@
     chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
+- name: 'Delete DLS facility in topcat.json'
+  shell: cat topcat.json | jq 'del(.facilities[1])' > tmp.json && mv tmp.json topcat.json
+  become: true
+  become_user: '{{ payara_user }}'
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+
+- name: 'Delete ISIS facility in topcat.json'
+  shell: cat topcat.json | jq 'del(.facilities[1])' > tmp.json && mv tmp.json topcat.json
+  become: true
+  become_user: '{{ payara_user }}'
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+
 - name: 'Set authenticationTypes to [] in LILS facility in topcat.json'
   shell: cat topcat.json | jq '.facilities[0].authenticationTypes = []' > tmp.json && mv tmp.json topcat.json
   become: true
