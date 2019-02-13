@@ -61,6 +61,10 @@
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_db is not defined) or (ansible_local.local.instantiations.authn_db != 'true')
 
+- name: 'Set temporary fact to indicate authn_db is installed within play'
+  set_fact:
+    authn_db: true
+
 - name: 'Create PASSWD table if it doesnt exist'
   command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "create table IF NOT EXISTS PASSWD (UserName VARCHAR(20), encodedPassword VARCHAR(20));" {{ icat_database }}
 

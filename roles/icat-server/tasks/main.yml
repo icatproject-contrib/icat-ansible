@@ -62,10 +62,6 @@
     group: '{{ payara_user }}'
     mode: 0775
 
-- name: 'Force ansible to regather local facts - needed to detect what authn plugins have been installed'
-  setup:
-    filter: ansible_local
-
 - name: 'Copy over payara setup.properties'
   template:
     src: roles/payara/templates/setup.properties.j2

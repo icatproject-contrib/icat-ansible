@@ -5,7 +5,7 @@
 lifetimeMinutes = 120
 
 # Provide CRUD access to authz tables
-rootUserNames = {% if ansible_local['local']['instantiations']['authn_simple'] == 'true' %}simple/root {% endif %}{% if ansible_local['local']['instantiations']['authn_db'] == 'true' %}db/root {% endif %}
+rootUserNames = {% if authn_simple is defined and authn_simple %}simple/root {% endif %}{% if authn_db is defined and authn_db %}db/root {% endif %}
 
 # Restrict total number of entities to return in a search call
 maxEntities = 10000
@@ -20,17 +20,17 @@ importCacheSize = 50
 exportCacheSize = 50
 
 # Desired authentication plugin mnemonics
-authn.list = {% if ansible_local['local']['instantiations']['authn_simple'] == 'true' %}simple {% endif %}{% if ansible_local['local']['instantiations']['authn_db'] == 'true' %}db {% endif %}{% if ansible_local['local']['instantiations']['authn_anon'] == 'true' %}anon {% endif %}{% if ansible_local['local']['instantiations']['authn_ldap'] == 'true' %}ldap {% endif %}
+authn.list = {% if authn_simple is defined and authn_simple %}simple {% endif %}{% if authn_db is defined and authn_db %}db {% endif %}{% if authn_anon is defined and authn_anon %}anon {% endif %}{% if authn_ldap is defined and authn_ldap %}ldap {% endif %}
 
 # Parameters for each of the four plugins
-{% if ansible_local['local']['instantiations']['authn_db'] == 'true' %}
-authn.db.url = https://{{ authn_db_url }}:8181
+{% if authn_db is defined and authn_db %}
+authn.db.url = https://{{ authn_db is defined and authn_db_url }}:8181
 {% else %}
 !authn.db.url = https://localhost:8181
 {% endif %}
 
-{% if ansible_local['local']['instantiations']['authn_ldap'] == 'true' %}
-authn.ldap.url = https://{{authn_ldap_url}}:8181
+{% if authn_ldap is defined and authn_ldap %}
+authn.ldap.url = https://{{authn_ldap is defined and authn_ldap_url}}:8181
 authn.ldap.admin = true
 authn.ldap.friendly = Federal Id
 {% else %}
@@ -39,17 +39,16 @@ authn.ldap.friendly = Federal Id
 !authn.ldap.friendly = Federal Id
 {% endif %}
 
-{% if ansible_local['local']['instantiations']['authn_simple'] == 'true' %}
-authn.simple.url = https://{{ authn_simple_url }}:8181 
+{% if authn_simple is defined and authn_simple %}
+authn.simple.url = https://{{ authn_simple is defined and authn_simple_url }}:8181 
 authn.simple.friendly = Simple
 {% else %}
 !authn.simple.url = https://localhost:8181 
 !authn.simple.friendly = Simple
 {% endif %}
 
-
-{% if ansible_local['local']['instantiations']['authn_anon'] == 'true' %}
-authn.anon.url = https://{{authn_anon_url}}:8181
+{% if authn_anon is defined and authn_anon %}
+authn.anon.url = https://{{authn_anon is defined and authn_anon_url}}:8181
 authn.anon.friendly = Anonymous
 {% else %}
 !authn.anon.url = https://localhost:8181
