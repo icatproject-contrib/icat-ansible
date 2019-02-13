@@ -9,9 +9,9 @@ plugin.main.dir = /home/{{ payara_user }}/data/main
 cache.dir = /home/{{ payara_user }}/data/cache
 preparedCount = 10000
 processQueueIntervalSeconds = 5
-rootUserNames = simple/root db/root
+rootUserNames = {% if ansible_local['local']['instantiations']['authn_simple'] == 'true' %}simple/root {% endif %}{% if ansible_local['local']['instantiations']['authn_db'] == 'true' %}db/root {% endif %}
 sizeCheckIntervalSeconds = 60
-reader = simple username {{ authn_reader_username }} password {{ authn_reader_password }}
+reader = {% if ansible_local['local']['instantiations']['authn_db'] == 'true' %}db username root password password{% elif ansible_local['local']['instantiations']['authn_simple'] == 'true' %}simple username {{ authn_reader_username }} password {{ authn_reader_password }}{% endif %}
 !readOnly = true
 maxIdsInQuery = 1000
 

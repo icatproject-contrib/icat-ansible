@@ -1,66 +1,110 @@
 ---
-
 - name: 'Create topcat.json part 1'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat.json.example | jq '.site.topcatUrl = \"https://{{ topcat_url }}:8181\"' > topcat-intermediate1.json"
+  shell: jq '.site.topcatUrl = \"https://{{ topcat_url }}:8181\"' > topcat-intermediate1.json
   become: true
-  become_user: root
+  become_user: glassfish
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
 - name: 'Create topcat.json part 2'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate1.json | jq '.facilities[0].idsUrl = \"https://{{ ids_url }}:8181\"' > topcat-intermediate2.json"
+  shell: cat topcat-intermediate1.json | jq '.facilities[0].idsUrl = \"https://{{ ids_url }}:8181\"' > topcat-intermediate2.json
   become: true
-  become_user: root
+  become_user: glassfish
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
 - name: 'Create topcat.json part 3'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate2.json | jq '.facilities[0].icatUrl = \"https://{{ icat_url }}:8181\"' > topcat-intermediate3.json"
+  shell: cat topcat-intermediate2.json | jq '.facilities[0].icatUrl = \"https://{{ icat_url }}:8181\"' > topcat-intermediate3.json
   become: true
-  become_user: root
+  become_user: glassfish
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
 - name: 'Create topcat.json part 4'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate3.json | jq 'del(.facilities[0].authenticationTypes[1])' > topcat-intermediate4.json"
+  shell: cat topcat-intermediate3.json | jq '.facilities[0].authenticationTypes = []' > topcat-intermediate4.json
   become: true
-  become_user: root
+  become_user: glassfish
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
-- name: 'Create topcat.json part 5'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate4.json | jq '.facilities[0].downloadTransportTypes[0].type = \"http\"' > topcat-intermediate5.json"
+- name: 'Add Simple authn to topcat.json part 4'
+  shell: 'cat topcat-intermediate4.json | jq ''.facilities[0].authenticationTypes += [{"title": "Simple", "plugin": "simple"}]'' > topcat-intermediate4.json'
   become: true
-  become_user: root
+  become_user: glassfish
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+  when: ansible_local.local.instantiations.authn_simple == 'true'
+
+- name: 'Add DB authn to topcat.json part 4'
+  shell: 'cat topcat-intermediate4.json | jq ''.facilities[0].authenticationTypes += [{"title": "DB", "plugin": "db"}]'' > topcat-intermediate4.json'
+  become: true
+  become_user: glassfish
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+  when: ansible_local.local.instantiations.authn_db == 'true'
+
+- name: 'Add Anon authn to topcat.json part 4'
+  shell: 'cat topcat-intermediate4.json | jq ''.facilities[0].authenticationTypes += [{"title": "Anonymous", "plugin": "anon"}]'' > topcat-intermediate4.json'
+  become: true
+  become_user: glassfish
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+  when: ansible_local.local.instantiations.authn_anon == 'true'
+
+- name: 'Add LDAP authn to topcat.json part 4'
+  shell: 'cat topcat-intermediate4.json | jq ''.facilities[0].authenticationTypes += [{"title": "LDAP", "plugin": "ldap"}]'' > topcat-intermediate4.json'
+  become: true
+  become_user: glassfish
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+  when: ansible_local.local.instantiations.authn_ldap == 'true'
+
+- name: 'Create topcat.json part 5'
+  shell: cat topcat-intermediate4.json | jq '.facilities[0].downloadTransportTypes[0].type = "http"' > topcat-intermediate5.json
+  become: true
+  become_user: glassfish
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
 - name: 'Create topcat.json part 6'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate5.json | jq '.facilities[0].downloadTransportTypes[0].idsUrl = \"http://{{ ids_url }}:8080\"' > topcat-intermediate6.json"
+  shell: cat topcat-intermediate5.json | jq '.facilities[0].downloadTransportTypes[0].idsUrl = "http://{{ ids_url }}:8080"' > topcat-intermediate6.json
   become: true
-  become_user: root
+  become_user: glassfish
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
 - name: 'Create topcat.json part 7'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate6.json | jq '.facilities[0].downloadTransportTypes[1].type = \"https\"' > topcat-intermediate7.json"
+  shell: cat topcat-intermediate6.json | jq '.facilities[0].downloadTransportTypes[1].type = "https"' > topcat-intermediate7.json
   become: true
-  become_user: root
+  become_user: glassfish
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
 - name: 'Create topcat.json part 8'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate7.json | jq '.facilities[0].downloadTransportTypes[1].idsUrl = \"https://{{ ids_url }}:8181\"' > topcat.json"
+  shell: cat topcat-intermediate7.json | jq '.facilities[0].downloadTransportTypes[1].idsUrl = "https://{{ ids_url }}:8181"' > topcat.json
   become: true
-  become_user: root
+  become_user: glassfish
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
 - name: 'Remove intermediate files'
-  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; rm topcat-intermediate*"'
+  shell: rm topcat-intermediate*
   become: true
-  become_user: root
+  become_user: glassfish
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
 - name: 'Set mode of topcat.json'
