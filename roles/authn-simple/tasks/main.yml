@@ -1,5 +1,4 @@
 ---
-
 - name: 'Check authn-simple package'
   stat:
     path: /home/{{ payara_user }}/downloads/authn.simple-{{ authn_simple_version }}-distro.zip
@@ -36,7 +35,7 @@
     group: '{{ payara_user }}'
     mode: 0600
   notify:
-  - authn-simple-handler
+    - authn-simple-handler
 
 - name: 'Configure authn-simple run.properties'
   template:
@@ -46,7 +45,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - authn-simple-handler
+    - authn-simple-handler
 
 - name: 'Configure authn-simple logback.xml'
   copy:
@@ -56,8 +55,12 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - authn-simple-handler
+    - authn-simple-handler
 
 - name: 'Setup authn-simple if not setup'
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_simple is not defined) or (ansible_local.local.instantiations.authn_simple != 'true')
+
+- name: 'Set temporary fact to indicate authn_simple is installed within play'
+  set_fact:
+    authn_simple: true

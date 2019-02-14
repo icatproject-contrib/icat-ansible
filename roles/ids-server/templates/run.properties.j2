@@ -9,11 +9,13 @@ plugin.main.dir = /home/{{ payara_user }}/data/main
 cache.dir = /home/{{ payara_user }}/data/cache
 preparedCount = 10000
 processQueueIntervalSeconds = 5
-rootUserNames = simple/root db/root
 sizeCheckIntervalSeconds = 60
-reader = simple username {{ authn_reader_username }} password {{ authn_reader_password }}
 !readOnly = true
 maxIdsInQuery = 1000
+rootUserNames = {% if authn_simple is defined and authn_simple %}simple/root {% endif %}{% if authn_db is defined and authn_db %}db/root {% endif %}
+
+reader = {% if authn_db is defined and authn_db %}db username root password password{% elif authn_simple is defined and authn_simple %}simple username {{ authn_reader_username }} password {{ authn_reader_password }}{% else %}{% endif %}
+
 
 # Properties for archive storage
 plugin.archive.class = org.icatproject.ids.storage.ArchiveFileStorage

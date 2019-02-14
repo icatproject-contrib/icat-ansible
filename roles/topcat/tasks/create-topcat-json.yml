@@ -1,67 +1,116 @@
 ---
-
-- name: 'Create topcat.json part 1'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat.json.example | jq '.site.topcatUrl = \"https://{{ topcat_url }}:8181\"' > topcat-intermediate1.json"
+- name: 'Edit topcatURL in topcat.json'
+  shell: cat topcat.json.example | jq '.site.topcatUrl = "https://{{ topcat_url }}:8181"' > tmp.json && mv tmp.json topcat.json
   become: true
-  become_user: root
+  become_user: '{{ payara_user }}'
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
-- name: 'Create topcat.json part 2'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate1.json | jq '.facilities[0].idsUrl = \"https://{{ ids_url }}:8181\"' > topcat-intermediate2.json"
+- name: 'Remove all facilities except LILS (the test facility)'
+  shell: 'cat topcat.json | jq ''{site, facilities: [ .facilities[] | select(.name == "LILS") ], plugins}'' > tmp.json && mv tmp.json topcat.json'
   become: true
-  become_user: root
+  become_user: '{{ payara_user }}'
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
-- name: 'Create topcat.json part 3'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate2.json | jq '.facilities[0].icatUrl = \"https://{{ icat_url }}:8181\"' > topcat-intermediate3.json"
+- name: 'Edit idsUrl in topcat.json'
+  shell: cat topcat.json | jq '.facilities[0].idsUrl = "https://{{ ids_url }}:8181"' > tmp.json && mv tmp.json topcat.json
   become: true
-  become_user: root
+  become_user: '{{ payara_user }}'
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
-- name: 'Create topcat.json part 4'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate3.json | jq 'del(.facilities[0].authenticationTypes[1])' > topcat-intermediate4.json"
+- name: 'Edit icatUrl in topcat.json'
+  shell: cat topcat.json | jq '.facilities[0].icatUrl = "https://{{ icat_url }}:8181"' > tmp.json && mv tmp.json topcat.json
   become: true
-  become_user: root
+  become_user: '{{ payara_user }}'
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
-- name: 'Create topcat.json part 5'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate4.json | jq '.facilities[0].downloadTransportTypes[0].type = \"http\"' > topcat-intermediate5.json"
+- name: 'Set authenticationTypes to [] in LILS facility in topcat.json'
+  shell: cat topcat.json | jq '.facilities[0].authenticationTypes = []' > tmp.json && mv tmp.json topcat.json
   become: true
-  become_user: root
+  become_user: '{{ payara_user }}'
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
-- name: 'Create topcat.json part 6'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate5.json | jq '.facilities[0].downloadTransportTypes[0].idsUrl = \"http://{{ ids_url }}:8080\"' > topcat-intermediate6.json"
+- name: 'Add Simple authn in topcat.json'
+  shell: 'cat topcat.json | jq ''.facilities[0].authenticationTypes += [{"title": "Simple", "plugin": "simple"}]'' > tmp.json && mv tmp.json topcat.json'
   become: true
-  become_user: root
+  become_user: '{{ payara_user }}'
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+  when: authn_simple is defined and authn_simple
+
+- name: 'Add DB authn in topcat.json'
+  shell: 'cat topcat.json | jq ''.facilities[0].authenticationTypes += [{"title": "DB", "plugin": "db"}]'' > tmp.json && mv tmp.json topcat.json'
+  become: true
+  become_user: '{{ payara_user }}'
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+  when: authn_db is defined and authn_db
+
+- name: 'Add Anon authn in topcat.json'
+  shell: 'cat topcat.json | jq ''.facilities[0].authenticationTypes += [{"title": "Anonymous", "plugin": "anon"}]'' > tmp.json && mv tmp.json topcat.json'
+  become: true
+  become_user: '{{ payara_user }}'
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+  when: authn_anon is defined and authn_anon
+
+- name: 'Add LDAP authn in topcat.json'
+  shell: 'cat topcat.json | jq ''.facilities[0].authenticationTypes += [{"title": "LDAP", "plugin": "ldap"}]'' > tmp.json && mv tmp.json topcat.json'
+  become: true
+  become_user: '{{ payara_user }}'
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+  when: authn_ldap is defined and authn_ldap
+
+- name: 'Set http transport type in topcat.json'
+  shell: cat topcat.json | jq '.facilities[0].downloadTransportTypes[0].type = "http"' > tmp.json && mv tmp.json topcat.json
+  become: true
+  become_user: '{{ payara_user }}'
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
-- name: 'Create topcat.json part 7'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate6.json | jq '.facilities[0].downloadTransportTypes[1].type = \"https\"' > topcat-intermediate7.json"
+- name: 'Edit http download idsUrl in topcat.json'
+  shell: cat topcat.json | jq '.facilities[0].downloadTransportTypes[0].idsUrl = "http://{{ ids_url }}:8080"' > tmp.json && mv tmp.json topcat.json
   become: true
-  become_user: root
+  become_user: '{{ payara_user }}'
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
-- name: 'Create topcat.json part 8'
-  shell: su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; cat topcat-intermediate7.json | jq '.facilities[0].downloadTransportTypes[1].idsUrl = \"https://{{ ids_url }}:8181\"' > topcat.json"
+- name: 'Set https transport type in topcat.json'
+  shell: cat topcat.json | jq '.facilities[0].downloadTransportTypes[1].type = "https"' > tmp.json && mv tmp.json topcat.json
   become: true
-  become_user: root
+  become_user: '{{ payara_user }}'
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
-- name: 'Remove intermediate files'
-  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; rm topcat-intermediate*"'
+- name: 'Edit https download idsUrl in topcat.json'
+  shell: cat topcat.json | jq '.facilities[0].downloadTransportTypes[1].idsUrl = "https://{{ ids_url }}:8181"' > tmp.json && mv tmp.json topcat.json
   become: true
-  become_user: root
+  become_user: '{{ payara_user }}'
   args:
+    chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
+
+- name: 'Remove intermediate file'
+  file:
+    path: /home/{{ payara_user }}/install/topcat/tmp.json
+    state: absent
 
 - name: 'Set mode of topcat.json'
   file:

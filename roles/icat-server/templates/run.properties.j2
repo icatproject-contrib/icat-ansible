@@ -5,7 +5,7 @@
 lifetimeMinutes = 120
 
 # Provide CRUD access to authz tables
-rootUserNames = simple/root
+rootUserNames = {% if authn_simple is defined and authn_simple %}simple/root {% endif %}{% if authn_db is defined and authn_db %}db/root {% endif %}
 
 # Restrict total number of entities to return in a search call
 maxEntities = 10000
@@ -20,20 +20,40 @@ importCacheSize = 50
 exportCacheSize = 50
 
 # Desired authentication plugin mnemonics
-authn.list = simple
+authn.list = {% if authn_simple is defined and authn_simple %}simple {% endif %}{% if authn_db is defined and authn_db %}db {% endif %}{% if authn_anon is defined and authn_anon %}anon {% endif %}{% if authn_ldap is defined and authn_ldap %}ldap {% endif %}
 
 # Parameters for each of the four plugins
+{% if authn_db is defined and authn_db %}
+authn.db.url = https://{{ authn_db_url }}:8181
+{% else %}
 !authn.db.url = https://localhost:8181
+{% endif %}
 
+{% if authn_ldap is defined and authn_ldap %}
+authn.ldap.url = https://{{ authn_ldap_url }}:8181
+authn.ldap.admin = true
+authn.ldap.friendly = Federal Id
+{% else %}
 !authn.ldap.url = https://localhost:8181
 !authn.ldap.admin = true
 !authn.ldap.friendly = Federal Id
+{% endif %}
 
+{% if authn_simple is defined and authn_simple %}
 authn.simple.url = https://{{ authn_simple_url }}:8181 
 authn.simple.friendly = Simple
+{% else %}
+!authn.simple.url = https://localhost:8181 
+!authn.simple.friendly = Simple
+{% endif %}
 
+{% if authn_anon is defined and authn_anon %}
+authn.anon.url = https://{{ authn_anon_url }}:8181
+authn.anon.friendly = Anonymous
+{% else %}
 !authn.anon.url = https://localhost:8181
 !authn.anon.friendly = Anonymous
+{% endif %}
 
 # Notification setup
 notification.list = Dataset Datafile
