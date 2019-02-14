@@ -24,13 +24,13 @@ authn.list = {% if authn_simple is defined and authn_simple %}simple {% endif %}
 
 # Parameters for each of the four plugins
 {% if authn_db is defined and authn_db %}
-authn.db.url = https://{{ authn_db is defined and authn_db_url }}:8181
+authn.db.url = https://{{ authn_db_url }}:8181
 {% else %}
 !authn.db.url = https://localhost:8181
 {% endif %}
 
 {% if authn_ldap is defined and authn_ldap %}
-authn.ldap.url = https://{{authn_ldap is defined and authn_ldap_url}}:8181
+authn.ldap.url = https://{{ authn_ldap_url }}:8181
 authn.ldap.admin = true
 authn.ldap.friendly = Federal Id
 {% else %}
@@ -40,7 +40,7 @@ authn.ldap.friendly = Federal Id
 {% endif %}
 
 {% if authn_simple is defined and authn_simple %}
-authn.simple.url = https://{{ authn_simple is defined and authn_simple_url }}:8181 
+authn.simple.url = https://{{ authn_simple_url }}:8181 
 authn.simple.friendly = Simple
 {% else %}
 !authn.simple.url = https://localhost:8181 
@@ -48,7 +48,7 @@ authn.simple.friendly = Simple
 {% endif %}
 
 {% if authn_anon is defined and authn_anon %}
-authn.anon.url = https://{{authn_anon is defined and authn_anon_url}}:8181
+authn.anon.url = https://{{ authn_anon_url }}:8181
 authn.anon.friendly = Anonymous
 {% else %}
 !authn.anon.url = https://localhost:8181
