@@ -8,7 +8,7 @@
     executable: /bin/bash
 
 - name: 'Remove all facilities except LILS (the test facility)'
-  shell: cat topcat.json | jq '{site, facilities: [ .facilities[] | select(.name == "LILS") ], plugins}' > tmp.json && mv tmp.json topcat.json
+  shell: 'cat topcat.json | jq ''{site, facilities: [ .facilities[] | select(.name == "LILS") ], plugins}'' > tmp.json && mv tmp.json topcat.json'
   become: true
   become_user: '{{ payara_user }}'
   args:
