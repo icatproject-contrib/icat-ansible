@@ -7,6 +7,14 @@
     chdir: /home/{{ payara_user }}/install/topcat
     executable: /bin/bash
 
+- name: 'Remove all facilities except LILS (the test facility)'
+  shell: cat topcat.json | jq '{site, facilities: [ .facilities[] | select(.name == "LILS") ], plugins}' > tmp.json && mv tmp.json topcat.json
+  become: true
+  become_user: '{{ payara_user }}'
+  args:
+    chdir: /home/{{ payara_user }}/install/topcat
+    executable: /bin/bash
+
 - name: 'Edit idsUrl in topcat.json'
   shell: cat topcat.json | jq '.facilities[0].idsUrl = "https://{{ ids_url }}:8181"' > tmp.json && mv tmp.json topcat.json
   become: true
@@ -17,22 +25,6 @@
 
 - name: 'Edit icatUrl in topcat.json'
   shell: cat topcat.json | jq '.facilities[0].icatUrl = "https://{{ icat_url }}:8181"' > tmp.json && mv tmp.json topcat.json
-  become: true
-  become_user: '{{ payara_user }}'
-  args:
-    chdir: /home/{{ payara_user }}/install/topcat
-    executable: /bin/bash
-
-- name: 'Delete DLS facility in topcat.json'
-  shell: cat topcat.json | jq 'del(.facilities[1])' > tmp.json && mv tmp.json topcat.json
-  become: true
-  become_user: '{{ payara_user }}'
-  args:
-    chdir: /home/{{ payara_user }}/install/topcat
-    executable: /bin/bash
-
-- name: 'Delete ISIS facility in topcat.json'
-  shell: cat topcat.json | jq 'del(.facilities[1])' > tmp.json && mv tmp.json topcat.json
   become: true
   become_user: '{{ payara_user }}'
   args:
