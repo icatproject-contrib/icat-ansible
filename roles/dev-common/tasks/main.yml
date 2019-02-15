@@ -9,7 +9,9 @@
 
 - name: 'Installing common dev python packages'
   pip:
-    name: requests-toolbelt
+    name: 
+      - requests-toolbelt
+      - wheel
 
 - name: 'Create .m2 directory'
   file:
