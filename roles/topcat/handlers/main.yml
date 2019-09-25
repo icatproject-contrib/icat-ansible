@@ -1,4 +1,4 @@
 ---
 
-- name: topcat-handler
+- name: 'topcat-handler'
   import_tasks: handlers/topcat-handler.yml

@@ -6,7 +6,7 @@
 - include_vars: vars/debian.yml
   when: ansible_os_family == 'Debian'
 
-- name: mariadb-handler
+- name: 'mariadb-handler'
   service:
     name: '{{ mariadb_daemon }}'
     state: restarted
