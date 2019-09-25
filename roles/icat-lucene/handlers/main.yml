@@ -1,4 +1,4 @@
 ---
 
-- name: icat-lucene-handler
+- name: 'icat-lucene-handler'
   import_tasks: handlers/icat-lucene-handler.yml
