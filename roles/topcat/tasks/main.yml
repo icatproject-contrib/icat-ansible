@@ -88,7 +88,7 @@
     group: '{{ payara_user }}'
     mode: 0600
   notify:
-  - topcat-handler
+  - "topcat-handler"
 
 - name: 'Configure topcat.properties'
   template:
@@ -98,7 +98,7 @@
     group: '{{ payara_user }}'
     mode: 0600
   notify:
-  - topcat-handler
+  - "topcat-handler"
 
 - name: 'Check topcat.json'
   stat:
@@ -109,7 +109,7 @@
   import_tasks: tasks/create-topcat-json.yml
   when: topcatJsonResult.stat.exists is defined and topcatJsonResult.stat.exists == false
   notify:
-  - topcat-handler
+  - "topcat-handler"
 
 - name: 'Configure lang.json'
   copy:
@@ -120,7 +120,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - topcat-handler
+  - "topcat-handler"
 
 - name: 'Configure topcat.css'
   copy:
@@ -131,7 +131,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - topcat-handler
+  - "topcat-handler"
 
 - name: 'Check content directory'
   stat:
@@ -146,7 +146,7 @@
     executable: /bin/bash
   when: contentResult.stat.exists is defined and contentResult.stat.exists == false
   notify:
-  - topcat-handler
+  - "topcat-handler"
 
 - name: 'Configure topcat logback.xml'
   copy:
@@ -156,7 +156,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - topcat-handler
+  - "topcat-handler"
 
 - name: 'Setup topcat if not setup'
   import_tasks: tasks/installation.yml

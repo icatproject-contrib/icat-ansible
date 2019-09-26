@@ -36,7 +36,7 @@
     group: '{{ payara_user }}'
     mode: 0600
   notify:
-  - icat-lucene-handler
+  - "icat-lucene-handler"
 
 - name: 'Configure icat-lucene run.properties'
   template:
@@ -46,7 +46,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - icat-lucene-handler
+  - "icat-lucene-handler"
 
 - name: 'Create icat-lucene data directory'
   file:
@@ -64,7 +64,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - icat-lucene-handler
+  - "icat-lucene-handler"
 
 - name: 'Setup icat-lucene if not setup'
   import_tasks: tasks/installation.yml

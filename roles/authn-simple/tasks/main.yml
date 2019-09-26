@@ -35,7 +35,7 @@
     group: '{{ payara_user }}'
     mode: 0600
   notify:
-    - authn-simple-handler
+    - "authn-simple-handler"
 
 - name: 'Configure authn-simple run.properties'
   template:
@@ -45,7 +45,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-    - authn-simple-handler
+    - "authn-simple-handler"
 
 - name: 'Configure authn-simple logback.xml'
   copy:
@@ -55,7 +55,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-    - authn-simple-handler
+    - "authn-simple-handler"
 
 - name: 'Setup authn-simple if not setup'
   import_tasks: tasks/installation.yml

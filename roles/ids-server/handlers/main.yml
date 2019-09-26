@@ -1,4 +1,4 @@
 ---
 
-- name: 'ids-server-handler'
-  import_tasks: handlers/ids-server-handler.yml
+- name: "ids-server-handler"
+  include_tasks: handlers/ids-server-handler.yml

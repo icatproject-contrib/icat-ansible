@@ -159,6 +159,6 @@
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
   when: domainResult.stat.exists is defined and domainResult.stat.exists == true
-  notify: payara-handler
+  notify: "payara-handler"
 
 - meta: flush_handlers

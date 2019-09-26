@@ -1,6 +1,6 @@
 ---
 - name: 'Setup authn-db'
-  import_tasks: handlers/authn-db-handler.yml
+  include_tasks: handlers/authn-db-handler.yml
 
 - name: 'Set fact on host to record that authn-db has been instantiated'
   ini_file:

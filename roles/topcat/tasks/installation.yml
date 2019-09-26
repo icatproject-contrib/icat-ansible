@@ -1,7 +1,7 @@
 ---
 
 - name: 'Setup topcat'
-  import_tasks: handlers/topcat-handler.yml
+  include_tasks: handlers/topcat-handler.yml
 
 - name: 'Set fact on host to record that topcat has been instantiated'
   ini_file:

@@ -1,4 +1,4 @@
 ---
 
-- name: 'authn-simple-handler'
-  import_tasks: handlers/authn-simple-handler.yml
+- name: "authn-simple-handler"
+  include_tasks: handlers/authn-simple-handler.yml

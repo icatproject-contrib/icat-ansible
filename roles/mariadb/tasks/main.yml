@@ -18,7 +18,7 @@
     group: root
     mode: 0644
   notify:
-  - mariadb-handler
+  - "mariadb-handler"
 
 - name: 'Configure default character set'
   copy:
@@ -28,7 +28,7 @@
     group: root
     mode: 0644
   notify:
-  - mariadb-handler
+  - "mariadb-handler"
 
 - name: 'Remove any mariadb specific conf as these defaults override our own'
   lineinfile:
@@ -36,7 +36,7 @@
     regexp: '\/mariadb\.conf\.d\/'
     state: absent
   notify:
-  - mariadb-handler
+  - "mariadb-handler"
 
 - name: 'Enable and start dbms daemon'
   service:

@@ -35,7 +35,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-    - authn-db-handler
+    - "authn-db-handler"
 
 - name: 'Configure authn-db run.properties'
   copy:
@@ -45,7 +45,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-    - authn-db-handler
+    - "authn-db-handler"
 
 - name: 'Configure authn-db logback.xml'
   copy:
@@ -55,7 +55,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-    - authn-db-handler
+    - "authn-db-handler"
 
 - name: 'Setup authn-db if not setup'
   import_tasks: tasks/installation.yml

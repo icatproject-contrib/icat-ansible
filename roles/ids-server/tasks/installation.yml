@@ -1,7 +1,7 @@
 ---
 
 - name: 'Setup ids-server'
-  import_tasks: handlers/ids-server-handler.yml
+  include_tasks: handlers/ids-server-handler.yml
 
 - name: 'Set fact on host to record that ids-server has been instantiated'
   ini_file:

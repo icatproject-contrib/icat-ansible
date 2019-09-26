@@ -36,7 +36,7 @@
     group: '{{ payara_user }}'
     mode: 0600
   notify:
-  - ids-storage_file-handler
+  - "ids-storage_file-handler"
 
 - name: 'Setup ids-storage_file if not setup'
   import_tasks: tasks/installation.yml

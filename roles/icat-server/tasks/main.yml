@@ -87,7 +87,7 @@
     group: '{{ payara_user }}'
     mode: 0600
   notify:
-    - icat-server-handler
+    - "icat-server-handler"
 
 - name: 'Configure icat-server run.properties'
   template:
@@ -97,7 +97,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-    - icat-server-handler
+    - "icat-server-handler"
 
 - name: 'Configure icat-server logback.xml'
   copy:
@@ -107,7 +107,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-    - icat-server-handler
+    - "icat-server-handler"
 
 - name: 'Setup icat-server if not setup'
   import_tasks: tasks/installation.yml

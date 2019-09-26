@@ -1,7 +1,7 @@
 ---
 
 - name: 'Setup authn-simple'
-  import_tasks: handlers/authn-simple-handler.yml
+  include_tasks: handlers/authn-simple-handler.yml
 
 - name: 'Set fact on host to record that authn-simple has been instantiated'
   ini_file:

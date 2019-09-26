@@ -93,7 +93,7 @@
     group: '{{ payara_user }}'
     mode: 0600
   notify:
-  - ids-server-handler
+  - "ids-server-handler"
 
 - name: 'Configure ids-server run.properties'
   template:
@@ -103,7 +103,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - ids-server-handler
+  - "ids-server-handler"
 
 - name: 'Configure ids-server logback.xml'
   copy:
@@ -113,7 +113,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - ids-server-handler
+  - "ids-server-handler"
 
 - name: 'Setup ids-server if not setup'
   import_tasks: tasks/installation.yml

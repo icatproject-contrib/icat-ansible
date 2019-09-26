@@ -1,4 +1,4 @@
 ---
 
-- name: 'payara-handler'
-  import_tasks: roles/payara/handlers/payara-handler.yml
+- name: "payara-handler"
+  include_tasks: roles/payara/handlers/payara-handler.yml

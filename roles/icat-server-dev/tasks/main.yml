@@ -24,7 +24,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - icat-server-dev-handler
+  - "icat-server-dev-handler"
 
 - name: 'Configure icat-server logback.xml'
   copy:
@@ -34,7 +34,7 @@
     group: '{{ payara_user }}'
     mode: 0664
   notify:
-  - icat-server-dev-handler
+  - "icat-server-dev-handler"
 
 - name: 'Setup development icat-server if not setup'
   import_tasks: tasks/installation.yml
