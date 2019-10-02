@@ -165,4 +165,3 @@ To run the playbook:
 ```Shell
 ansible-playbook --ask-vault-pass site.yml
 ```
-
