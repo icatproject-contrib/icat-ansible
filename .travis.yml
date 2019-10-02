@@ -8,8 +8,6 @@ install:
  - sudo pip install -r requirements.txt
  - sudo add-apt-repository universe
  - sudo apt-get update
- - git clone https://github.com/icatproject-contrib/icat-ansible.git
- - cd icat-ansible
  - echo -e "[hosts-all]\nlocalhost ansible_connection=local" > hosts
  - echo -e $ANSIBLE_VAULT_PASSWORD > vault_pass.txt
  - mv ./vault.yml ./group_vars/all
