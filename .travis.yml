@@ -2,3 +2,15 @@ jdk:
   - openjdk8
 
 dist: xenial
+
+install:
+ - sudo apt-get remove python-yaml python-enum34
+ - sudo pip install -r requirements.txt
+ - sudo add-apt-repository universe
+ - sudo apt-get update
+ - echo -e "[hosts-all]\nlocalhost ansible_connection=local" > hosts
+ - echo -e $ANSIBLE_VAULT_PASSWORD > vault_pass.txt
+ - mv ./vault.yml ./group_vars/all
+ - 'sed -i -e "s/^payara_user: ''glassfish''/payara_user: ''travis''/" ./group_vars/all/vars.yml'
+ 
+script: 'ansible-playbook --vault-password-file ./vault_pass.txt --inventory ./hosts ./hosts-all.yml'
