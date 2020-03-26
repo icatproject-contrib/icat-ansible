@@ -172,9 +172,16 @@
   local_action: stat path={{ role_path }}/files/content
   register: contentResult
 
+- name: "Create empty content directory"
+  file:
+    path: /home/{{ payara_user }}/install/topcat/content
+    state: directory
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+
 - name: "Configure content directory via copying"
   copy:
-    src: files/content
+    src: files/content/
     dest: /home/{{ payara_user }}/install/topcat/content
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
