@@ -1,52 +1,51 @@
 ---
-
 - include_vars: vars/redhat.yml
   when: ansible_os_family == 'RedHat'
 
 - include_vars: vars/debian.yml
   when: ansible_os_family == 'Debian'
 
-- name: 'Install mariadb packages'
+- name: "Install mariadb packages"
   package: name={{ item }} state=present
-  with_items: '{{ mariadb_pkgs }}'
+  with_items: "{{ mariadb_pkgs }}"
 
-- name: 'Configure default storage engine'
+- name: "Configure default storage engine"
   copy:
     src: files/storage-engine.cnf
-    dest: '{{ mariadb_config_dir }}/storage-engine.cnf'
+    dest: "{{ mariadb_config_dir }}/storage-engine.cnf"
     owner: root
     group: root
     mode: 0644
   notify:
-  - "mariadb-handler"
+    - "mariadb-handler"
 
-- name: 'Configure default character set'
+- name: "Configure default character set"
   copy:
     src: files/character-set.cnf
-    dest: '{{ mariadb_config_dir }}/character-set.cnf'
+    dest: "{{ mariadb_config_dir }}/character-set.cnf"
     owner: root
     group: root
     mode: 0644
   notify:
-  - "mariadb-handler"
+    - "mariadb-handler"
 
-- name: 'Remove any mariadb specific conf as these defaults override our own'
+- name: "Remove any mariadb specific conf as these defaults override our own"
   lineinfile:
-    path: '{{ mariadb_config_dir }}/../my.cnf'
+    path: "{{ mariadb_config_dir }}/../my.cnf"
     regexp: '\/mariadb\.conf\.d\/'
     state: absent
   notify:
-  - "mariadb-handler"
+    - "mariadb-handler"
 
-- name: 'Enable and start dbms daemon'
+- name: "Enable and start dbms daemon"
   service:
-    name: '{{ mariadb_daemon }}'
+    name: "{{ mariadb_daemon }}"
     state: started
     enabled: true
 
-- name: 'Setup mariadb if not setup'
+- name: "Setup mariadb if not setup"
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.{{ mariadb_daemon }} is not defined) or (ansible_local.local.instantiations.{{ mariadb_daemon }} != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations[mariadb_daemon] is not defined) or (ansible_local.local.instantiations[mariadb_daemon] != 'true')
 
 - name: "Flush handlers so that mariadb daemon has been restarted before any databases are created if config has changed"
   meta: flush_handlers
