@@ -37,13 +37,29 @@
   notify:
     - "authn-anon-handler"
 
-- name: "Configure authn-anon run.properties"
+- name: "Check run.properties file existence"
+  local_action: stat path={{ role_path }}/files/run.properties
+  register: runPropertiesResult
+
+- name: "Configure authn-anon run.properties via copying"
+  copy:
+    src: file/run.properties
+    dest: /home/{{ payara_user }}/install/authn.anon/run.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
+  notify:
+    - "authn-anon-handler"
+
+- name: "Configure authn-anon run.properties via templating"
   template:
     src: templates/run.properties.j2
     dest: /home/{{ payara_user }}/install/authn.anon/run.properties
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
   notify:
     - "authn-anon-handler"
 
