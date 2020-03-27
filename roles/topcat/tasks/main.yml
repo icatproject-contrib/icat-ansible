@@ -172,12 +172,18 @@
   local_action: stat path={{ role_path }}/files/content
   register: contentResult
 
+- name: "Ensure content directory doesn't exist"
+  file:
+    path: /home/{{ payara_user }}/install/topcat/content
+    state: absent
+
 - name: "Create empty content directory"
   file:
     path: /home/{{ payara_user }}/install/topcat/content
     state: directory
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
+    mode: u=rwX,g=rX,o=rX
 
 - name: "Configure content directory via copying"
   copy:
@@ -185,7 +191,7 @@
     dest: /home/{{ payara_user }}/install/topcat/content
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
-    mode: 0664
+    mode: u=rwX,g=rX,o=rX
   when: contentResult.stat.exists is defined and contentResult.stat.exists == true
   notify:
     - "topcat-handler"
@@ -197,7 +203,7 @@
     remote_src: true
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
-    mode: 0664
+    mode: u=rwX,g=rX,o=rX
   when: contentResult.stat.exists is defined and contentResult.stat.exists == false
   notify:
     - "topcat-handler"
