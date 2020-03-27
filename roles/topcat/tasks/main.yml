@@ -37,6 +37,7 @@
     name: "{{ topcat_database }}"
     login_user: "{{ db_root_username }}"
     login_password: "{{ db_root_password }}"
+  when: (ansible_local is defined) and (ansible_local.local is defined) and (ansible_local.local.instantiations is defined) and (ansible_local.local.instantiations.mariadb is defined) or (ansible_local.local.instantiations.mariadb == 'true')
 
 - name: "Create user for topcat database"
   mysql_user:
@@ -45,6 +46,7 @@
     priv: "{{ topcat_database }}.*:ALL,GRANT"
     login_user: "{{ db_root_username }}"
     login_password: "{{ db_root_password }}"
+  when: (ansible_local is defined) and (ansible_local.local is defined) and (ansible_local.local.instantiations is defined) and (ansible_local.local.instantiations.mariadb is defined) or (ansible_local.local.instantiations.mariadb == 'true')
 
 - name: "Check topcat-setup.properties file existence"
   local_action: stat path={{ role_path }}/files/topcat-setup.properties

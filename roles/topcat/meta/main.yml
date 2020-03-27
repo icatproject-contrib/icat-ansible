@@ -1,8 +1,4 @@
 ---
-
 dependencies:
   - role: common
   - role: payara
-  - role: mariadb
-  - role: icat-server
-  - role: ids-server

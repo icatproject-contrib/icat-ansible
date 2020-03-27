@@ -97,53 +97,6 @@
   set_fact:
     authn_db: true
 
-- name: "Create PASSWD table if it doesnt exist"
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "create table IF NOT EXISTS PASSWD (UserName VARCHAR(20), encodedPassword VARCHAR(20));" {{ icat_database }}
-
-- name: 'Check if "notroot" user is already in database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='notroot'" {{ icat_database }}
-  register: notrootResult
-
-- name: 'Add "notroot" user to database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "INSERT INTO PASSWD VALUES ('notroot', 'password');" {{ icat_database }}
-  when: notrootResult.stdout == ""
-
-- name: 'Check if "piOne" user is already in database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='piOne'" {{ icat_database }}
-  register: piOneResult
-
-- name: 'Add "piOne" user to database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "INSERT INTO PASSWD VALUES ('piOne', 'piOne');" {{ icat_database }}
-  when: piOneResult.stdout == ""
-
-- name: 'Check if "piTwo" user is already in database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='piTwo'" {{ icat_database }}
-  register: piTwoResult
-
-- name: 'Add "piTwo" user to database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "INSERT INTO PASSWD VALUES ('piTwo', 'piTwo');" {{ icat_database }}
-  when: piTwoResult.stdout == ""
-
-- name: 'Check if "root" user is already in database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='root'" {{ icat_database }}
-  register: rootResult
-
-- name: 'Add "root" user to database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "INSERT INTO PASSWD VALUES ('root', 'password');" {{ icat_database }}
-  when: rootResult.stdout == ""
-
-- name: 'Check if "guest" user is already in database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='guest'" {{ icat_database }}
-  register: guestResult
-
-- name: 'Add "guest" user to database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "INSERT INTO PASSWD VALUES ('guest', 'guess');" {{ icat_database }}
-  when: guestResult.stdout == ""
-
-- name: 'Check if "CIC" user is already in database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "SELECT USERNAME FROM PASSWD WHERE USERNAME='CIC'" {{ icat_database }}
-  register: CICResult
-
-- name: 'Add "CIC" user to database'
-  command: mysql --user={{ db_icat_username }} --password={{ db_icat_password }} -e "INSERT INTO PASSWD VALUES ('CIC','password');" {{ icat_database }}
-  when: CICResult.stdout == ""
+- name: "Setup default database users"
+  import_tasks: create_default_users.yml
+  when: (ansible_local is defined) and (ansible_local.local is defined) and (ansible_local.local.instantiations is defined) and (ansible_local.local.instantiations.mariadb is defined) or (ansible_local.local.instantiations.mariadb == 'true')
