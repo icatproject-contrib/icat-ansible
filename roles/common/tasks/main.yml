@@ -1,14 +1,23 @@
 ---
+- name: "Update apt cache if running on Debian system"
+  apt:
+    update_cache: yes
+  when: ansible_os_family == 'Debian'
 
-- name: 'Installing common packages'
-  package: name={{ item }} state=present
+- name: "Update yum cache if running on RedHat system"
+  yum:
+    update_cache: yes
+  when: ansible_os_family == 'RedHat'
+
+- name: "Installing common packages"
+  package: name={{ item }} state=latest
   with_items:
-  - htop
-  - unzip
-  - vim
-  - wget
+    - htop
+    - unzip
+    - vim
+    - wget
 
-- name: 'Create ansible config directory on remote hosts'
+- name: "Create ansible config directory on remote hosts"
   file:
     path: /etc/ansible/facts.d
     state: directory
@@ -16,22 +25,22 @@
     group: root
     mode: 0755
 
-- name: 'Check local fact file'
+- name: "Check local fact file"
   stat:
     path: /etc/ansible/facts.d/local.fact
   register: factFileResult
 
-- name: 'Create local fact file on remote hosts to record instantiated software'
+- name: "Create local fact file on remote hosts to record instantiated software"
   blockinfile:
-    path: '/etc/ansible/facts.d/local.fact'
+    path: "/etc/ansible/facts.d/local.fact"
     block: |
       [instantiations]
-      
+
       [versions]
     insertbefore: BOF
-    marker: ''
-    marker_begin: ''
-    marker_end: ''
+    marker: ""
+    marker_begin: ""
+    marker_end: ""
     create: true
     owner: root
     group: root
