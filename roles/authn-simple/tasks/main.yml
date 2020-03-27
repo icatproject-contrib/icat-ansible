@@ -92,7 +92,3 @@
 - name: "Setup authn-simple if not setup"
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_simple is not defined) or (ansible_local.local.instantiations.authn_simple != 'true')
-
-- name: "Set temporary fact to indicate authn_simple is installed within play"
-  set_fact:
-    authn_simple: true

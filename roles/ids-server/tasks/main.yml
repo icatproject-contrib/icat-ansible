@@ -51,6 +51,10 @@
     group: "{{ payara_user }}"
     mode: 0775
 
+- name: "Force ansible to regather local facts - needed to detect what authn plugins have been installed"
+  setup:
+    filter: ansible_local
+
 - name: "Check setup.properties file existence"
   local_action: stat path={{ role_path }}/files/setup.properties
   register: setupPropertiesResult
