@@ -1,8 +1,8 @@
 ---
-- hosts: icat-server-dev-hosts
+- hosts: icat_server_dev_hosts
   become: true
   vars_files:
-    - 'group_vars/all/vars.yml'
+    - "group_vars/all/vars.yml"
   roles:
     - role: common
     - role: java
