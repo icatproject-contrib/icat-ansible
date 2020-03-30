@@ -1,51 +1,53 @@
 ---
-
 # Payara user and admin user's password
-payara_user: 'glassfish'
-payara_admin_password: '{{ vault_payara_admin_password }}'
+payara_user: "glassfish"
+payara_admin_password: "{{ vault_payara_admin_password }}"
 
 # Database root user's username and password
-db_root_username: '{{ vault_db_root_username }}'
-db_root_password: '{{ vault_db_root_password }}'
+db_root_username: "{{ vault_db_root_username }}"
+db_root_password: "{{ vault_db_root_password }}"
 
 # ICAT database hostname, database name, username and password
-db_icat_hostname: 'localhost'
-icat_database: '{{ vault_icat_database }}'
-db_icat_username: '{{ vault_db_icat_username }}'
-db_icat_password: '{{ vault_db_icat_password }}'
+db_icat_hostname: "localhost"
+icat_database: "{{ vault_icat_database }}"
+db_icat_username: "{{ vault_db_icat_username }}"
+db_icat_password: "{{ vault_db_icat_password }}"
 
 # Authn-simple usernames
-authn_root_username: '{{ vault_authn_root_username }}'
-authn_ingest_username: '{{ vault_authn_ingest_username }}'
-authn_reader_username: '{{ vault_authn_reader_username }}'
-authn_icatuser_username: '{{ vault_authn_icatuser_username }}'
+authn_root_username: "{{ vault_authn_root_username }}"
+authn_ingest_username: "{{ vault_authn_ingest_username }}"
+authn_reader_username: "{{ vault_authn_reader_username }}"
+authn_icatuser_username: "{{ vault_authn_icatuser_username }}"
 
 # Authn-simple passwords
-authn_root_password: '{{ vault_authn_root_password }}'
-authn_ingest_password: '{{ vault_authn_ingest_password }}'
-authn_reader_password: '{{ vault_authn_reader_password }}'
-authn_icatuser_password: '{{ vault_authn_icatuser_password }}'
+authn_root_password: "{{ vault_authn_root_password }}"
+authn_ingest_password: "{{ vault_authn_ingest_password }}"
+authn_reader_password: "{{ vault_authn_reader_password }}"
+authn_icatuser_password: "{{ vault_authn_icatuser_password }}"
 
 # Authn-simple server URL
-authn_simple_url: '{{ ansible_fqdn }}'
+authn_simple_url: "{{ ansible_fqdn }}"
 
 # Authn-db server URL
-authn_db_url: '{{ ansible_fqdn }}'
+authn_db_url: "{{ ansible_fqdn }}"
+
+# Authn-ldap server URL
+authn_ldap_url: "{{ ansible_fqdn }}"
 
 # ICAT Lucene server URL
-lucene_url: '{{ ansible_fqdn }}'
+lucene_url: "{{ ansible_fqdn }}"
 
 # ICAT server URL
-icat_url: '{{ ansible_fqdn }}'
+icat_url: "{{ ansible_fqdn }}"
 
 # IDS server URL
-ids_url: '{{ ansible_fqdn }}'
+ids_url: "{{ ansible_fqdn }}"
 
 # TopCat server URL
-topcat_url: '{{ ansible_fqdn }}'
+topcat_url: "{{ ansible_fqdn }}"
 
 # TopCat database hostname, database name, username and password
-db_topcat_hostname: 'localhost'
-topcat_database: '{{ vault_topcat_database }}'
-db_topcat_username: '{{ vault_db_topcat_username }}'
-db_topcat_password: '{{ vault_db_topcat_password }}'
+db_topcat_hostname: "localhost"
+topcat_database: "{{ vault_topcat_database }}"
+db_topcat_username: "{{ vault_db_topcat_username }}"
+db_topcat_password: "{{ vault_db_topcat_password }}"

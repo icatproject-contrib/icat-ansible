@@ -1,0 +1,3 @@
+---
+- name: "authn-ldap-handler"
+  include_tasks: handlers/authn-ldap-handler.yml
