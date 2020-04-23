@@ -1,6 +1,6 @@
 ---
 - name: "Install common icat-server dependencies"
-  package: name={{ item }} state=present
+  package: name={{ item }} state=latest
   with_items:
     - python-suds
     - python-requests
