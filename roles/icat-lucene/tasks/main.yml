@@ -69,3 +69,7 @@
 - name: 'Setup icat-lucene if not setup'
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.icat_lucene is not defined) or (ansible_local.local.instantiations.icat_lucene != 'true')
+
+- name: "Set temporary fact to indicate icat-lucene is installed within play"
+  set_fact:
+    icat_lucene: true

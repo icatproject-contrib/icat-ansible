@@ -64,12 +64,21 @@ notification.Datafile = CU
 log.list = SESSION WRITE READ INFO
 
 # Lucene
+{% if icat_lucene is defined and icat_lucene %}
 lucene.url = https://{{ lucene_url }}:8181
 lucene.populateBlockSize = 1000
 lucene.directory = /home/{{ payara_user }}/data/lucene
 lucene.backlogHandlerIntervalSeconds = 60
 lucene.enqueuedRequestIntervalSeconds = 5
 lucene.entitiesToIndex = Dataset Investigation InvestigationUser DatasetParameter InvestigationParameter Sample
+{% else %}
+!lucene.url = https://localhost:8181
+!lucene.populateBlockSize = 10000
+!lucene.directory = /home/{{ payara_user }}/data/lucene
+!lucene.backlogHandlerIntervalSeconds = 60
+!lucene.enqueuedRequestIntervalSeconds = 5
+!lucene.entitiesToIndex = Dataset Investigation InvestigationUser DatasetParameter InvestigationParameter Sample
+{% endif %}
 
 # List members of cluster
 !cluster = http://vm200.nubes.stfc.ac.uk:8080 https://smfisher:8181
