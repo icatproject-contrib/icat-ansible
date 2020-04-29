@@ -39,6 +39,7 @@
 
 - name: "Check run.properties file existence"
   local_action: stat path={{ role_path }}/files/run.properties
+  become: false
   register: runPropertiesResult
 
 - name: "Configure authn-anon run.properties via copying"
