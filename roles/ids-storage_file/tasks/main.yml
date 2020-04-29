@@ -29,6 +29,7 @@
 
 - name: "Check setup.properties file existence"
   local_action: stat path={{ role_path }}/files/setup.properties
+  become: false
   register: setupPropertiesResult
 
 - name: "Configure ids-storage_file setup.properties via copying"

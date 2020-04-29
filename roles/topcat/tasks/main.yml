@@ -54,6 +54,7 @@
 
 - name: "Check topcat-setup.properties file existence"
   local_action: stat path={{ role_path }}/files/topcat-setup.properties
+  become: false
   register: setupPropertiesResult
 
 - name: "Configure topcat-setup.properties via copying"
@@ -75,6 +76,7 @@
 
 - name: "Check topcat.properties file existence"
   local_action: stat path={{ role_path }}/files/topcat.properties
+  become: false
   register: runPropertiesResult
 
 - name: "Configure topcat.properties via copying"
@@ -101,6 +103,7 @@
 
 - name: "Check topcat.json file existence"
   local_action: stat path={{ role_path }}/files/topcat.json
+  become: false
   register: topcatJsonResult
 
 - name: "Configure topcat.json via copying"
@@ -122,6 +125,7 @@
 
 - name: "Check lang.json file existence"
   local_action: stat path={{ role_path }}/files/lang.json
+  become: false
   register: langJsonResult
 
 - name: "Configure lang.json via copying"
@@ -149,6 +153,7 @@
 
 - name: "Check topcat.css file existence"
   local_action: stat path={{ role_path }}/files/topcat.css
+  become: false
   register: topcatCssResult
 
 - name: "Configure topcat.css via copying"
@@ -176,6 +181,7 @@
 
 - name: "Check content directory"
   local_action: stat path={{ role_path }}/files/content
+  become: false
   register: contentResult
 
 - name: "Ensure content directory doesn't exist"

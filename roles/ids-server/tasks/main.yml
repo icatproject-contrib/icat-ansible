@@ -57,6 +57,7 @@
 
 - name: "Check setup.properties file existence"
   local_action: stat path={{ role_path }}/files/setup.properties
+  become: false
   register: setupPropertiesResult
 
 - name: "Configure ids-server setup.properties via copying"
@@ -78,6 +79,7 @@
 
 - name: "Check run.properties file existence"
   local_action: stat path={{ role_path }}/files/run.properties
+  become: false
   register: runPropertiesResult
 
 - name: "Configure ids-server run.properties via copying"
