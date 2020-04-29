@@ -34,6 +34,9 @@ authn_db_url: "{{ ansible_fqdn }}"
 # Authn-anon server URL
 authn_anon_url: "{{ ansible_fqdn }}"
 
+# Authn-ldap server URL
+authn_ldap_url: "{{ ansible_fqdn }}"
+
 # ICAT Lucene server URL
 lucene_url: "{{ ansible_fqdn }}"
 
