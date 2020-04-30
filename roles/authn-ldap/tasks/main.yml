@@ -13,11 +13,6 @@
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
-- name: "Check authn-ldap installation"
-  stat:
-    path: /home/{{ payara_user }}/install/authn.ldap
-  register: installationResult
-
 - name: "Unarchive authn-ldap if not installed"
   unarchive:
     src: /home/{{ payara_user }}/downloads/authn.ldap-{{ authn_ldap_version }}-distro.zip
@@ -25,7 +20,20 @@
     remote_src: true
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
-  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+  when: ansible_local.local.instantiations.authn_ldap is not defined or ansible_local.local.versions.authn_ldap != authn_ldap_version
+
+- name: "Find any war files not matching the current version"
+  find:
+    paths: /home/{{ payara_user }}/install/authn.ldap/
+    use_regex: yes
+    patterns: "^.*-(?!{{ authn_ldap_version }}).*\\.war$"
+  register: warFilesResult
+
+- name: "Remove war files not matching the current version"
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ warFilesResult.files }}"
 
 - name: "Check setup.properties file existence"
   local_action: stat path={{ role_path }}/files/setup.properties

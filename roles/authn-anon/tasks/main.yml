@@ -13,11 +13,6 @@
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
-- name: "Check authn-anon installation"
-  stat:
-    path: /home/{{ payara_user }}/install/authn.anon
-  register: installationResult
-
 - name: "Unarchive authn-anon if not installed"
   unarchive:
     src: /home/{{ payara_user }}/downloads/authn.anon-{{ authn_anon_version }}-distro.zip
@@ -25,7 +20,20 @@
     remote_src: true
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
-  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+  when: ansible_local.local.instantiations.authn_anon is not defined or ansible_local.local.versions.authn_anon != authn_anon_version
+
+- name: "Find any war files not matching the current version"
+  find:
+    paths: /home/{{ payara_user }}/install/authn.anon/
+    use_regex: yes
+    patterns: "^.*-(?!{{ authn_anon_version }}).*\\.war$"
+  register: warFilesResult
+
+- name: "Remove war files not matching the current version"
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ warFilesResult.files }}"
 
 - name: "Configure authn-anon setup.properties"
   template:
