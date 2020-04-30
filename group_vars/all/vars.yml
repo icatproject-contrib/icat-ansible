@@ -31,6 +31,9 @@ authn_simple_url: "{{ ansible_fqdn }}"
 # Authn-db server URL
 authn_db_url: "{{ ansible_fqdn }}"
 
+# Authn-anon server URL
+authn_anon_url: "{{ ansible_fqdn }}"
+
 # Authn-ldap server URL
 authn_ldap_url: "{{ ansible_fqdn }}"
 
