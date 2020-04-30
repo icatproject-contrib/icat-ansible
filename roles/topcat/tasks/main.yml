@@ -19,11 +19,6 @@
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
-- name: 'Check topcat installation'
-  stat:
-    path: /home/{{ payara_user }}/install/topcat
-  register: installationResult
-
 - name: 'Unarchive topcat if not installed'
   unarchive:
     src: /home/{{ payara_user }}/downloads/topcat-{{ topcat_version }}-distro.zip
@@ -31,7 +26,20 @@
     remote_src: true
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
-  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+  when: ansible_local.local.instantiations.topcat is not defined or ansible_local.local.versions.topcat != topcat_version
+
+- name: "Find any war files not matching the current version"
+  find:
+    paths: /home/{{ payara_user }}/install/topcat/
+    use_regex: yes
+    patterns: "^.*-(?!{{ topcat_version }}).*\\.war$"
+  register: warFilesResult
+
+- name: "Remove war files not matching the current version"
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ warFilesResult.files }}"
 
 - name: 'Create database for topcat'
   mysql_db:

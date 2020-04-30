@@ -13,11 +13,6 @@
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
-- name: 'Check authn-simple installation'
-  stat:
-    path: /home/{{ payara_user }}/install/authn.simple
-  register: installationResult
-
 - name: 'Unarchive authn-simple if not installed'
   unarchive:
     src: /home/{{ payara_user }}/downloads/authn.simple-{{ authn_simple_version }}-distro.zip
@@ -25,7 +20,20 @@
     remote_src: true
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
-  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+  when: ansible_local.local.instantiations.authn_simple is not defined or ansible_local.local.versions.authn_simple != authn_simple_version
+
+- name: "Find any war files not matching the current version"
+  find:
+    paths: /home/{{ payara_user }}/install/authn.simple/
+    use_regex: yes
+    patterns: "^.*-(?!{{ authn_simple_version }}).*\\.war$"
+  register: warFilesResult
+
+- name: "Remove war files not matching the current version"
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ warFilesResult.files }}"
 
 - name: 'Configure authn-simple setup.properties'
   template:

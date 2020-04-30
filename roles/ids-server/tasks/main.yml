@@ -14,11 +14,6 @@
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
-- name: 'Check ids-server installation'
-  stat:
-    path: /home/{{ payara_user }}/install/ids.server
-  register: installationResult
-
 - name: 'Unarchive ids-server if not installed'
   unarchive:
     src: /home/{{ payara_user }}/downloads/ids.server-{{ ids_server_version }}-distro.zip
@@ -26,7 +21,20 @@
     remote_src: true
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
-  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+  when: ansible_local.local.instantiations.ids_server is not defined or ansible_local.local.versions.ids_server != ids_server_version
+
+- name: "Find any war files not matching the current version"
+  find:
+    paths: /home/{{ payara_user }}/install/ids.server/
+    use_regex: yes
+    patterns: "^.*-(?!{{ ids_server_version }}).*\\.war$"
+  register: warFilesResult
+
+- name: "Remove war files not matching the current version"
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ warFilesResult.files }}"
 
 - name: 'Create main data directory'
   file:
