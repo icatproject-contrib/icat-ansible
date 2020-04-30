@@ -1,114 +1,114 @@
 ---
-- name: 'Install common icat-server dependencies'
-  package: name={{ item }} state=present
+- name: "Install common icat-server dependencies"
+  package: name={{ item }} state=latest
   with_items:
     - python-suds
     - python-requests
 
-- name: 'Check icat-server package'
+- name: "Check icat-server package"
   stat:
     path: /home/{{ payara_user }}/downloads/icat.server-{{ icat_server_version }}-distro.zip
   register: packageResult
 
-- name: 'Download icat-server'
+- name: "Download icat-server"
   get_url:
     url: https://repo.icatproject.org/repo/org/icatproject/icat.server/{{ icat_server_version }}/icat.server-{{ icat_server_version }}-distro.zip
     dest: /home/{{ payara_user }}/downloads
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
-- name: 'Check icat-server installation'
+- name: "Check icat-server installation"
   stat:
     path: /home/{{ payara_user }}/install/icat.server
   register: installationResult
 
-- name: 'Unarchive icat-server if not installed'
+- name: "Unarchive icat-server if not installed"
   unarchive:
     src: /home/{{ payara_user }}/downloads/icat.server-{{ icat_server_version }}-distro.zip
     dest: /home/{{ payara_user }}/install
     remote_src: true
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- name: 'Create bin directory for the payara user'
+- name: "Create bin directory for the payara user"
   file:
     path: /home/{{ payara_user }}/bin
     state: directory
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
     mode: 0775
 
-- name: 'Add path to payara user bin directory for icat-server to PATH variable'
+- name: "Add path to payara user bin directory for icat-server to PATH variable"
   lineinfile:
     path: /home/{{ payara_user }}/.bashrc
-    line: 'export PATH=$PATH:/home/{{ payara_user }}/bin'
+    line: "export PATH=$PATH:/home/{{ payara_user }}/bin"
 
-- name: 'Create a stash directory for assembling configurations'
+- name: "Create a stash directory for assembling configurations"
   file:
     path: /home/{{ payara_user }}/stash
     state: directory
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
     mode: 0775
 
-- name: 'Create a stash directory for icat-server configs'
+- name: "Create a stash directory for icat-server configs"
   file:
     path: /home/{{ payara_user }}/stash/icat-server
     state: directory
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
     mode: 0775
 
-- name: 'Copy over payara setup.properties'
+- name: "Copy over payara setup.properties"
   template:
     src: roles/payara/templates/setup.properties.j2
     dest: /home/{{ payara_user }}/stash/icat-server/1-part
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
     mode: 0664
 
-- name: 'Copy over icat-server setup.properties'
+- name: "Copy over icat-server setup.properties"
   template:
     src: templates/setup.properties.j2
     dest: /home/{{ payara_user }}/stash/icat-server/2-part
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
     mode: 0664
 
-- name: 'Configure icat-server setup.properties by concatenation of files in the stash'
+- name: "Configure icat-server setup.properties by concatenation of files in the stash"
   assemble:
     src: /home/{{ payara_user }}/stash/icat-server
     dest: /home/{{ payara_user }}/install/icat.server/setup.properties
     delimiter: '\n'
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
     mode: 0600
   notify:
     - "icat-server-handler"
 
-- name: 'Configure icat-server run.properties'
+- name: "Configure icat-server run.properties"
   template:
     src: templates/run.properties.j2
     dest: /home/{{ payara_user }}/install/icat.server/run.properties
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
     mode: 0664
   notify:
     - "icat-server-handler"
 
-- name: 'Configure icat-server logback.xml'
+- name: "Configure icat-server logback.xml"
   copy:
     src: files/logback.xml
     dest: /home/{{ payara_user }}/install/icat.server/logback.xml
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
     mode: 0664
   notify:
     - "icat-server-handler"
 
-- name: 'Setup icat-server if not setup'
+- name: "Setup icat-server if not setup"
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.icat_server is not defined) or (ansible_local.local.instantiations.icat_server != 'true')
