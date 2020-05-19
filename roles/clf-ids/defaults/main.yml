@@ -1,0 +1,8 @@
+---
+
+clf_ids_version: "4.8.0"
+clf_ids_basedir: "/home/{{ payara_user }}/data/ids/idsbase"
+clf_ids_backupdir: "/home/{{ payara_user }}/data/ids/idsbkup"
+clf_ids_anon_username: "guest"
+clf_ids_anon_password: "guess"
+clf_ids_gemini: yes

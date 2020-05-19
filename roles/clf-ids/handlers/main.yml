@@ -1,0 +1,4 @@
+---
+
+- name: "clf-ids-handler"
+  include_tasks: handlers/clf-ids-handler.yml

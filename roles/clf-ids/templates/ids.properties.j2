@@ -1,0 +1,27 @@
+icat.url https://{{ icat_url }}:8181/
+
+# These are the base locations on the server for storing files. 
+# Relative directories are relative to the glassfish config 
+# directory for the application. The directories must exist and 
+# be writable by the user running glassfish 
+basedir {{ clf_ids_basedir }}
+backupdir {{ clf_ids_backupdir }}
+
+# Controls the size of generated images and thumbnails
+thumbnail.height 50
+trace.height 500
+trace.width 1000
+
+# This account is used internally by ids. It should be an account set up in icat with no specific privileges.
+icat.anon.authenticator simple
+icat.anon.username {{ clf_ids_anon_username }}
+icat.anon.password {{ clf_ids_anon_password }}
+
+# A space separated list of the Astra-Gemini 8 digit shot types that are 
+# handled slightly differently by the IDS
+# For Vulcan, this property can be commented out
+{% if clf_ids_gemini is defined and clf_ids_gemini %}
+gemini.8.digit.shottypes GS GQ GA
+{% else %}
+#gemini.8.digit.shottypes GS GQ GA
+{% endif %}

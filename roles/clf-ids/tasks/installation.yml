@@ -1,0 +1,22 @@
+---
+
+- name: "Setup clf-ids"
+  include_tasks: handlers/clf-ids-handler.yml
+
+- name: "Set fact on host to record that ids-server has been instantiated"
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: "instantiations"
+    option: "clf_ids"
+    value: "true"
+    no_extra_spaces: true
+    create: false
+
+- name: "Set fact on host to record version of ids-server that has been instantiated"
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: "versions"
+    option: "clf_ids"
+    value: "{{ clf_ids_version }}"
+    no_extra_spaces: true
+    create: false

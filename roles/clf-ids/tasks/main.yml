@@ -1,0 +1,79 @@
+---
+
+- name: "Install ImageMagick"
+  package: name=ImageMagick state=present
+
+- name: "Check ids-server package"
+  stat:
+    path: /home/{{ payara_user }}/downloads/ids-{{ clf_ids_version }}-distro.zip
+  register: packageResult
+
+- name: "Download clf-ids"
+  get_url:
+    url: http://nexus.esc.rl.ac.uk:8081/nexus/service/local/repositories/releases/content/uk/ac/rl/esc/ids/{{ clf_ids_version }}/ids-{{ clf_ids_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: "Check clf-ids installation"
+  stat:
+    path: /home/{{ payara_user }}/install/ids
+  register: installationResult
+
+- name: "Unarchive clf-ids if not installed"
+  unarchive:
+    src: /home/{{ payara_user }}/downloads/ids-{{ clf_ids_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
+    remote_src: true
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: "Create base data directory"
+  file:
+    path: "{{ clf_ids_basedir }}"
+    state: directory
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0775
+
+- name: "Create backup data directory"
+  file:
+    path: "{{ clf_ids_backupdir }}"
+    state: directory
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0775
+
+- name: "Check ids.properties file existence"
+  local_action: stat path={{ role_path }}/files/ids.properties
+  become: false
+  register: runPropertiesResult
+
+- name: "Configure ids.properties via copying"
+  copy:
+    src: file/ids.properties
+    dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/config/ids.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
+  notify:
+    - "clf-ids-handler"
+
+- name: "Configure ids.properties via templating"
+  template:
+    src: templates/ids.properties.j2
+    dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/config/ids.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
+  notify:
+    - "clf-ids-handler"
+
+- name: "Setup clf-ids if not setup"
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.clf_ids is not defined) or (ansible_local.local.instantiations.clf_ids != 'true')
