@@ -1,0 +1,45 @@
+# Real comments in this file are marked with '#' whereas commented out lines
+# are marked with '!'
+
+# If access to the IP CLF authentication should only be allowed from certain 
+# IP addresses then provide a space separated list of allowed values. These 
+# take the form of an IPV4 or IPV6 address followed by the number of bits 
+# (starting from the most significant) to consider.
+# typically this needs to be the IP address of the eCAT2 server
+# to ensure that IP logins are only done via eCAT2
+!ip = 130.246.0.0/16   172.16.68.0/24
+# sig-14=130.246.142.62/32 (/32 is the netmask for just that IP address)
+ip = 130.246.142.62/32
+
+# a space separated list of the instrument names in the ICAT
+# use "ALL" for a special account that has read access to data for all instruments
+# use "PUBLIC" for a special account that only has read access to public data
+instruments = TA2 TA3 ALL PUBLIC
+# space separated lists of the IP addresses that should have IP only access to the ICAT
+# sig-00=130.246.140.210 KP's PC=130.246.76.243 rgma07=130.246.78.1 artemis-test=130.246.143.151
+# sig-00
+instruments.TA2.ips = 130.246.140.210
+# my desktop
+instruments.TA3.ips = 130.246.76.243
+# rgma07
+instruments.ALL.ips = 130.246.78.1
+# artemis-test
+instruments.PUBLIC.ips = 130.246.143.151
+
+# an account that has read access to the data for all instruments
+# that will be used if the IP address is listed under instruments.ALL.ips
+ip.readall.account = agcr
+
+# an account that has read access only public data
+# that will be used if the IP address is listed under instruments.PUBLIC.ips
+# (any account name will work as long as it is not a special account 
+# such as CIC or JIMP that is set up with special permissions in ICAT)
+ip.public.account = public
+
+# hostname (and port if not default) of the ICAT that this authenticator is used on
+icat.server.url = https://{{ icat_url }}:8181
+# login details for an account on the ICAT that has read all access
+icat.authn_ip.login = simple username authn_ip password authnip14
+
+# The mechanism label to appear before the user name. This may be omitted.
+mechanism = ip

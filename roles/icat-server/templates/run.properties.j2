@@ -19,7 +19,7 @@ importCacheSize = 50
 exportCacheSize = 50
 
 # Desired authentication plugin mnemonics
-authn.list = {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}simple {% endif %}{% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %}db {% endif %}{% if ansible_local.local.instantiations.authn_anon is defined and ansible_local.local.instantiations.authn_anon == 'true' %}anon {% endif %}{% if ansible_local.local.instantiations.authn_ldap is defined and ansible_local.local.instantiations.authn_ldap == 'true' %}ldap {% endif %}
+authn.list = {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}simple {% endif %}{% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %}db {% endif %}{% if ansible_local.local.instantiations.authn_anon is defined and ansible_local.local.instantiations.authn_anon == 'true' %}anon {% endif %}{% if ansible_local.local.instantiations.authn_ldap is defined and ansible_local.local.instantiations.authn_ldap == 'true' %}ldap {% endif %}{% if ansible_local.local.instantiations.authn_ip_clf is defined and ansible_local.local.instantiations.authn_ip_clf == 'true' %}ip_clf {% endif %}
 
 # Parameters for each of the four plugins
 {% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %} 
@@ -52,6 +52,11 @@ authn.anon.friendly = Anonymous
 {% else %}
 !authn.anon.url = https://localhost:8181
 !authn.anon.friendly = Anonymous
+{% endif %}
+
+{% if ansible_local.local.instantiations.authn_ip_clf is defined and ansible_local.local.instantiations.authn_ip_clf == 'true' %}
+authn.ip_clf.jndi = java:global/authn.ip_clf-{{ authn_ip_clf_version }}/CLF_IP_Authenticator
+authn.ip_clf.friendly = IP
 {% endif %}
 
 # Notification setup
