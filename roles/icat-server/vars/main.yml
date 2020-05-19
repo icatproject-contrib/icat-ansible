@@ -1,0 +1,4 @@
+---
+
+icat_server_compat46: '{{ not not ( icat_server_version | regex_search("^4\.[0-6]\.") ) }}'
+icat_server_compat48: '{{ not not ( icat_server_version | regex_search("^4\.[0-8]\.") ) }}'

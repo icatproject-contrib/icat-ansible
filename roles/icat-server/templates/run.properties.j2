@@ -60,7 +60,13 @@ notification.Dataset = CU
 notification.Datafile = CU
 
 # Call logging setup
+{% if icat_server_compat46 is defined and icat_server_compat46 %}
+log.list = file table
+log.file = S
+log.table = S
+{% else %}
 log.list = SESSION WRITE READ INFO
+{% endif %}
 
 # Lucene
 lucene.url = https://{{ lucene_url }}:8181
