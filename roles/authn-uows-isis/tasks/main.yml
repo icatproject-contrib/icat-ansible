@@ -15,13 +15,13 @@
 
 - name: "Check authn-uows installation"
   stat:
-    path: /home/{{ payara_user }}/install/authn.uows
+    path: /home/{{ payara_user }}/software_installed/authn.uows
   register: installationResult
 
 - name: "Unarchive authn-uows if not installed"
   unarchive:
     src: /home/{{ payara_user }}/downloads/authn.uows-{{ authn_uows_version }}-distro.zip
-    dest: /home/{{ payara_user }}/install
+    dest: /home/{{ payara_user }}/software_installed
     remote_src: true
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
@@ -35,7 +35,7 @@
 - name: "Configure authn-uows setup.properties via copying"
   copy:
     src: files/setup.properties
-    dest: /home/{{ payara_user }}/install/authn.uows/setup.properties
+    dest: /home/{{ payara_user }}/software_installed/authn.uows/setup.properties
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0600
@@ -46,7 +46,7 @@
 - name: "Configure authn-uows setup.properties via templating"
   template:
     src: roles/payara/templates/setup.properties.j2
-    dest: /home/{{ payara_user }}/install/authn.uows/setup.properties
+    dest: /home/{{ payara_user }}/software_installed/authn.uows/setup.properties
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0600
@@ -62,7 +62,7 @@
 - name: "Configure authn-uows run.properties via copying"
   copy:
     src: files/run.properties
-    dest: /home/{{ payara_user }}/install/authn.uows/run.properties
+    dest: /home/{{ payara_user }}/software_installed/authn.uows/run.properties
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
@@ -73,7 +73,7 @@
 - name: "Configure authn-uows run.properties via templating"
   template:
     src: templates/run.properties.j2
-    dest: /home/{{ payara_user }}/install/authn.uows/run.properties
+    dest: /home/{{ payara_user }}/software_installed/authn.uows/run.properties
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
@@ -84,7 +84,7 @@
 - name: "Configure authn-uows logback.xml"
   copy:
     src: files/logback.xml
-    dest: /home/{{ payara_user }}/install/authn.uows/logback.xml
+    dest: /home/{{ payara_user }}/software_installed/authn.uows/logback.xml
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
