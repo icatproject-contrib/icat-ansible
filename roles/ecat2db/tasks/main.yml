@@ -1,0 +1,32 @@
+- name: "Create database for ecat2"
+  mysql_db:
+    name: "{{ ecat2_database }}"
+    login_user: "{{ db_root_username }}"
+    login_password: "{{ db_root_password }}"
+
+- name: "Create user for ecat2 database"
+  mysql_user:
+    name: "{{ db_ecat2_username }}"
+    password: "{{ db_ecat2_password }}"
+    priv: "{{ ecat2_database }}.*:ALL,GRANT"
+    login_user: "{{ db_root_username }}"
+    login_password: "{{ db_root_password }}"
+
+- name: "Import: Check payara is running"
+  import_tasks: roles/payara/tasks/status.yml
+
+- name: "Create connetion pool for ecat2 database"
+  shell: 'su -l {{ payara_user }} -c "asadmin create-jdbc-connection-pool --datasourceclassname com.mysql.jdbc.jdbc2.optional.MysqlDataSource --restype javax.sql.DataSource --property user={{ db_ecat2_username }}:password={{ db_ecat2_password }}:DatabaseName={{ ecat2_database }}:ServerName=localhost:port=3306 ecat2-pool"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: payaraStatus.rc == 0
+
+- name: "Create JDBC resource ecat2 database"
+  shell: 'su -l {{ payara_user }} -c "asadmin create-jdbc-resource --connectionpoolid ecat2-pool jdbc/ecat2"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: payaraStatus.rc == 0

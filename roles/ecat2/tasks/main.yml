@@ -1,0 +1,60 @@
+---
+
+- name: "Check ecat2 package"
+  stat:
+    path: /home/{{ payara_user }}/downloads/ecat2-{{ ecat2_version }}-distro.zip
+  register: packageResult
+
+- name: "Download ecat2"
+  get_url:
+    url: http://nexus.esc.rl.ac.uk:8081/nexus/service/local/repositories/releases/content/uk/ac/rl/ecat/ecat2/{{ ecat2_version }}/ecat2-{{ ecat2_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: "Check ecat2 installation"
+  stat:
+    path: /home/{{ payara_user }}/install/ecat2
+  register: installationResult
+
+- name: "Unarchive ecat2 if not installed"
+  unarchive:
+    src: /home/{{ payara_user }}/downloads/ecat2-{{ ecat2_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
+    remote_src: true
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: "Check ecat2.properties file existence"
+  local_action: stat path={{ role_path }}/files/ecat2.properties
+  become: false
+  register: runPropertiesResult
+
+- name: "Configure ecat2.properties via copying"
+  copy:
+    src: files/ecat2.properties
+    dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/config/ecat2.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
+  notify:
+    - "ecat2-handler"
+
+- name: "Configure ecat2.properties via templating"
+  template:
+    src: templates/ecat2.properties.j2
+    dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/config/ecat2.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
+  notify:
+    - "ecat2-handler"
+
+- name: "Setup ecat2 if not setup"
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.ecat2 is not defined) or (ansible_local.local.instantiations.ecat2 != 'true')

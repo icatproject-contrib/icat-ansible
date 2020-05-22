@@ -1,0 +1,12 @@
+---
+
+- name: "Import: Check payara is running"
+  import_tasks: roles/payara/tasks/status.yml
+
+- name: "Re-install ecat2"
+  shell: 'su -l {{ payara_user }} -c "asadmin deploy --force --deploymentorder 140 /home/{{ payara_user }}/install/ecat2-{{ ecat2_version }}/target/ecat2-{{ ecat2_version }}.war"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: payaraStatus.rc == 0

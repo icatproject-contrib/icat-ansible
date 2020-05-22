@@ -1,0 +1,90 @@
+# The server running icat
+icat.url https://{{ icat_url }}:8181/
+
+# The server with the files cataloged by icat. This needs both an internal and external url.
+# The external one will be different if iptables is redirecting incoming packets on port 443.
+ids.url.internal https://{{ ids_url }}:8181/
+ids.url.external https://{{ ids_url }}/
+
+# uncomment this property to use a custom log4j.properties file
+!log4j.properties ecat2.log4j.properties
+
+# specify which manifest parser to user: VulcanManifestParser or AstraGeminiManifestParser
+manifest.parser.class VulcanManifestParser
+
+# the URL of the manifest file describing all the channels (also known as the polar bear file)
+manifest.structure.url http://polarbears.clf.rl.ac.uk/AstraGemini/Manifests/directory.structure.manifest.xml
+
+# The period between each check of whether the manifest (polar bear) file has changed
+# (in milliseconds: 300000 = 5 minutes) 
+manifest.check.period 300000
+
+# This should be set to the number of hours that an icat session is valid for
+# The value should be rounded down if it is not an integer value
+icat.login.hours 1
+
+# Percentage of refreshmargin (95 should be a safe number) to avoid 
+# trying to use a just expired session.
+icat.login.refreshmargin.percentage 95
+
+# This account is used internally by ecat2. It should be an account set up in 
+# icat with read privileges on DatasetType, ParameterType, DatafileFormat and
+# "Dataset[type.name = 'PB']" - Polar Bear Datasets.
+icat.anon db username guest password guess
+
+# This determines how long a session will last if the user is inactive.
+session.maxInactiveMinutes 30
+
+# By how much time different icat threads may be delayed with respect to each other.
+icat.skew.seconds 10
+
+# Default number of datasets to cache in the user's browser
+dataset.cache.size 50
+
+# How frequently to poll for "continuous" mode
+continuous.poll.interval.seconds 10
+
+# Default number of datasets to display at once
+pagesize 10
+
+# How frequently to poll to detect new data (if set to zero there will be no polling)
+new.data.poll.interval.seconds 60
+
+# How many hours of historical data to retrieve when starting a continuous mode plot
+plot.archive.data.hours 24
+
+# Maximum number of points to show on a plot in continuous mode
+plot.max.points 1000
+
+# Size of image to be created for plots
+plot.image.width 500
+plot.image.height 500
+
+# Values of Max Shots to choose from (0 means unlimited)
+maxshots.value1 50
+maxshots.value2 1000
+maxshots.value3 0
+
+# Control the calculations
+calculations.maxChangeFactor 0.2
+calculations.backgroundBins 25
+
+# authn methods
+authn.list ldap db
+
+authn.ldap.friendly FederalId
+authn.ldap.list username password
+authn.ldap.password.visible false
+
+authn.db.list username password
+authn.db.password.visible false
+
+authn.anon.list
+
+# if the CLF IP authenticator is being used 
+# this is the mnemonic value set in its property file
+ip.authenticator.mnemonic ip
+
+# data types
+data.types.list GD GQ GS
+selected.data.types.list GS

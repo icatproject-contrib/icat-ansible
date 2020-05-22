@@ -1,0 +1,4 @@
+---
+
+- name: "ecat2-handler"
+  include_tasks: handlers/ecat2-handler.yml

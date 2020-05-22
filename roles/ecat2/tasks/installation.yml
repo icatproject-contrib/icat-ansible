@@ -1,0 +1,22 @@
+---
+
+- name: 'Setup ecat2'
+  include_tasks: handlers/ecat2-handler.yml
+
+- name: 'Set fact on host to record that ecat2 has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'instantiations'
+    option: 'ecat2'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
+
+- name: 'Set fact on host to record version of ecat2 that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'ecat2'
+    value: '{{ ecat2_version }}'
+    no_extra_spaces: true
+    create: false
