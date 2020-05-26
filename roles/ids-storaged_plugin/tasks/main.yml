@@ -54,6 +54,16 @@
   notify:
     - "ids-storaged_plugin-handler"
 
+- name: "Configure ids-storaged_plugin logback.xml"
+  copy:
+    src: files/logback.xml
+    dest: /home/{{ payara_user }}/install/storaged-ids-plugin/logback.xml
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  notify:
+    - "ids-storaged_plugin-handler"
+
 - name: "Setup ids-storaged_plugin if not setup"
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.ids_storaged_plugin is not defined) or (ansible_local.local.instantiations.ids_storaged_plugin != 'true')
