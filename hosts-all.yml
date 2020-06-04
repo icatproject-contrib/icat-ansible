@@ -10,6 +10,7 @@
     - role: icatdb
     - role: payara
     - role: authn-simple
+    - role: authn-uows-isis
     - role: authn-anon
     - role: authn-db
     - role: authn-ldap
