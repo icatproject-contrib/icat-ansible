@@ -1,4 +1,7 @@
 ---
+- pip:
+  name: github3.py
+
 - name: "Check authn-uows package"
   stat:
     path: /home/{{ payara_user }}/downloads/authn.uows-{{ authn_uows_version }}-distro.zip
