@@ -17,7 +17,6 @@
     user: "{{ github_user }}"
     repo: "icatproject-contrib/icat-ansible"
     action: latest_release
-    mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
 - name: "Check authn-uows installation"
