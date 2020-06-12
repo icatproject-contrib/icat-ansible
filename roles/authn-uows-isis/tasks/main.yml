@@ -13,8 +13,8 @@
 
 - name: "Download authn-uows"
   github_release:
-    token: "{{ github_token }}"
     user: "{{ github_user }}"
+    password: "{{ github_pass }}"
     repo: "icatproject-contrib/icat-ansible"
     action: latest_release
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
