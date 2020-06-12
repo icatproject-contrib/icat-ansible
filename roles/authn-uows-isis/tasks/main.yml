@@ -1,6 +1,6 @@
 ---
 - pip:
-  name: github3.py
+    name: github3.py
 
 - name: "Check authn-uows package"
   stat:
