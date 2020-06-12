@@ -57,4 +57,4 @@ db_topcat_password: "{{ vault_db_topcat_password }}"
 
 # GitHub details to access private github releases
 github_user: "{{ github_username }}"
-github_pass: "{{ github_password }}"
+github_token: "{{ github_access_token }}"
