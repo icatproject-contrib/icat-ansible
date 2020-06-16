@@ -14,8 +14,8 @@
 - name: "Download authn-uows"
   github_release:
     token: "{{ github_token }}"
-    user: "{{ github_user }}"
-    repo: "ral-facilities/isis-icat-authn-uows"
+    user: "ral-facilities"
+    repo: "isis-icat-authn-uows"
     action: latest_release
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
