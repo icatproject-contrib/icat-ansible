@@ -15,7 +15,7 @@
   github_release:
     token: "{{ github_token }}"
     user: "{{ github_user }}"
-    repo: "icatproject-contrib/icat-ansible"
+    repo: "ral-facilities/isis-icat-authn-uows"
     action: latest_release
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
