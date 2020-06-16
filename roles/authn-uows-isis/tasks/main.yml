@@ -1,22 +1,16 @@
 ---
-- easy_install:
-    name: pip
-    state: latest
-
-- pip:
-    name: github3.py
-
 - name: "Check authn-uows package"
   stat:
     path: /home/{{ payara_user }}/downloads/authn.uows-{{ authn_uows_version }}-distro.zip
   register: packageResult
 
 - name: "Download authn-uows"
-  github_release:
-    token: "{{ github_token }}"
-    user: "ral-facilities"
-    repo: "isis-icat-authn-uows"
-    action: latest_release
+  get_url:
+    url: http://nexus.esc.rl.ac.uk:8081/nexus/service/local/repositories/releases/content/org/icatproject/authn.uows/{{ authn_uows_version }}/authn.uows-{{ authn_uows_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
 - name: "Check authn-uows installation"
