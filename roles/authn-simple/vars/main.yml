@@ -1,0 +1,3 @@
+---
+
+authn_simple_compat1x: '{{ not not ( authn_simple_version | regex_search("^1\.") ) }}'

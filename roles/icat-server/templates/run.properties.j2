@@ -19,7 +19,7 @@ importCacheSize = 50
 exportCacheSize = 50
 
 # Desired authentication plugin mnemonics
-authn.list = {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}simple {% endif %}{% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %}db {% endif %}{% if ansible_local.local.instantiations.authn_anon is defined and ansible_local.local.instantiations.authn_anon == 'true' %}anon {% endif %}{% if ansible_local.local.instantiations.authn_ldap is defined and ansible_local.local.instantiations.authn_ldap == 'true' %}ldap {% endif %}{% if ansible_local.local.instantiations.authn_ip_clf is defined and ansible_local.local.instantiations.authn_ip_clf == 'true' %}ip_clf {% endif %}
+authn.list = {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}simple {% endif %}{% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %}db {% endif %}{% if ansible_local.local.instantiations.authn_anon is defined and ansible_local.local.instantiations.authn_anon == 'true' %}anon {% endif %}{% if ansible_local.local.instantiations.authn_ldap is defined and ansible_local.local.instantiations.authn_ldap == 'true' %}ldap {% endif %}{% if ansible_local.local.instantiations.authn_ip_clf is defined and ansible_local.local.instantiations.authn_ip_clf == 'true' %}ip_clf {% endif %}{% if ansible_local.local.instantiations.authn_uows_clf is defined and ansible_local.local.instantiations.authn_uows_clf == 'true' %}uows_clf {% endif %}
 
 # Parameters for each of the four plugins
 {% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %} 
@@ -29,7 +29,11 @@ authn.db.url = https://{{ authn_db_url }}:8181
 {% endif %}
 
 {% if ansible_local.local.instantiations.authn_ldap is defined and ansible_local.local.instantiations.authn_ldap == 'true' %}
+{% if authn_ldap_compat1x is defined and authn_ldap_compat1x %}
+authn.ldap.jndi = java:global/authn.ldap-{{ authn_ldap_version }}/LDAP_Authenticator
+{% else %}
 authn.ldap.url = https://{{ authn_ldap_url }}:8181
+{% endif %}
 authn.ldap.admin = true
 authn.ldap.friendly = Federal Id
 {% else %}
@@ -39,7 +43,11 @@ authn.ldap.friendly = Federal Id
 {% endif %}
 
 {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}
+{% if authn_simple_compat1x is defined and authn_simple_compat1x %}
+authn.simple.jndi = java:global/authn.simple-{{ authn_simple_version }}/SIMPLE_Authenticator
+{% else %}
 authn.simple.url = https://{{ authn_simple_url }}:8181 
+{% endif %}
 authn.simple.friendly = Simple
 {% else %}
 !authn.simple.url = https://localhost:8181 
@@ -59,21 +67,41 @@ authn.ip_clf.jndi = java:global/authn.ip_clf-{{ authn_ip_clf_version }}/CLF_IP_A
 authn.ip_clf.friendly = IP
 {% endif %}
 
+{% if ansible_local.local.instantiations.authn_uows_clf is defined and ansible_local.local.instantiations.authn_uows_clf == 'true' %}
+authn.uows_clf.jndi = java:global/authn.uows_clf-{{ authn_uows_clf_version }}/CLF_UOWS_Authenticator
+authn.uows_clf.friendly = IP
+{% endif %}
+
 # Notification setup
 notification.list = Dataset Datafile
 notification.Dataset = CU
 notification.Datafile = CU
 
 # Call logging setup
+{% if icat_server_compat46 is defined and icat_server_compat46 %}
+log.list = file table
+log.file = S
+log.table = S
+{% else %}
 log.list = SESSION WRITE READ INFO
+{% endif %}
 
 # Lucene
+{% if icat_lucene is defined and icat_lucene %}
 lucene.url = https://{{ lucene_url }}:8181
 lucene.populateBlockSize = 1000
 lucene.directory = /home/{{ payara_user }}/data/lucene
 lucene.backlogHandlerIntervalSeconds = 60
 lucene.enqueuedRequestIntervalSeconds = 5
 lucene.entitiesToIndex = Dataset Investigation InvestigationUser DatasetParameter InvestigationParameter Sample
+{% else %}
+!lucene.url = https://localhost:8181
+!lucene.populateBlockSize = 10000
+!lucene.directory = /home/{{ payara_user }}/data/lucene
+!lucene.backlogHandlerIntervalSeconds = 60
+!lucene.enqueuedRequestIntervalSeconds = 5
+!lucene.entitiesToIndex = Dataset Investigation InvestigationUser DatasetParameter InvestigationParameter Sample
+{% endif %}
 
 # List members of cluster
 !cluster = http://vm200.nubes.stfc.ac.uk:8080 https://smfisher:8181
