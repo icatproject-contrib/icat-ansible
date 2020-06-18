@@ -34,6 +34,21 @@ Add the correct content to `/etc/yum.repos.d/ansible-el7-x86_64.pkgs`:
 echo '# Additional configuration for ansible-el7-x86_64' > /etc/yum.repos.d/ansible-el7-x86_64.pkgs
 ```
 
+### CentOS 7 Error
+If you're on CentOS 7, you may receive this error if you attempt to install ansible:
+
+``` http://mirrors.gridpp.rl.ac.uk/snapshot/2019-05-20/centos-7x-x86_64/RPMS.updates/git-1.8.3.1-20.el7.x86_64.rpm: [Errno 14] HTTP Error 404 - Not Found ```
+
+The date in the url is causing the problem. To fix this, edit the baseurl property in these files (in /etc/yum.repos.d):
+
+sl-7x-x86_64-extras.repo
+centos-7x-x86_64-os.repo
+centos-7x-x86_64-updates.repo
+epel-7-x86_64.repo
+
+changing ‘2019-05-20’ in the url to ‘2020-05-01’, then running `yum makecache`.
+
+
 ### Install the Ansible Software
 
 ```Shell
