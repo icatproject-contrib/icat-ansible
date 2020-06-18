@@ -29,7 +29,11 @@ authn.db.url = https://{{ authn_db_url }}:8181
 {% endif %}
 
 {% if ansible_local.local.instantiations.authn_ldap is defined and ansible_local.local.instantiations.authn_ldap == 'true' %}
+{% if authn_ldap_compat1x is defined and authn_ldap_compat1x %}
+authn.ldap.jndi = java:global/authn.ldap-{{ authn_ldap_version }}/LDAP_Authenticator
+{% else %}
 authn.ldap.url = https://{{ authn_ldap_url }}:8181
+{% endif %}
 authn.ldap.admin = true
 authn.ldap.friendly = Federal Id
 {% else %}
@@ -39,7 +43,11 @@ authn.ldap.friendly = Federal Id
 {% endif %}
 
 {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}
+{% if authn_simple_compat1x is defined and authn_simple_compat1x %}
+authn.simple.jndi = java:global/authn.simple-{{ authn_simple_version }}/SIMPLE_Authenticator
+{% else %}
 authn.simple.url = https://{{ authn_simple_url }}:8181 
+{% endif %}
 authn.simple.friendly = Simple
 {% else %}
 !authn.simple.url = https://localhost:8181 
