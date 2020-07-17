@@ -1,0 +1,12 @@
+namespace: "icatproject_contrib"
+name: "icat_ansible"
+version: 0.1.0
+readme: "README.md"
+authors:
+  - "Bruno Canning (https://github.com/brunocanning)"
+  - "Louise Davies (https://github.com/louise-davies)"
+  - "Ibrahim Dridi (https://github.com/ibbythedridi)"
+  - "Stuart Pullinger (https://github.com/stuartpullinger)"
+  - "Alan Kyffin (https://github.com/ajkyffin)"
+repository: "https://github.com/icatproject-contrib/icat-ansible"
+issues: "https://github.com/icatproject-contrib/icat-ansible/issues"
