@@ -1,0 +1,42 @@
+- name: "Create a stash directory for assembling configurations"
+  file:
+    path: /home/{{ payara_user }}/stash
+    state: directory
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0775
+
+- name: "Create a stash directory for ids_server configs"
+  file:
+    path: /home/{{ payara_user }}/stash/ids_server
+    state: directory
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0775
+
+- name: "Copy over {{ payara_user }} setup.properties"
+  template:
+    src: roles/payara/templates/setup.properties.j2
+    dest: /home/{{ payara_user }}/stash/ids_server/1-part
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+
+- name: "Copy over ids_server setup.properties"
+  template:
+    src: templates/setup.properties.j2
+    dest: /home/{{ payara_user }}/stash/ids_server/2-part
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+
+- name: "Configure ids_server setup.properties by concatenation of files in the stash"
+  assemble:
+    src: /home/{{ payara_user }}/stash/ids_server
+    dest: /home/{{ payara_user }}/install/ids.server/setup.properties
+    delimiter: '\n'
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0600
+  notify:
+    - "ids_server-handler"

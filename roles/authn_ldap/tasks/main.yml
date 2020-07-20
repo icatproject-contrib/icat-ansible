@@ -1,0 +1,104 @@
+---
+- name: "Check authn_ldap package"
+  stat:
+    path: /home/{{ payara_user }}/downloads/authn.ldap-{{ authn_ldap_version }}-distro.zip
+  register: packageResult
+
+- name: "Download authn_ldap"
+  get_url:
+    url: https://repo.icatproject.org/repo/org/icatproject/authn.ldap/{{ authn_ldap_version }}/authn.ldap-{{ authn_ldap_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: "Check authn_ldap installation"
+  stat:
+    path: /home/{{ payara_user }}/install/authn.ldap
+  register: installationResult
+
+- name: "Unarchive authn_ldap if not installed"
+  unarchive:
+    src: /home/{{ payara_user }}/downloads/authn.ldap-{{ authn_ldap_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
+    remote_src: true
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: "Check setup.properties file existence"
+  local_action: stat path={{ role_path }}/files/setup.properties
+  become: false
+  register: setupPropertiesResult
+
+- name: "Configure authn_ldap run.properties via copying"
+  copy:
+    src: files/setup.properties
+    dest: /home/{{ payara_user }}/install/authn.ldap/setup.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0600
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
+  notify:
+    - "authn_ldap-handler"
+
+- name: "Configure authn_ldap setup.properties via templating"
+  template:
+    src: roles/payara/templates/setup.properties.j2
+    dest: /home/{{ payara_user }}/install/authn.ldap/setup.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0600
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false
+  notify:
+    - "authn_ldap-handler"
+
+- name: "Check run.properties file existence"
+  local_action: stat path={{ role_path }}/files/run.properties
+  become: false
+  register: runPropertiesResult
+
+- name: "Configure authn_ldap run.properties via copying"
+  copy:
+    src: file/run.properties
+    dest: /home/{{ payara_user }}/install/authn.ldap/run.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
+  notify:
+    - "authn_ldap-handler"
+
+- name: "Configure authn_ldap run.properties via templating"
+  template:
+    src: templates/run.properties.j2
+    dest: /home/{{ payara_user }}/install/authn.ldap/run.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
+  notify:
+    - "authn_ldap-handler"
+
+- name: "Configure authn_ldap logback.xml"
+  copy:
+    src: files/logback.xml
+    dest: /home/{{ payara_user }}/install/authn.ldap/logback.xml
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  notify:
+    - "authn_ldap-handler"
+
+- name: "Run tasks for authn_ldap versions 1.x"
+  import_tasks: tasks/compat1x.yml
+  when: authn_ldap_compat1x is defined and authn_ldap_compat1x
+
+- name: "Setup authn_ldap if not setup"
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_ldap is not defined) or (ansible_local.local.instantiations.authn_ldap != 'true')
+
+- name: "Set temporary fact to indicate authn_ldap is installed within play"
+  set_fact:
+    authn_ldap: true

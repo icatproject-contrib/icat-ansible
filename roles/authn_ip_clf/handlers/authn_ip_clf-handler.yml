@@ -1,0 +1,12 @@
+---
+
+- name: 'Import: Check payara is running'
+  import_tasks: roles/payara/tasks/status.yml
+
+- name: 'Re-install authn_ip_clf'
+  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/authn.ip_clf; python setup -vv install"'
+  become: true
+  become_user: root
+  args:
+    executable: /bin/bash
+  when: payaraStatus.rc == 0

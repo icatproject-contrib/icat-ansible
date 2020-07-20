@@ -1,0 +1,118 @@
+---
+- name: "Install common icat_server dependencies"
+  package: name={{ item }} state=latest
+  with_items:
+    - python-suds
+    - python-requests
+
+- name: "Check icat_server package"
+  stat:
+    path: /home/{{ payara_user }}/downloads/icat.server-{{ icat_server_version }}-distro.zip
+  register: packageResult
+
+- name: "Download icat_server"
+  get_url:
+    url: https://repo.icatproject.org/repo/org/icatproject/icat.server/{{ icat_server_version }}/icat.server-{{ icat_server_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: "Check icat_server installation"
+  stat:
+    path: /home/{{ payara_user }}/install/icat.server
+  register: installationResult
+
+- name: "Unarchive icat_server if not installed"
+  unarchive:
+    src: /home/{{ payara_user }}/downloads/icat.server-{{ icat_server_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
+    remote_src: true
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: "Create bin directory for the payara user"
+  file:
+    path: /home/{{ payara_user }}/bin
+    state: directory
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0775
+
+- name: "Add path to payara user bin directory for icat_server to PATH variable"
+  lineinfile:
+    path: /home/{{ payara_user }}/.bashrc
+    line: "export PATH=$PATH:/home/{{ payara_user }}/bin"
+
+- name: "Force ansible to regather local facts - needed to detect what authn plugins have been installed"
+  setup:
+    filter: ansible_local
+
+- name: "Check setup.properties file existence"
+  local_action: stat path={{ role_path }}/files/setup.properties
+  become: false
+  register: setupPropertiesResult
+
+- name: "Configure icat_server setup.properties via copying"
+  copy:
+    src: files/setup.properties
+    dest: /home/{{ payara_user }}/install/icat.server/setup.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0600
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
+  notify:
+    - "icat_server-handler"
+
+- name: "Configure icat_server setup.properties via templating"
+  import_tasks: tasks/create-setup-properties.yml
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false
+  notify:
+    - "icat_server-handler"
+
+- name: "Check run.properties file existence"
+  local_action: stat path={{ role_path }}/files/run.properties
+  become: false
+  register: runPropertiesResult
+
+- name: "Configure icat_server run.properties via copying"
+  copy:
+    src: files/run.properties
+    dest: /home/{{ payara_user }}/install/icat.server/run.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
+  notify:
+    - "icat_server-handler"
+
+- name: "Configure icat_server run.properties via templating"
+  template:
+    src: templates/run.properties.j2
+    dest: /home/{{ payara_user }}/install/icat.server/run.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
+  notify:
+    - "icat_server-handler"
+
+- name: "Configure icat_server logback.xml"
+  copy:
+    src: files/logback.xml
+    dest: /home/{{ payara_user }}/install/icat.server/logback.xml
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  notify:
+    - "icat_server-handler"
+
+- name: "Run tasks for icat_server versions <= 4.8"
+  import_tasks: tasks/compat48.yml
+  when: icat_server_compat48 is defined and icat_server_compat48
+
+- name: "Setup icat_server if not setup"
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.icat_server is not defined) or (ansible_local.local.instantiations.icat_server != 'true')

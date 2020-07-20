@@ -1,0 +1,4 @@
+---
+
+- name: "authn_uows-handler"
+  include_tasks: handlers/authn_uows-handler.yml

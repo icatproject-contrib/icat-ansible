@@ -9,10 +9,10 @@
     - role: mariadb
     - role: icatdb
     - role: payara
-    - role: authn-simple
-    - role: authn-uows-isis
-    - role: icat-lucene
-    - role: icat-server
-    - role: ids-storage_file
-    - role: ids-server
+    - role: authn_simple
+    - role: authn_uows_isis
+    - role: icat_lucene
+    - role: icat_server
+    - role: ids_storage_file
+    - role: ids_server
     - role: topcat

@@ -1,0 +1,22 @@
+---
+
+- name: 'Setup authn_simple'
+  include_tasks: handlers/authn_simple-handler.yml
+
+- name: 'Set fact on host to record that authn_simple has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'instantiations'
+    option: 'authn_simple'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
+
+- name: 'Set fact on host to record version of authn_simple that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'authn_simple'
+    value: '{{ authn_simple_version }}'
+    no_extra_spaces: true
+    create: false

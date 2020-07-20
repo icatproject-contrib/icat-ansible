@@ -1,0 +1,100 @@
+---
+- name: "Check authn_simple package"
+  stat:
+    path: /home/{{ payara_user }}/downloads/authn.simple-{{ authn_simple_version }}-distro.zip
+  register: packageResult
+
+- name: "Download authn_simple"
+  get_url:
+    url: https://repo.icatproject.org/repo/org/icatproject/authn.simple/{{ authn_simple_version }}/authn.simple-{{ authn_simple_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: "Check authn_simple installation"
+  stat:
+    path: /home/{{ payara_user }}/install/authn.simple
+  register: installationResult
+
+- name: "Unarchive authn_simple if not installed"
+  unarchive:
+    src: /home/{{ payara_user }}/downloads/authn.simple-{{ authn_simple_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
+    remote_src: true
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: "Check setup.properties file existence"
+  local_action: stat path={{ role_path }}/files/setup.properties
+  become: false
+  register: setupPropertiesResult
+
+- name: "Configure authn_simple setup.properties via copying"
+  copy:
+    src: files/setup.properties
+    dest: /home/{{ payara_user }}/install/authn.simple/setup.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0600
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
+  notify:
+    - "authn_simple-handler"
+
+- name: "Configure authn_simple setup.properties via templating"
+  template:
+    src: roles/payara/templates/setup.properties.j2
+    dest: /home/{{ payara_user }}/install/authn.simple/setup.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0600
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false
+  notify:
+    - "authn_simple-handler"
+
+- name: "Check run.properties file existence"
+  local_action: stat path={{ role_path }}/files/run.properties
+  become: false
+  register: runPropertiesResult
+
+- name: "Configure authn_simple run.properties via copying"
+  copy:
+    src: files/run.properties
+    dest: /home/{{ payara_user }}/install/authn.simple/run.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
+  notify:
+    - "authn_simple-handler"
+
+- name: "Configure authn_simple run.properties via templating"
+  template:
+    src: templates/run.properties.j2
+    dest: /home/{{ payara_user }}/install/authn.simple/run.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
+  notify:
+    - "authn_simple-handler"
+
+- name: "Configure authn_simple logback.xml"
+  copy:
+    src: files/logback.xml
+    dest: /home/{{ payara_user }}/install/authn.simple/logback.xml
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  notify:
+    - "authn_simple-handler"
+
+- name: "Run tasks for authn_simple versions 1.x"
+  import_tasks: tasks/compat1x.yml
+  when: authn_simple_compat1x is defined and authn_simple_compat1x
+
+- name: "Setup authn_simple if not setup"
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_simple is not defined) or (ansible_local.local.instantiations.authn_simple != 'true')

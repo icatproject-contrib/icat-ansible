@@ -1,0 +1,4 @@
+---
+
+- name: "authn_simple-handler"
+  include_tasks: handlers/authn_simple-handler.yml

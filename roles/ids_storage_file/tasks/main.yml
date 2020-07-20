@@ -1,0 +1,59 @@
+---
+- name: "Check ids_storage_file package"
+  stat:
+    path: /home/{{ payara_user }}/downloads/ids.storage_file-{{ ids_storage_file_version }}-distro.zip
+  register: packageResult
+
+- name: "Download ids_storage_file"
+  get_url:
+    url: https://repo.icatproject.org/repo/org/icatproject/ids.storage_file/{{ ids_storage_file_version }}/ids.storage_file-{{ ids_storage_file_version }}-distro.zip
+    dest: /home/{{ payara_user }}/downloads
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: "Check ids_storage_file installation"
+  stat:
+    path: /home/{{ payara_user }}/install/ids.storage_file
+  register: installationResult
+
+- name: "Unarchive ids_storage_file if not installed"
+  unarchive:
+    src: /home/{{ payara_user }}/downloads/ids.storage_file-{{ ids_storage_file_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
+    remote_src: true
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+  when: installationResult.stat.exists is defined and installationResult.stat.exists == false
+
+- name: "Check setup.properties file existence"
+  local_action: stat path={{ role_path }}/files/setup.properties
+  become: false
+  register: setupPropertiesResult
+
+- name: "Configure ids_storage_file setup.properties via copying"
+  copy:
+    src: files/setup.properties
+    dest: /home/{{ payara_user }}/install/ids.storage_file/setup.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0600
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
+  notify:
+    - "ids_storage_file-handler"
+
+- name: "Configure ids_storage_file setup.properties via templating"
+  template:
+    src: roles/payara/templates/setup.properties.j2
+    dest: /home/{{ payara_user }}/install/ids.storage_file/setup.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0600
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false
+  notify:
+    - "ids_storage_file-handler"
+
+- name: "Setup ids_storage_file if not setup"
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.ids_storage_file is not defined) or (ansible_local.local.instantiations.ids_storage_file != 'true')

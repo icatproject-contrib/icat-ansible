@@ -1,0 +1,4 @@
+---
+
+- name: "ids_storaged_plugin-handler"
+  include_tasks: handlers/ids_storaged_plugin-handler.yml
