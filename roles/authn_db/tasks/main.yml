@@ -41,7 +41,7 @@
     mode: 0600
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
   notify:
-    - "authn-db-handler"
+    - "authn_db-handler"
 
 - name: "Configure authn_db setup.properties via templating"
   template:
@@ -52,7 +52,7 @@
     mode: 0600
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false
   notify:
-    - "authn-db-handler"
+    - "authn_db-handler"
 
 - name: "Check run.properties file existence"
   local_action: stat path={{ role_path }}/files/run.properties
@@ -68,7 +68,7 @@
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
   notify:
-    - "authn-db-handler"
+    - "authn_db-handler"
 
 - name: "Configure authn_db run.properties via templating"
   template:
@@ -79,7 +79,7 @@
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
   notify:
-    - "authn-db-handler"
+    - "authn_db-handler"
 
 - name: "Configure authn_db logback.xml"
   copy:
@@ -89,7 +89,7 @@
     group: "{{ payara_user }}"
     mode: 0664
   notify:
-    - "authn-db-handler"
+    - "authn_db-handler"
 
 - name: "Setup authn_db if not setup"
   import_tasks: tasks/installation.yml

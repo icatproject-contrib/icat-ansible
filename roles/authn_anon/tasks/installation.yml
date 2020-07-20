@@ -1,6 +1,6 @@
 ---
 - name: "Setup authn_anon"
-  include_tasks: handlers/authn-anon-handler.yml
+  include_tasks: handlers/authn_anon-handler.yml
 
 - name: "Set fact on host to record that authn_anon has been instantiated"
   ini_file:

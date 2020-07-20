@@ -35,7 +35,7 @@
     group: "{{ payara_user }}"
     mode: 0600
   notify:
-    - "authn-anon-handler"
+    - "authn_anon-handler"
 
 - name: "Check run.properties file existence"
   local_action: stat path={{ role_path }}/files/run.properties
@@ -51,7 +51,7 @@
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
   notify:
-    - "authn-anon-handler"
+    - "authn_anon-handler"
 
 - name: "Configure authn_anon run.properties via templating"
   template:
@@ -62,7 +62,7 @@
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
   notify:
-    - "authn-anon-handler"
+    - "authn_anon-handler"
 
 - name: "Configure authn_anon logback.xml"
   copy:
@@ -72,7 +72,7 @@
     group: "{{ payara_user }}"
     mode: 0664
   notify:
-    - "authn-anon-handler"
+    - "authn_anon-handler"
 
 - name: "Setup authn_anon if not setup"
   import_tasks: tasks/installation.yml
