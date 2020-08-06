@@ -161,4 +161,18 @@
   when: domainResult.stat.exists is defined and domainResult.stat.exists == true
   notify: "payara-handler"
 
+- name: 'Install ojdbc6.jar for Oracle Database access'
+  block:
+    copy:
+      src: files/ojdbc6.jar
+      dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/ojdbc6.jar
+      owner: "{{ payara_user }}"
+      group: "{{ payara_user }}"
+      mode: 0644
+    when: install_ojdbc6_jar is defined and install_ojdbc6_jar == true
+    notify: "payara-handler"
+  rescue:
+    fail:
+      msg: 'In a browser, go to https://www.oracle.com/database/technologies/jdbcdriver-ucp-downloads.html and, after agreeing to the licence agreement, download ojdbc6.jar. Then move it to the files/ directory.'
+
 - meta: flush_handlers

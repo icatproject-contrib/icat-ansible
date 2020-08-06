@@ -3,3 +3,4 @@
 payara_version: '4.1.2.181'
 payara_directory: 'payara{{ payara_version }}'
 payara_domain: 'domain1'
+install_ojdbc6_jar: false
