@@ -92,14 +92,6 @@
   notify:
     - "authn-uows_clf-handler"
 
-- name: "Copy fitbaweb1.isis.cclrc.ac.uk certificate"
-  copy:
-    src: files/fitbaweb1_isis_cclrc_ac_uk.crt
-    dest: /home/{{ payara_user }}/install/authn.uows_clf/fitbaweb1_isis_cclrc_ac_uk.crt
-    mode: 0664
-  notify:
-    - "authn-uows_clf-handler"
-
 - name: "Setup authn-uows_clf if not setup"
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_uows_clf is not defined) or (ansible_local.local.instantiations.authn_uows_clf != 'true')
