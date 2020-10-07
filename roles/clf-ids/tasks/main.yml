@@ -54,7 +54,7 @@
 
 - name: "Configure ids.properties via copying"
   copy:
-    src: file/ids.properties
+    src: files/ids.properties
     dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/config/ids.properties
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
