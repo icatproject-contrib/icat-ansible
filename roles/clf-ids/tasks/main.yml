@@ -1,7 +1,7 @@
 ---
 
 - name: "Install ImageMagick"
-  package: name=ImageMagick state=present
+  package: name=ImageMagick state=latest
 
 - name: "Check ids-server package"
   stat:
