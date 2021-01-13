@@ -91,7 +91,7 @@
 
 - name: 'Download payara setup script'
   get_url:
-    url: https://raw.githubusercontent.com/icatproject/icat.utils/master/src/main/scripts/setup-glassfish.py
+    url: https://raw.githubusercontent.com/icatproject/icatproject.github.io/gatsbyjs/static/misc/scripts/setup-glassfish.py
     dest: /home/{{ payara_user }}/scripts
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
