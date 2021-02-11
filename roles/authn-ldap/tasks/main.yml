@@ -32,7 +32,7 @@
   become: false
   register: setupPropertiesResult
 
-- name: "Configure authn-ldap run.properties via copying"
+- name: "Configure authn-ldap setup.properties via copying"
   copy:
     src: files/setup.properties
     dest: /home/{{ payara_user }}/install/authn.ldap/setup.properties
@@ -45,7 +45,7 @@
 
 - name: "Configure authn-ldap setup.properties via templating"
   template:
-    src: roles/payara/templates/setup.properties.j2
+    src: "{{ role_path }}/../payara/templates/setup.properties.j2"
     dest: /home/{{ payara_user }}/install/authn.ldap/setup.properties
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"

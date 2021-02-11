@@ -1,7 +1,7 @@
 ---
 
 - name: 'Import: Check payara is running'
-  import_tasks: roles/payara/tasks/check-payara.yml
+  import_tasks: "{{ role_path }}/../payara/tasks/check-payara.yml"
 
 - name: 'Undeploy any previous icat-server'
   shell: 'su -l {{ payara_user }} -c "asadmin undeploy icat.server-{{ icat_server_version }}"'

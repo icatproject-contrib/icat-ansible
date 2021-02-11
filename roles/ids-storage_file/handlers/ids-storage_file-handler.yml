@@ -1,7 +1,7 @@
 ---
 
 - name: 'Import: Check payara is running'
-  import_tasks: roles/payara/tasks/status.yml
+  import_tasks: "{{ role_path }}/../payara/tasks/status.yml"
 
 - name: 'Re-install ids-storage_file'
   shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/ids.storage_file; ./setup -vv install"'
