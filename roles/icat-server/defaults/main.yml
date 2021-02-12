@@ -1,3 +1,8 @@
 ---
 
 icat_server_version: '4.10.0'
+icat_server_rootUserNames: "{% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}simple/root {% endif %}{% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %}db/root {% endif %}"
+icat_server_maxEntities: "10000"
+icat_server_authn_list: "{% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}simple {% endif %}{% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %}db {% endif %}{% if ansible_local.local.instantiations.authn_anon is defined and ansible_local.local.instantiations.authn_anon == 'true' %}anon {% endif %}{% if ansible_local.local.instantiations.authn_ldap is defined and ansible_local.local.instantiations.authn_ldap == 'true' %}ldap {% endif %}{% if ansible_local.local.instantiations.authn_ip_clf is defined and ansible_local.local.instantiations.authn_ip_clf == 'true' %}ip_clf {% endif %}{% if ansible_local.local.instantiations.authn_uows_clf is defined and ansible_local.local.instantiations.authn_uows_clf == 'true' %}uows_clf {% endif %}"
+icat_server_authn_ldap_admin: "true"
+icat_server_lucene_populateBlockSize: "1000"

@@ -1,0 +1,11 @@
+# Glassfish
+secure = true
+container = Glassfish
+home = /home/{{ payara_user }}/{{ payara_directory }}
+port = 4848
+
+# MySQL
+db.driver = com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+db.url = jdbc:mysql://{{ db_icat_hostname }}:3306/{{ icat_database }}
+db.username = {{ db_icat_username }}
+db.password = {{ db_icat_password }}

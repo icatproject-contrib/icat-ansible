@@ -8,6 +8,7 @@
   user:
     name: '{{ payara_user }}'
     createhome: true
+    local: true
     group: '{{ payara_user }}'
     shell: /bin/bash
 
@@ -158,7 +159,7 @@
     state: link
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
-  when: domainResult.stat.exists is defined and domainResult.stat.exists == true
+  when: domainResult.stat.exists is defined and domainResult.stat.exists == true and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == true)
   notify: "payara-handler"
 
 - meta: flush_handlers

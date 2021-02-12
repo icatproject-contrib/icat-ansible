@@ -43,14 +43,25 @@
   notify:
     - "authn-db-handler"
 
-- name: "Configure authn-db setup.properties via templating"
+- name: "Configure authn-db setup.properties via templating [MariaDB]"
   template:
-    src: templates/setup.properties.j2
+    src: templates/mariadb.setup.properties.j2
     dest: /home/{{ payara_user }}/install/authn.db/setup.properties
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0600
-  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == true)
+  notify:
+    - "authn-db-handler"
+
+- name: "Configure authn-db setup.properties via templating [Oracle]"
+  template:
+    src: templates/oracle.setup.properties.j2
+    dest: /home/{{ payara_user }}/install/authn.db/setup.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0600
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false and (ansible_local.local.instantiations.mariadb is not defined or ansible_local.local.instantiations.mariadb == false)
   notify:
     - "authn-db-handler"
 
@@ -101,4 +112,4 @@
 
 - name: "Setup default database users"
   import_tasks: create_default_users.yml
-  when: (ansible_local is defined) and (ansible_local.local is defined) and (ansible_local.local.instantiations is defined) and (ansible_local.local.instantiations.mariadb is defined) or (ansible_local.local.instantiations.mariadb == 'true')
+  when: (ansible_local is defined) and (ansible_local.local is defined) and (ansible_local.local.instantiations is defined) and (ansible_local.local.instantiations.mariadb is defined) and (ansible_local.local.instantiations.mariadb == 'true')

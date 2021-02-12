@@ -1,0 +1,12 @@
+# Glassfish
+secure = true
+container = Glassfish
+home = /home/{{ payara_user }}/{{ payara_directory }}
+port = 4848
+
+# Oracle
+db.target      = oracle
+db.driver      = oracle.jdbc.pool.OracleDataSource
+db.url         = jdbc:oracle:thin:@//{{ db_icat_hostname }}:{{ db_icat_port }}/{{ icat_database }}
+db.username    = {{ db_icat_username }}
+db.password    = {{ db_icat_password }}

@@ -1,3 +1,4 @@
 ---
 
 icat_lucene_version: '1.1.0'
+icat_lucene_data_dir: 'data/lucene'

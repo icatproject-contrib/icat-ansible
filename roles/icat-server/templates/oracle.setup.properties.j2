@@ -1,0 +1,6 @@
+# Oracle
+db.target      = oracle
+db.driver      = oracle.jdbc.pool.OracleDataSource
+db.url         = jdbc:oracle:thin:@//{{ db_icat_hostname }}:{{ db_icat_port }}/{{ icat_database }}
+db.username    = {{ db_icat_username }}
+db.password    = {{ db_icat_password }}
