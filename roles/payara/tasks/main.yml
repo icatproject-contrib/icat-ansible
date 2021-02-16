@@ -162,4 +162,13 @@
   when: domainResult.stat.exists is defined and domainResult.stat.exists == true and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == true)
   notify: "payara-handler"
 
+- name: 'Copy Oracle JDBC jar file'
+  copy:
+    src: ojdbc6.jar
+    dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/ojdbc6.jar
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+  when: domainResult.stat.exists is defined and domainResult.stat.exists == true and (ansible_local.local.instantiations.mariadb is not defined or ansible_local.local.instantiations.mariadb == false)
+  notify: "payara-handler"
+
 - meta: flush_handlers
