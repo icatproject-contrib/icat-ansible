@@ -25,6 +25,7 @@ authn.list = {{ icat_server_authn_list }}
 {% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %} 
 authn.db.url = https://{{ authn_db_url }}:8181
 authn.db.friendly = DB
+authn.db.admin = {{ icat_server_authn_db_admin }}
 {% else %}
 !authn.db.url = https://localhost:8181
 {% endif %}
