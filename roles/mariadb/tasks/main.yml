@@ -2,8 +2,11 @@
 - include_vars: vars/redhat.yml
   when: ansible_os_family == 'RedHat'
 
-- include_vars: vars/debian.yml
-  when: ansible_os_family == 'Debian'
+- include_vars: vars/debian-16.yml
+  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '16'
+
+- include_vars: vars/debian-20.yml
+  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
 
 - name: "Install mariadb packages"
   package: name={{ item }} state=latest
