@@ -1,0 +1,4 @@
+---
+icat_server_pkgs:
+  - python-suds
+  - python-requests
