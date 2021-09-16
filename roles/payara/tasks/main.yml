@@ -151,6 +151,12 @@
     path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
   register: domainResult
 
+- name: 'Download mysql-connector-java jar'
+  get_url:
+    url: https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar
+    dest: /usr/share/java/mysql-connector-java.jar
+  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
+
 - name: 'Create symlink to mysql connector library'
   file:
     src: /usr/share/java/mysql-connector-java.jar
