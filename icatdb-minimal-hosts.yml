@@ -10,5 +10,6 @@
     - role: icatdb
     - role: payara
     - role: authn-simple
+    - role: authn-anon
     - role: icat-lucene
     - role: icat-server
