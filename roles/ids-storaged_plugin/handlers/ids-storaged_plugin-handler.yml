@@ -4,7 +4,7 @@
   import_tasks: roles/payara/tasks/status.yml
 
 - name: 'Re-install ids-storaged_plugin'
-  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/storaged-ids-plugin; python2 setup -vv install"'
+  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/storaged-ids-plugin; ./setup -vv install"'
   become: true
   become_user: root
   args:
