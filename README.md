@@ -1,6 +1,6 @@
 # Deploying a Stand-Alone ICAT Stack in a Box with Ansible
 
-[![Build Status](https://github.com/icatproject-contrib/icat-ansible/workflows/CI%20Build/badge.svg?branch=master)](https://github.com/icatproject-contrib/icat-ansible/actions?query=workflow%3A%22CI+Build%22)
+[![Build Status](https://github.com/icatproject-contrib/icat-ansible/workflows/CI/badge.svg?branch=master)](https://github.com/icatproject-contrib/icat-ansible/actions?query=workflow%3A%22CI%22)
 
 ## Obtain a Virtual Machine to be the Ansble Controller Host
 
