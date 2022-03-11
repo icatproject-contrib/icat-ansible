@@ -99,6 +99,10 @@
   notify:
     - "authn-ldap-handler"
 
+- name: "Run tasks for authn-ldap versions 1.x"
+  import_tasks: tasks/compat1x.yml
+  when: authn_ldap_compat1x is defined and authn_ldap_compat1x
+
 - name: "Setup authn-ldap if not setup"
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_ldap is not defined) or (ansible_local.local.instantiations.authn_ldap != 'true')
