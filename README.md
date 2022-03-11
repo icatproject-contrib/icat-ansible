@@ -1,5 +1,7 @@
 # Deploying a Stand-Alone ICAT Stack in a Box with Ansible
 
+[![Build Status](https://github.com/icatproject-contrib/icat-ansible/workflows/CI/badge.svg?branch=master)](https://github.com/icatproject-contrib/icat-ansible/actions?query=workflow%3A%22CI%22)
+
 ## Obtain a Virtual Machine to be the Ansble Controller Host
 
 The example given here is for a Centos 7 virtual machine. However, this installation has also been tested and found to be working correctly on Ubuntu Xenial.

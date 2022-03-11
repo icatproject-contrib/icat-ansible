@@ -4,4 +4,4 @@
   include_tasks: handlers/authn-db-handler.yml
 
 - name: "icat-server-handler"
-  include_tasks: roles/icat-server/handlers/icat-server-handler.yml
+  include_tasks: "{{ role_path }}/../icat-server/handlers/icat-server-handler.yml"
