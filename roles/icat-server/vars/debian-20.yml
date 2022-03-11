@@ -1,0 +1,4 @@
+---
+icat_server_pkgs:
+  - python3-suds
+  - python3-requests

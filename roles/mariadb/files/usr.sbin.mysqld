@@ -1,0 +1,8 @@
+/usr/sbin/mysqld flags=(attach_disconnected,complain) {
+  # Allow Systemd notify access
+  /{,var/}run/systemd/notify w,
+
+  /proc/*/status r,
+  /sys/devices/system/node/ r,
+  /sys/devices/system/node/node0/meminfo r,
+}
