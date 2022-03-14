@@ -89,7 +89,7 @@ log.list = SESSION WRITE READ INFO
 {% endif %}
 
 # Lucene
-{% if icat_lucene is defined and icat_lucene %}
+{% if ansible_local.local.instantiations.icat_lucene is defined and ansible_local.local.instantiations.icat_lucene == 'true' %}
 lucene.url = https://{{ lucene_url }}:8181
 lucene.populateBlockSize = {{ icat_server_lucene_populateBlockSize }}
 lucene.directory = /home/{{ payara_user }}/{{ icat_lucene_data_dir }}

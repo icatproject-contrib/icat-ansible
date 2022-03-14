@@ -1,3 +1,6 @@
 ---
 - name: "authn-anon-handler"
   include_tasks: handlers/authn-anon-handler.yml
+
+- name: "icat-server-handler"
+  include_tasks: roles/icat-server/handlers/icat-server-handler.yml

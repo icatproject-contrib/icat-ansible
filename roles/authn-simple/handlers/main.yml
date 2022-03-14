@@ -2,3 +2,6 @@
 
 - name: "authn-simple-handler"
   include_tasks: handlers/authn-simple-handler.yml
+
+- name: "icat-server-handler"
+  include_tasks: roles/icat-server/handlers/icat-server-handler.yml
