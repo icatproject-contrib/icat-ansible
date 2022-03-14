@@ -29,7 +29,7 @@
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0644
-  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == true)
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == 'true')
 
 - name: "Copy over icat-server setup.properties via templating [Oracle]"
   template:
@@ -38,7 +38,7 @@
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0644
-  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false and (ansible_local.local.instantiations.mariadb is not defined or ansible_local.local.instantiations.mariadb == false)
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false and (ansible_local.local.instantiations.mariadb is not defined or ansible_local.local.instantiations.mariadb == 'false')
 
 - name: "Configure icat-server setup.properties by concatenation of files in the stash"
   assemble:
