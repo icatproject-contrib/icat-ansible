@@ -9,6 +9,8 @@ db_root_password: "{{ vault_db_root_password }}"
 
 # ICAT database hostname, database name, username and password
 db_icat_hostname: "localhost"
+db_icat_mariadb_port: 3306
+db_icat_oracle_port: 1521
 icat_database: "{{ vault_icat_database }}"
 db_icat_username: "{{ vault_db_icat_username }}"
 db_icat_password: "{{ vault_db_icat_password }}"
