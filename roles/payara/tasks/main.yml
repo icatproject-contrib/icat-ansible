@@ -8,7 +8,7 @@
   user:
     name: '{{ payara_user }}'
     createhome: true
-    local: true
+    local: '{{ payara_user_local }}'
     group: '{{ payara_user }}'
     shell: /bin/bash
 
