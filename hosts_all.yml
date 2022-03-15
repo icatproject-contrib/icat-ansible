@@ -1,5 +1,5 @@
 ---
-- hosts: hosts-all
+- hosts: hosts_all
   become: true
   vars_files:
     - "group_vars/all/vars.yml"

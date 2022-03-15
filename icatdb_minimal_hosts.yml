@@ -1,5 +1,5 @@
 ---
-- hosts: icatdb-minimal-hosts
+- hosts: icatdb_minimal_hosts
   become: true
   vars_files:
     - "group_vars/all/vars.yml"
