@@ -1,0 +1,22 @@
+---
+
+- name: 'Setup authn_uows_clf'
+  include_tasks: handlers/authn_uows_clf-handler.yml
+
+- name: 'Set fact on host to record that authn_uows_clf has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'instantiations'
+    option: 'authn_uows_clf'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
+
+- name: 'Set fact on host to record version of authn_uows_clf that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'authn_uows_clf'
+    value: '{{ authn_uows_clf_version }}'
+    no_extra_spaces: true
+    create: false

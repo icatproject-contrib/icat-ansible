@@ -1,4 +1,0 @@
----
-
-- name: "icat-server-handler"
-  include_tasks: handlers/icat-server-handler.yml

@@ -1,10 +1,10 @@
-- name: 'Create database for icat-server'
+- name: 'Create database for icat_server'
   mysql_db:
     name: '{{ icat_database }}'
     login_user: '{{ db_root_username }}'
     login_password: '{{ db_root_password }}'
 
-- name: 'Create user for icat-server database'
+- name: 'Create user for icat_server database'
   mysql_user:
     name: '{{ db_icat_username }}'
     password: '{{ db_icat_password }}'

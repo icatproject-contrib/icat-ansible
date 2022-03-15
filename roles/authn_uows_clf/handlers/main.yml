@@ -1,0 +1,7 @@
+---
+
+- name: "authn_uows_clf-handler"
+  include_tasks: handlers/authn_uows_clf-handler.yml
+
+- name: "icat_server-handler"
+  include_tasks: roles/icat_server/handlers/icat_server-handler.yml
