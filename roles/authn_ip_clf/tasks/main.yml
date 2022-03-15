@@ -41,7 +41,7 @@
     mode: 0600
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
   notify:
-    - "authn-ip_clf-handler"
+    - "authn_ip_clf-handler"
 
 - name: "Configure authn_ip_clf-setup.properties via templating"
   template:
@@ -52,7 +52,7 @@
     mode: 0600
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false
   notify:
-    - "authn-ip_clf-handler"
+    - "authn_ip_clf-handler"
 
 - name: "Check authn_ip_clf.properties file existence"
   local_action: stat path={{ role_path }}/files/authn_ip_clf.properties
@@ -68,7 +68,7 @@
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
   notify:
-    - "authn-ip_clf-handler"
+    - "authn_ip_clf-handler"
 
 - name: "Configure authn_ip_clf.properties via templating"
   template:
@@ -79,7 +79,7 @@
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
   notify:
-    - "authn-ip_clf-handler"
+    - "authn_ip_clf-handler"
 
 - name: "Configure authn_ip_clf logback.xml"
   copy:
@@ -89,7 +89,7 @@
     group: "{{ payara_user }}"
     mode: 0664
   notify:
-    - "authn-ip_clf-handler"
+    - "authn_ip_clf-handler"
 
 - name: "Setup authn_ip_clf if not setup"
   import_tasks: tasks/installation.yml
