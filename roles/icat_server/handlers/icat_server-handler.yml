@@ -4,7 +4,7 @@
   import_tasks: "{{ role_path }}/../payara/tasks/status.yml"
 
 - name: 'Import: Configure run.properties'
-  import_tasks: roles/icat-server/tasks/create-run-properties.yml
+  import_tasks: roles/icat_server/tasks/create-run-properties.yml
 
 - name: 'Re-install icat_server'
   shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/icat.server; python2 setup -vv install"'
