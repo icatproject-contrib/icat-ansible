@@ -1,3 +1,7 @@
 ---
 - name: "authn_ldap-handler"
   include_tasks: handlers/authn_ldap-handler.yml
+
+- name: "icat-server-handler"
+  include_tasks: roles/icat-server/handlers/icat-server-handler.yml
+

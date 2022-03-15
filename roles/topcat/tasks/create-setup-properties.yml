@@ -17,7 +17,7 @@
 
 - name: "Copy over {{ payara_user }} setup.properties"
   template:
-    src: roles/payara/templates/setup.properties.j2
+    src: "{{ role_path }}/../payara/templates/setup.properties.j2"
     dest: /home/{{ payara_user }}/stash/topcat/1-part
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"

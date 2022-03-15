@@ -2,3 +2,6 @@
 
 - name: "icat_lucene-handler"
   include_tasks: handlers/icat_lucene-handler.yml
+
+- name: "icat-server-handler"
+  include_tasks: roles/icat-server/handlers/icat-server-handler.yml
