@@ -1,4 +1,0 @@
----
-
-- name: "icat-lucene-handler"
-  include_tasks: handlers/icat-lucene-handler.yml

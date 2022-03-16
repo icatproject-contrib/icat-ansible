@@ -1,0 +1,21 @@
+---
+- name: 'Setup authn_db'
+  include_tasks: handlers/authn_db-handler.yml
+
+- name: 'Set fact on host to record that authn_db has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'instantiations'
+    option: 'authn_db'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
+
+- name: 'Set fact on host to record version of authn_db that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'authn_db'
+    value: '{{ authn_db_version }}'
+    no_extra_spaces: true
+    create: false

@@ -1,3 +1,0 @@
----
-- name: "authn-anon-handler"
-  include_tasks: handlers/authn-anon-handler.yml

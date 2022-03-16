@@ -1,0 +1,22 @@
+---
+
+- name: 'Setup authn_uows'
+  include_tasks: handlers/authn_uows-handler.yml
+
+- name: 'Set fact on host to record that authn_uows has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'instantiations'
+    option: 'authn_uows'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
+
+- name: 'Set fact on host to record version of authn_uows that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'authn_uows'
+    value: '{{ authn_uows_version }}'
+    no_extra_spaces: true
+    create: false

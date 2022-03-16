@@ -8,6 +8,7 @@
   user:
     name: '{{ payara_user }}'
     createhome: true
+    local: '{{ payara_user_local }}'
     group: '{{ payara_user }}'
     shell: /bin/bash
 
@@ -151,11 +152,15 @@
     path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
   register: domainResult
 
+- name: "Force ansible to regather local facts - needed to detect whether mariadb has been installed"
+  setup:
+    filter: ansible_local
+
 - name: 'Download mysql-connector-java jar'
   get_url:
     url: https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar
     dest: /usr/share/java/mysql-connector-java.jar
-  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
+  when: (ansible_os_family == 'Debian' and ansible_distribution_major_version == '20') and (domainResult.stat.exists is defined and domainResult.stat.exists == true and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == 'true'))
 
 - name: 'Create symlink to mysql connector library'
   file:
@@ -164,7 +169,21 @@
     state: link
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
-  when: domainResult.stat.exists is defined and domainResult.stat.exists == true
+  when: domainResult.stat.exists is defined and domainResult.stat.exists == true and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == 'true')
   notify: "payara-handler"
+
+- name: 'Install ojdbc8.jar for Oracle Database access'
+  block:
+    - copy:
+        src: files/ojdbc8.jar
+        dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/ojdbc8.jar
+        owner: "{{ payara_user }}"
+        group: "{{ payara_user }}"
+        mode: 0644
+      when: (domainResult.stat.exists is defined and domainResult.stat.exists == true) and (install_ojdbc8_jar is defined and install_ojdbc8_jar == true) and (ansible_local.local.instantiations.mariadb is not defined or ansible_local.local.instantiations.mariadb == 'false')
+      notify: "payara-handler"
+  rescue:
+    - fail:
+        msg: 'In a browser, go to https://www.oracle.com/uk/database/technologies/appdev/jdbc-downloads.html and, after agreeing to the licence agreement, download ojdbc8.jar. Then move it to the files/ directory.'
 
 - meta: flush_handlers

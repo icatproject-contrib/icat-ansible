@@ -1,0 +1,22 @@
+---
+
+- name: 'Setup icat_lucene'
+  include_tasks: handlers/icat_lucene-handler.yml
+
+- name: 'Set fact on host to record that icat_lucene has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'instantiations'
+    option: 'icat_lucene'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
+
+- name: 'Set fact on host to record version of icat_lucene that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'icat_lucene'
+    value: '{{ icat_lucene_version }}'
+    no_extra_spaces: true
+    create: false

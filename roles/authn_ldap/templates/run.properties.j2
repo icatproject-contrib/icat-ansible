@@ -1,0 +1,32 @@
+# Real comments in this file are marked with '#' whereas commented out lines
+# are marked with '!'
+
+# The following are needed for ldap authentication. The % character in the 
+# security_principal will be replaced by the specified user name. If you 
+# just use % then the user must enter a complete security_principal as his 
+# user name.
+provider_url = {{ authn_ldap_provider_url }}
+security_principal = %@fed.cclrc.ac.uk
+
+# The following may be provided to override or add to the default context
+!context.props = java.naming.factory.initial java.naming.security.authentication
+!context.props.java.naming.factory.initial = com.sun.jndi.ldap.LdapCtxFactory
+!context.props.java.naming.security.authentication = simple
+
+# To map the provided name to something derived from an LDAP query. The % 
+# in the ldap filter will be replaced by the provided user name.
+!ldap.base = DC=fed,DC=cclrc,DC=ac,DC=uk
+!ldap.filter = (&(CN=%)(objectclass=user))
+!ldap.attribute = name
+
+# To force the case to be all lower
+case = lower
+
+# If access to the ldap authentication should only be allowed from certain 
+# IP addresses then provide a space separated list of allowed values. These 
+# take the form of an IPV4 or IPV6 address followed by the number of bits 
+# (starting from the most significant) to consider.
+!ip  = 130.246.0.0/16   172.16.68.0/24
+
+# The mechanism label to appear before the user name. This may be omitted.
+{{ authn_ldap_mechanism_enabled | ternary('', '!') }}mechanism = ldap
