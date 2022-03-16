@@ -8,6 +8,7 @@
   user:
     name: '{{ payara_user }}'
     createhome: true
+    local: '{{ payara_user_local }}'
     group: '{{ payara_user }}'
     shell: /bin/bash
 
@@ -151,11 +152,15 @@
     path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
   register: domainResult
 
+- name: "Force ansible to regather local facts - needed to detect whether mariadb has been installed"
+  setup:
+    filter: ansible_local
+
 - name: 'Download mysql-connector-java jar'
   get_url:
     url: https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.25/mysql-connector-java-5.1.25.jar
     dest: /usr/share/java/mysql-connector-java.jar
-  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
+  when: (ansible_os_family == 'Debian' and ansible_distribution_major_version == '20') and (domainResult.stat.exists is defined and domainResult.stat.exists == true and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == 'true'))
 
 - name: 'Create symlink to mysql connector library'
   file:
@@ -164,7 +169,16 @@
     state: link
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
-  when: domainResult.stat.exists is defined and domainResult.stat.exists == true
+  when: domainResult.stat.exists is defined and domainResult.stat.exists == true and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == 'true')
+  notify: "payara-handler"
+
+- name: 'Copy Oracle JDBC jar file'
+  copy:
+    src: ojdbc6.jar
+    dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/ojdbc6.jar
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+  when: domainResult.stat.exists is defined and domainResult.stat.exists == true and (ansible_local.local.instantiations.mariadb is not defined or ansible_local.local.instantiations.mariadb == 'false')
   notify: "payara-handler"
 
 - meta: flush_handlers

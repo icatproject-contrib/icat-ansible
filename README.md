@@ -160,6 +160,8 @@ Create a playbook file to hold the list of roles you wish to install and any var
       vars:
         # ICAT database hostname, database name, username and password
         db_icat_hostname: "{{ vault_db_icat_hostname }}"
+        db_icat_mariadb_port: "{{ vault_db_icat_mariadb_port }}"
+        db_icat_oracle_port: "{{ vault_db_icat_oracle_port }}"
         db_icat_port: "{{ vault_db_icat_port }}"
         icat_database: "{{ vault_icat_database }}"
         db_icat_username: "{{ vault_db_icat_username }}"
