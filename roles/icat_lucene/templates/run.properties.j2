@@ -1,6 +1,6 @@
 # Real comments in this file are marked with '#' whereas commented out lines
 # are marked with '!'
 
-directory = /home/{{ payara_user }}/data/lucene
+directory = /home/{{ payara_user }}/{{ icat_lucene_data_dir }}
 commitSeconds = 5
 ip = 127.0.0.1/32 0:0:0:0:0:0:0:1/128 10.0.0.1/8 {{ ansible_default_ipv4.address }}/32

@@ -5,7 +5,7 @@
 # security_principal will be replaced by the specified user name. If you 
 # just use % then the user must enter a complete security_principal as his 
 # user name.
-provider_url = ldap://logon05.fed.cclrc.ac.uk
+provider_url = {{ authn_ldap_provider_url }}
 security_principal = %@fed.cclrc.ac.uk
 
 # The following may be provided to override or add to the default context
@@ -29,4 +29,4 @@ case = lower
 !ip  = 130.246.0.0/16   172.16.68.0/24
 
 # The mechanism label to appear before the user name. This may be omitted.
-mechanism = ldap
+{{ authn_ldap_mechanism_enabled | ternary('', '!') }}mechanism = ldap

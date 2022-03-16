@@ -6,7 +6,9 @@
          </activation>
          <properties>
              <serverUrl>https://{{ icat_url }}:8181</serverUrl>
+             {% if lucene_url is defined and lucene_url %}
              <luceneUrl>https://{{ lucene_url }}:8181</luceneUrl>
+             {% endif %}
              <javax.net.ssl.trustStore>/home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/config/cacerts.jks</javax.net.ssl.trustStore>
              <containerHome>/home/{{ payara_user }}/{{ payara_directory }}</containerHome>
              <testHome>/home/{{ payara_user }}/test</testHome>
