@@ -43,6 +43,10 @@
   notify:
     - "authn-db-handler"
 
+- name: "Force ansible to regather local facts - needed to detect whether mariadb has been installed"
+  setup:
+    filter: ansible_local
+
 - name: "Configure authn-db setup.properties via templating [MariaDB]"
   template:
     src: templates/mariadb.setup.properties.j2
