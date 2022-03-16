@@ -1,4 +1,0 @@
----
-
-- name: "ids-server-handler"
-  include_tasks: handlers/ids-server-handler.yml

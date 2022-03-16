@@ -1,0 +1,9 @@
+---
+
+dependencies:
+  - role: mariadb
+  - role: payara
+  - role: authn_simple
+  - role: icat_lucene
+  - role: dev_common
+  - role: authn_db

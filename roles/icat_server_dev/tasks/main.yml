@@ -1,0 +1,41 @@
+---
+
+- name: 'Create code directory'
+  file:
+    path: /home/{{ payara_user }}/code
+    state: directory
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+    mode: 0775
+
+- name: 'Clone icat_server repository'
+  git:
+    repo: https://github.com/icatproject/icat.server.git
+    dest: /home/{{ payara_user }}/code/icat.server
+    force: yes
+  become: true
+  become_user: '{{ payara_user }}'
+
+- name: 'Configure development icat_server run.properties'
+  template:
+    src: templates/run.properties.j2
+    dest: /home/{{ payara_user }}/code/icat.server/src/main/resources/run.properties
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+    mode: 0664
+  notify:
+  - "icat_server_dev-handler"
+
+- name: 'Configure icat_server logback.xml'
+  copy:
+    src: files/logback.xml
+    dest: /home/{{ payara_user }}/code/icat.server/src/main/resources/logback.xml
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+    mode: 0664
+  notify:
+  - "icat_server_dev-handler"
+
+- name: 'Setup development icat_server if not setup'
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.{{ heading }} is not defined) or (ansible_local.local.{{ heading }}.dev_icat_server is not defined) or (ansible_local.local.{{ heading }}.dev_icat_server != 'true')

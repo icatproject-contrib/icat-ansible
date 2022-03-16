@@ -1,0 +1,22 @@
+---
+
+- name: 'Setup ids_storaged_plugin'
+  include_tasks: handlers/ids_storaged_plugin-handler.yml
+
+- name: 'Set fact on host to record that ids_storaged_plugin has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'instantiations'
+    option: 'ids_storaged_plugin'
+    value: 'true'
+    no_extra_spaces: true
+    create: false
+
+- name: 'Set fact on host to record version of ids_storaged_plugin that has been instantiated'
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: 'versions'
+    option: 'ids_storaged_plugin'
+    value: '{{ ids_storaged_plugin_version }}'
+    no_extra_spaces: true
+    create: false

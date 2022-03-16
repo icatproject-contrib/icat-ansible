@@ -15,28 +15,28 @@ icat_database: "{{ vault_icat_database }}"
 db_icat_username: "{{ vault_db_icat_username }}"
 db_icat_password: "{{ vault_db_icat_password }}"
 
-# Authn-simple usernames
+# Authn_simple usernames
 authn_root_username: "{{ vault_authn_root_username }}"
 authn_ingest_username: "{{ vault_authn_ingest_username }}"
 authn_reader_username: "{{ vault_authn_reader_username }}"
 authn_icatuser_username: "{{ vault_authn_icatuser_username }}"
 
-# Authn-simple passwords
+# Authn_simple passwords
 authn_root_password: "{{ vault_authn_root_password }}"
 authn_ingest_password: "{{ vault_authn_ingest_password }}"
 authn_reader_password: "{{ vault_authn_reader_password }}"
 authn_icatuser_password: "{{ vault_authn_icatuser_password }}"
 
-# Authn-simple server URL
+# Authn_simple server URL
 authn_simple_url: "{{ ansible_fqdn }}"
 
-# Authn-db server URL
+# Authn_db server URL
 authn_db_url: "{{ ansible_fqdn }}"
 
-# Authn-anon server URL
+# Authn_anon server URL
 authn_anon_url: "{{ ansible_fqdn }}"
 
-# Authn-ldap server URL
+# Authn_ldap server URL
 authn_ldap_url: "{{ ansible_fqdn }}"
 
 # ICAT Lucene server URL

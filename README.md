@@ -110,13 +110,13 @@ vault_icat_database: 'icatdb'
 vault_db_icat_username: 'icatdbuser'
 vault_db_icat_password: 'SECRET3'
 
-# Authn-simple usernames
+# Authn_simple usernames
 vault_authn_root_username: 'root'
 vault_authn_ingest_username: 'ingest'
 vault_authn_reader_username: 'reader'
 vault_authn_icatuser_username: 'icatuser'
 
-# Authn-simple passwords
+# Authn_simple passwords
 vault_authn_root_password: 'rootpw'
 vault_authn_ingest_password: 'ingestpw'
 vault_authn_reader_password: 'readerpw'
@@ -154,9 +154,9 @@ Create a playbook file to hold the list of roles you wish to install and any var
         payara_user: "glassfish"
         payara_admin_password: "{{ vault_payara_admin_password }}"
 
-    - role: 'authn-anon'
+    - role: 'authn_anon'
 
-    - role: 'authn-db'
+    - role: 'authn_db'
       vars:
         # ICAT database hostname, database name, username and password
         db_icat_hostname: "{{ vault_db_icat_hostname }}"
@@ -167,16 +167,16 @@ Create a playbook file to hold the list of roles you wish to install and any var
         db_icat_username: "{{ vault_db_icat_username }}"
         db_icat_password: "{{ vault_db_icat_password }}"
 
-    - role: 'authn-ldap'
+    - role: 'authn_ldap'
       vars:
         authn_ldap_provider_url: "ldaps://ldap.example.com"
         authn_ldap_mechanism_enabled: false
 
-    - role: 'icat-lucene'
+    - role: 'icat_lucene'
       vars:
         icat_lucene_data_dir: 'data/icat/lucene'
     
-    - role: 'icat-server'
+    - role: 'icat_server'
       debugger: on_failed
       vars:
         icat_server_rootUserNames: "{{ vault_icat_server_rootUserNames }}"
@@ -191,7 +191,7 @@ Create a playbook file to hold the list of roles you wish to install and any var
         icat_url: "{{ ansible_fqdn }}"
 
 
-    - role: 'dev-common'
+    - role: 'dev_common'
 ```
 
 ## Run the Playbook

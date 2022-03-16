@@ -1,0 +1,21 @@
+---
+- name: "Setup authn_ldap"
+  include_tasks: handlers/authn_ldap-handler.yml
+
+- name: "Set fact on host to record that authn_ldap has been instantiated"
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: "instantiations"
+    option: "authn_ldap"
+    value: "true"
+    no_extra_spaces: true
+    create: false
+
+- name: "Set fact on host to record version of authn_ldap that has been instantiated"
+  ini_file:
+    path: /etc/ansible/facts.d/local.fact
+    section: "versions"
+    option: "authn_ldap"
+    value: "{{ authn_ldap_version }}"
+    no_extra_spaces: true
+    create: false
