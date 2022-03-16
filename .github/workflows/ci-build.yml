@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - python-3-testing
 
 jobs:
   run_all_roles:
@@ -34,5 +35,5 @@ jobs:
 
     - name: Run ICAT Ansible Playbook
       run: |
-        ansible-playbook hosts_all.yml -i hosts --vault-password-file vault_pass.txt -vv
+        ansible-playbook hosts_all.yml -e 'ansible_python_interpreter=/usr/bin/python3' -i hosts --vault-password-file vault_pass.txt -vv
 
