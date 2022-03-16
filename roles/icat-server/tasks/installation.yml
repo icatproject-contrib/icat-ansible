@@ -1,7 +1,7 @@
 ---
 
 - name: 'Restart payara'
-  include_tasks: roles/payara/handlers/payara-handler.yml
+  include_tasks: "{{ role_path }}/../payara/handlers/payara-handler.yml"
 
 - name: 'Setup icat-server'
   include_tasks: handlers/icat-server-handler.yml

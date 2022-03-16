@@ -5,9 +5,9 @@
 lifetimeMinutes = 120
 
 # Provide CRUD access to authz tables
- rootUserNames = {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}simple/root {% endif %}{% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %}db/root {% endif %} 
+rootUserNames = {{ icat_server_rootUserNames }}
 # Restrict total number of entities to return in a search call
-maxEntities = 10000
+maxEntities = {{ icat_server_maxEntities }}
 
 # Maximum ids in a list - this must not exceed 1000 for Oracle
 maxIdsInQuery = 500
@@ -19,11 +19,13 @@ importCacheSize = 50
 exportCacheSize = 50
 
 # Desired authentication plugin mnemonics
-authn.list = {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}simple {% endif %}{% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %}db {% endif %}{% if ansible_local.local.instantiations.authn_anon is defined and ansible_local.local.instantiations.authn_anon == 'true' %}anon {% endif %}{% if ansible_local.local.instantiations.authn_ldap is defined and ansible_local.local.instantiations.authn_ldap == 'true' %}ldap {% endif %}{% if ansible_local.local.instantiations.authn_ip_clf is defined and ansible_local.local.instantiations.authn_ip_clf == 'true' %}ip_clf {% endif %}{% if ansible_local.local.instantiations.authn_uows_clf is defined and ansible_local.local.instantiations.authn_uows_clf == 'true' %}uows_clf {% endif %}
+authn.list = {{ icat_server_authn_list }}
 
 # Parameters for each of the four plugins
 {% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %} 
 authn.db.url = https://{{ authn_db_url }}:8181
+authn.db.friendly = DB
+authn.db.admin = {{ icat_server_authn_db_admin }}
 {% else %}
 !authn.db.url = https://localhost:8181
 {% endif %}
@@ -34,7 +36,7 @@ authn.ldap.jndi = java:global/authn.ldap-{{ authn_ldap_version }}/LDAP_Authentic
 {% else %}
 authn.ldap.url = https://{{ authn_ldap_url }}:8181
 {% endif %}
-authn.ldap.admin = true
+authn.ldap.admin = {{ icat_server_authn_ldap_admin }}
 authn.ldap.friendly = Federal Id
 {% else %}
 !authn.ldap.url = https://localhost:8181
@@ -87,10 +89,10 @@ log.list = SESSION WRITE READ INFO
 {% endif %}
 
 # Lucene
-{% if icat_lucene is defined and icat_lucene %}
+{% if ansible_local.local.instantiations.icat_lucene is defined and ansible_local.local.instantiations.icat_lucene == 'true' %}
 lucene.url = https://{{ lucene_url }}:8181
-lucene.populateBlockSize = 1000
-lucene.directory = /home/{{ payara_user }}/data/lucene
+lucene.populateBlockSize = {{ icat_server_lucene_populateBlockSize }}
+lucene.directory = /home/{{ payara_user }}/{{ icat_lucene_data_dir }}
 lucene.backlogHandlerIntervalSeconds = 60
 lucene.enqueuedRequestIntervalSeconds = 5
 lucene.entitiesToIndex = Dataset Investigation InvestigationUser DatasetParameter InvestigationParameter Sample

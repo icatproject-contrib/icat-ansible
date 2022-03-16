@@ -2,3 +2,5 @@
 
 icat_server_compat46: '{{ not not ( icat_server_version | regex_search("^4\.[0-6]\.") ) }}'
 icat_server_compat48: '{{ not not ( icat_server_version | regex_search("^4\.[0-8]\.") ) }}'
+icat_server_authn_db_admin: false 
+icat_server_authn_ldap_admin: false 

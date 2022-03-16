@@ -1,9 +1,16 @@
 ---
+- include_vars: vars/redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include_vars: vars/debian-16.yml
+  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '16'
+
+- include_vars: vars/debian-20.yml
+  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
+
 - name: "Install common icat-server dependencies"
   package: name={{ item }} state=latest
-  with_items:
-    - python-suds
-    - python-requests
+  with_items: "{{ icat_server_pkgs }}"
 
 - name: "Check icat-server package"
   stat:
@@ -72,30 +79,8 @@
   notify:
     - "icat-server-handler"
 
-- name: "Check run.properties file existence"
-  local_action: stat path={{ role_path }}/files/run.properties
-  become: false
-  register: runPropertiesResult
-
-- name: "Configure icat-server run.properties via copying"
-  copy:
-    src: files/run.properties
-    dest: /home/{{ payara_user }}/install/icat.server/run.properties
-    owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
-    mode: 0664
-  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
-  notify:
-    - "icat-server-handler"
-
-- name: "Configure icat-server run.properties via templating"
-  template:
-    src: templates/run.properties.j2
-    dest: /home/{{ payara_user }}/install/icat.server/run.properties
-    owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
-    mode: 0664
-  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
+- name: "Configure icat-server run.properties"
+  import_tasks: tasks/create-run-properties.yml
   notify:
     - "icat-server-handler"
 

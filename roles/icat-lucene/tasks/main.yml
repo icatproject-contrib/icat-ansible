@@ -45,7 +45,7 @@
 
 - name: "Configure icat-lucene setup.properties via templating"
   template:
-    src: roles/payara/templates/setup.properties.j2
+    src: "{{ role_path }}/../payara/templates/setup.properties.j2"
     dest: /home/{{ payara_user }}/install/icat.lucene/setup.properties
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
@@ -83,7 +83,7 @@
 
 - name: "Create icat-lucene data directory"
   file:
-    path: /home/{{ payara_user }}/data/lucene
+    path: /home/{{ payara_user }}/{{ icat_lucene_data_dir }}
     state: directory
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
