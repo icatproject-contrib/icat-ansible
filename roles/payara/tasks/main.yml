@@ -172,27 +172,18 @@
   when: domainResult.stat.exists is defined and domainResult.stat.exists == true and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == 'true')
   notify: "payara-handler"
 
-- name: 'Copy Oracle JDBC jar file'
-  copy:
-    src: ojdbc6.jar
-    dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/ojdbc6.jar
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
-  when: domainResult.stat.exists is defined and domainResult.stat.exists == true and (ansible_local.local.instantiations.mariadb is not defined or ansible_local.local.instantiations.mariadb == 'false')
-  notify: "payara-handler"
-
-- name: 'Install ojdbc6.jar for Oracle Database access'
+- name: 'Install ojdbc8.jar for Oracle Database access'
   block:
     - copy:
-        src: files/ojdbc6.jar
-        dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/ojdbc6.jar
+        src: files/ojdbc8.jar
+        dest: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/ojdbc8.jar
         owner: "{{ payara_user }}"
         group: "{{ payara_user }}"
         mode: 0644
-      when: install_ojdbc6_jar is defined and install_ojdbc6_jar == true
+      when: (domainResult.stat.exists is defined and domainResult.stat.exists == true) and (install_ojdbc8_jar is defined and install_ojdbc8_jar == true) and (ansible_local.local.instantiations.mariadb is not defined or ansible_local.local.instantiations.mariadb == 'false')
       notify: "payara-handler"
   rescue:
     - fail:
-        msg: 'In a browser, go to https://www.oracle.com/database/technologies/jdbcdriver-ucp-downloads.html and, after agreeing to the licence agreement, download ojdbc6.jar. Then move it to the files/ directory.'
+        msg: 'In a browser, go to https://www.oracle.com/uk/database/technologies/appdev/jdbc-downloads.html and, after agreeing to the licence agreement, download ojdbc8.jar. Then move it to the files/ directory.'
 
 - meta: flush_handlers
