@@ -22,3 +22,7 @@
     value: 'true'
     no_extra_spaces: true
     create: false
+
+- name: 'Force ansible to regather local facts so that we know mariadb has been installed'
+  setup:
+    filter: ansible_local

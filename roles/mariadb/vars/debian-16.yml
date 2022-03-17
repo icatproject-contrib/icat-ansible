@@ -5,4 +5,3 @@ mariadb_pkgs:
   - mariadb-server
   - mariadb-client
   - python-mysqldb
-  - libmysql-java

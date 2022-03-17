@@ -3,5 +3,8 @@
 payara_version: '4.1.2.181'
 payara_directory: 'payara{{ payara_version }}'
 payara_domain: 'domain1'
+install_mysql_connector_java: '{{ ansible_local.local.instantiations.mariadb | default(false) }}'
+mysql_connector_java_version: 5.1.49
 install_ojdbc8_jar: false
+ojdbc8_jar_version: 21.5.0.0
 payara_user_local: false
