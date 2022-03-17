@@ -40,36 +40,6 @@
   notify:
     - "mariadb-handler"
 
-- name: "Inject Apparmor config"
-  copy:
-    src: files/usr.sbin.mysqld
-    dest: /etc/apparmor.d/usr.sbin.mysqld
-    owner: root
-    group: root
-    mode: 0644
-  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
-
-- name: "Restart apparmor"
-  service:
-    name: apparmor
-    state: restarted
-    enabled: true
-  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
-
-- name: "Remove mysql files"
-  file:
-    path: /var/lib/mysql/
-    state: absent
-  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
-
-- name: "mysql install db"
-  shell: "mysql_install_db --user=mysql --basedir=/usr --datadir=/var/lib/mysql"
-  become: true
-  become_user: root
-  args:
-    executable: /bin/bash
-  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
-
 - name: "Enable and start dbms daemon"
   service:
     name: "{{ mariadb_daemon }}"
@@ -78,7 +48,7 @@
 
 - name: "Setup mariadb if not setup"
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations[mariadb_daemon] is not defined) or (ansible_local.local.instantiations[mariadb_daemon] != 'true')
+  when: not (ansible_local.local.instantiations.mariadb | default(false) | bool)
 
 - name: "Flush handlers so that mariadb daemon has been restarted before any databases are created if config has changed"
   meta: flush_handlers
