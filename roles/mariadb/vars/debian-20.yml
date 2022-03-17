@@ -7,4 +7,3 @@ mariadb_pkgs:
   - mariadb-server
   - mariadb-client
   - python3-mysqldb
-  - libmariadb-java
