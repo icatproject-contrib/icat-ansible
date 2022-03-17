@@ -12,6 +12,12 @@ jobs:
     name: Run all ICAT Ansible roles
     runs-on: ubuntu-20.04
     steps:
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: "3.10"
+        architecture: x64
+
     - name: Checkout ICAT Ansible
       uses: actions/checkout@v2
     
