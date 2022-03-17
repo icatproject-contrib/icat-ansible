@@ -16,7 +16,7 @@ jobs:
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
-        python-version: "3.10"
+        python-version: "2.7"
         architecture: x64
 
     - name: Checkout ICAT Ansible
@@ -42,5 +42,5 @@ jobs:
 
     - name: Run ICAT Ansible Playbook
       run: |
-        ansible-playbook hosts_all.yml -e 'ansible_python_interpreter=/usr/bin/python3' -i hosts --vault-password-file vault_pass.txt -vv
+        ansible-playbook hosts_all.yml -e 'ansible_python_interpreter=/usr/bin/python2' -i hosts --vault-password-file vault_pass.txt -vv
 
