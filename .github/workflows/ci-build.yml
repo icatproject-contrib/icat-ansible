@@ -6,6 +6,7 @@ on:
     branches:
       - master
       - python-3-testing
+      - python-3-10-testing
 
 jobs:
   run_all_roles:
