@@ -62,10 +62,6 @@
     path: /home/{{ payara_user }}/.bashrc
     line: "export PATH=$PATH:/home/{{ payara_user }}/bin"
 
-- name: "Force ansible to regather local facts - needed to detect what authn plugins have been installed"
-  setup:
-    filter: ansible_local
-
 - name: "Check setup.properties file existence"
   local_action: stat path={{ role_path }}/files/setup.properties
   become: false

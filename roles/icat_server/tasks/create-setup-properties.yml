@@ -22,10 +22,6 @@
     group: "{{ payara_user }}"
     mode: 0664
 
-- name: "Force ansible to regather local facts - needed to detect whether mariadb has been installed"
-  setup:
-    filter: ansible_local
-
 - name: "Copy over icat_server setup.properties via templating [MariaDB]"
   template:
     src: templates/mariadb.setup.properties.j2

@@ -19,3 +19,7 @@
     value: "{{ authn_anon_version }}"
     no_extra_spaces: true
     create: false
+
+- name: "Force ansible to regather local facts to recognise authn_anon installation"
+  setup:
+    filter: ansible_local

@@ -51,10 +51,6 @@
   notify:
     - "authn_db-handler"
 
-- name: "Force ansible to regather local facts - needed to detect whether mariadb has been installed"
-  setup:
-    filter: ansible_local
-
 - name: "Configure authn_db setup.properties via templating [MariaDB]"
   template:
     src: templates/mariadb.setup.properties.j2
@@ -117,10 +113,6 @@
 - name: "Setup authn_db if not setup"
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_db is not defined) or (ansible_local.local.instantiations.authn_db != 'true')
-
-- name: "Force ansible to regather local facts - needed to detect whether mariadb has been installed"
-  setup:
-    filter: ansible_local
 
 - name: "Setup default database users"
   import_tasks: create_default_users.yml
