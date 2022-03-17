@@ -10,12 +10,13 @@
   when: ansible_os_family == 'RedHat'
 
 - name: "Installing common packages"
-  package: name={{ item }} state=latest
-  with_items:
-    - htop
-    - unzip
-    - vim
-    - wget
+  package:
+    state: latest
+    name:
+      - htop
+      - unzip
+      - vim
+      - wget
 
 - name: "Create ansible config directory on remote hosts"
   file:

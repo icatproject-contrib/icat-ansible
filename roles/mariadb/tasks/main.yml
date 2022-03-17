@@ -9,8 +9,9 @@
   when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
 
 - name: "Install mariadb packages"
-  package: name={{ item }} state=latest
-  with_items: "{{ mariadb_pkgs }}"
+  package:
+    state: latest
+    name: "{{ mariadb_pkgs }}"
 
 - name: "Configure default storage engine"
   copy:
