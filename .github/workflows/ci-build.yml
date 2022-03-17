@@ -31,6 +31,12 @@ jobs:
     - name: Change hostname to localhost
       run: sudo hostname -b localhost
 
+    - name: Remove existing mysql
+      run: |
+        sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
+        sudo apt-get remove --purge "mysql*"
+        sudo rm -rf /var/lib/mysql* /etc/mysql
+
     - name: Run ICAT Ansible Playbook
       run: |
         ansible-playbook hosts_all.yml -i hosts --vault-password-file vault_pass.txt -vv
