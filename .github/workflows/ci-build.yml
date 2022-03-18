@@ -8,6 +8,7 @@ on:
 
 jobs:
   run_all_roles:
+    name: Run all ICAT Ansible roles
     runs-on: ubuntu-20.04
     steps:
     - name: Checkout ICAT Ansible
