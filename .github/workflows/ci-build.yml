@@ -25,6 +25,9 @@ jobs:
     - name: update yum stuff
       run: yum -y update && yum clean all
 
+    - name: yum search ansible
+      run: yum search ansible
+
     - name: yum install ansible
       run: yum install -y ansible
 
