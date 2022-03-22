@@ -47,8 +47,11 @@ jobs:
         sed -i -e "s/^payara_user: \"glassfish\"/payara_user: \"runner\"/" group_vars/all/vars.yml
 
     # Force hostname to localhost - bug fix for previous ICAT Ansible issues on Actions
-    - name: Change hostname to localhost
-      run: sudo hostname -b localhost
+    #- name: Change hostname to localhost
+      #run: sudo hostname -b localhost
+    
+    - name: Check hostname
+      run: hostname
 
     - name: Remove existing mysql
       run: |
