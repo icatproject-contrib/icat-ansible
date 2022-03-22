@@ -11,7 +11,7 @@ jobs:
   run_all_roles:
     name: Run all ICAT Ansible roles
     runs-on: ubuntu-20.04
-    container: 'centos:latest'
+    container: 'centos:7'
     steps:
     - name: Checkout ICAT Ansible
       uses: actions/checkout@v2
