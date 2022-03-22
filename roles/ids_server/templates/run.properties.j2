@@ -14,7 +14,11 @@ sizeCheckIntervalSeconds = 60
 maxIdsInQuery = 1000
 rootUserNames = {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}simple/root {% endif %}{% if ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %}db/root {% endif %}
 
-reader = {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}simple username {{ authn_reader_username }} password {{ authn_reader_password }}{% endif %}
+{% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}
+reader = simple username {{ authn_reader_username }} password {{ authn_reader_password }}
+{% elif ansible_local.local.instantiations.authn_db is defined and ansible_local.local.instantiations.authn_db == 'true' %}
+reader = db username {{ db_user_username }} password {{ db_user_password }}
+{% endif %}
 
 # Properties for archive storage
 plugin.archive.class = org.icatproject.ids.storage.ArchiveFileStorage

@@ -7,6 +7,10 @@ payara_admin_password: "{{ vault_payara_admin_password }}"
 db_root_username: "{{ vault_db_root_username }}"
 db_root_password: "{{ vault_db_root_password }}"
 
+# Database user's username and password (not db/root)
+db_user_username: "{{ vault_db_user_username }}"
+db_user_password: "{{ vault_db_user_password }}"
+
 # ICAT database hostname, database name, username and password
 db_icat_hostname: "localhost"
 db_icat_mariadb_port: 3306
