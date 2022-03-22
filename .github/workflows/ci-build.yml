@@ -5,11 +5,13 @@ on:
   push:
     branches:
       - master
+      - ci-centos-7
 
 jobs:
   run_all_roles:
     name: Run all ICAT Ansible roles
     runs-on: ubuntu-20.04
+    container: 'centos:latest'
     steps:
     - name: Checkout ICAT Ansible
       uses: actions/checkout@v2
