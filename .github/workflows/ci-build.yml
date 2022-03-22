@@ -16,11 +16,14 @@ jobs:
     - name: Checkout ICAT Ansible
       uses: actions/checkout@v2
     
-    - name: install pip
-      run: yum install -y python3-pip
+    #- name: install pip
+      #run: yum install -y python3-pip
     
-    - name: Install requirements
-      run: pip3 install -r requirements.txt
+    #- name: Install requirements
+      #run: pip3 install -r requirements.txt
+    
+    - name: yum install ansible
+      run: yum install -y ansible
 
     # Prep for running the playbook
     - name: Create hosts file
