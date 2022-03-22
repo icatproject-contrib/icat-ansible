@@ -20,3 +20,7 @@
     value: '{{ authn_uows_clf_version }}'
     no_extra_spaces: true
     create: false
+
+- name: "Force ansible to regather local facts to recognise authn_uows_clf installation"
+  setup:
+    filter: ansible_local

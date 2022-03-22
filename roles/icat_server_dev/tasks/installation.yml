@@ -13,3 +13,7 @@
     regexp: '^dev_icat_server'
     insertafter: '^\[instantiations\]$'
     line: 'dev_icat_server=true'
+
+- name: "Force ansible to regather local facts to recognise icat_server_dev installation"
+  setup:
+    filter: ansible_local

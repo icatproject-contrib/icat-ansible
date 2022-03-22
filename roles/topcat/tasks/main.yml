@@ -40,10 +40,6 @@
     state: absent
   with_items: "{{ warFilesResult.files }}"
 
-- name: "Force ansible to regather local facts - needed to detect whether mariadb has been installed and which auth plugins are installed"
-  setup:
-    filter: ansible_local
-
 - name: "Create database for topcat"
   mysql_db:
     name: "{{ topcat_database }}"
