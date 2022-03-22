@@ -53,11 +53,11 @@ jobs:
     - name: Check hostname
       run: hostname
 
-    - name: Remove existing mysql
-      run: |
-        sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
-        sudo apt-get remove --purge "mysql*"
-        sudo rm -rf /var/lib/mysql* /etc/mysql
+    #- name: Remove existing mysql
+      #run: |
+        #sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
+        #sudo apt-get remove --purge "mysql*"
+        #sudo rm -rf /var/lib/mysql* /etc/mysql
 
     - name: Run ICAT Ansible Playbook
       run: |
