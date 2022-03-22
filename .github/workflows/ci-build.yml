@@ -21,9 +21,13 @@ jobs:
     
     #- name: Install requirements
       #run: pip3 install -r requirements.txt
+
+    - name: Install epel-release
+      run: yum install -y epel-release
     
     - name: update yum stuff
       run: yum -y update && yum clean all
+
 
     - name: yum search ansible
       run: yum search ansible
