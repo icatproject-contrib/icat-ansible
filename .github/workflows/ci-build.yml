@@ -20,7 +20,7 @@ jobs:
       run: yum install -y python3-pip
     
     - name: Install requirements
-      run: pip install -r requirements.txt
+      run: pip3 install -r requirements.txt
 
     # Prep for running the playbook
     - name: Create hosts file
