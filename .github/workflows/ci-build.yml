@@ -16,6 +16,9 @@ jobs:
     - name: Checkout ICAT Ansible
       uses: actions/checkout@v2
     
+    - name: install pip
+      run: yum install python3-pip
+    
     - name: Install requirements
       run: pip install -r requirements.txt
 
@@ -43,4 +46,7 @@ jobs:
     - name: Run ICAT Ansible Playbook
       run: |
         ansible-playbook hosts_all.yml -i hosts --vault-password-file vault_pass.txt -vv
-
+    
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ always() }}
