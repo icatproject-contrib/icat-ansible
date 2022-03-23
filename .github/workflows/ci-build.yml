@@ -11,7 +11,7 @@ jobs:
   run_all_roles:
     name: Run all ICAT Ansible roles
     runs-on: ubuntu-20.04
-    container: 'centos:7'
+    #container: 'centos:7'
     steps:
     - name: Checkout ICAT Ansible
       uses: actions/checkout@v2
@@ -22,18 +22,18 @@ jobs:
     #- name: Install requirements
       #run: pip3 install -r requirements.txt
 
-    - name: Install epel-release
-      run: yum install -y epel-release
+    #- name: Install epel-release
+      #run: yum install -y epel-release
     
-    - name: update yum stuff
-      run: yum -y update && yum clean all
+    #- name: update yum stuff
+      #run: yum -y update && yum clean all
 
 
-    - name: yum search ansible
-      run: yum search ansible
+    #- name: yum search ansible
+      #run: yum search ansible
 
-    - name: yum install ansible
-      run: yum install -y ansible
+    #- name: yum install ansible
+      #run: yum install -y ansible
 
     # Prep for running the playbook
     - name: Create hosts file
@@ -53,14 +53,21 @@ jobs:
     - name: Check hostname
       run: hostname
     
-    - name: Daemon reload
-      run: sudo systemctl daemon-reload
+    #- name: Daemon reload
+      #run: sudo systemctl daemon-reload
 
     #- name: Remove existing mysql
       #run: |
         #sudo apparmor_parser -R /etc/apparmor.d/usr.sbin.mysqld
         #sudo apt-get remove --purge "mysql*"
         #sudo rm -rf /var/lib/mysql* /etc/mysql
+    
+    - name: Ansible check with Centos 7
+      uses: roles-ansible/check-ansible-centos-centos7-action@master
+      with:
+        targets: "hosts_all.yml"
+        group: "hosts_all"
+        hosts: "localhost"
 
     - name: Run ICAT Ansible Playbook
       run: |
