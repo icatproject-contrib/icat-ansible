@@ -149,7 +149,7 @@
 
 - name: 'Check payara domain'
   stat:
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib
   register: domainResult
 
 - name: 'Create directory for local jars'
@@ -174,7 +174,7 @@
 - name: 'Create symlink to mysql-connector-java.jar'
   file:
     src: /usr/local/share/java/mysql-connector-java-{{ mysql_connector_java_version }}.jar
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/mysql-connector-java.jar
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/mysql-connector-java.jar
     state: link
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
@@ -196,7 +196,7 @@
 - name: 'Create symlink to ojdbc8.jar'
   file:
     src: /usr/local/share/java/ojdbc8-{{ ojdbc8_jar_version }}.jar
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/ojdbc8.jar
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ojdbc8.jar
     state: link
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
