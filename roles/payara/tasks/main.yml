@@ -149,7 +149,7 @@
 
 - name: 'Check payara domain'
   stat:
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib
   register: domainResult
 
 - name: 'Create directory for local jars'
@@ -174,7 +174,7 @@
 - name: 'Create symlink to mysql-connector-java.jar'
   file:
     src: /usr/local/share/java/mysql-connector-java-{{ mysql_connector_java_version }}.jar
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/mysql-connector-java.jar
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/mysql-connector-java.jar
     state: link
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
@@ -193,6 +193,9 @@
   when: install_ojdbc8_jar | bool
   notify: payara-handler
 
+# Path is for `lib/ext` due to https://github.com/payara/Payara/issues/4613
+# For Java 11, `java.lib.ext` has been removed so this jar won't be detected in `lib/ext`
+# See https://github.com/icatproject-contrib/icat-ansible/pull/83#issuecomment-1078845685 for further details
 - name: 'Create symlink to ojdbc8.jar'
   file:
     src: /usr/local/share/java/ojdbc8-{{ ojdbc8_jar_version }}.jar
