@@ -3,13 +3,13 @@
   package:
     state: latest
     name:
-      - java-1.8.0-openjdk-headless
-      - java-1.8.0-openjdk-devel
+      - java-11-openjdk-headless
+      - java-11-openjdk-devel
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
 
 - name: "Install java packages for Debian systems (Ubuntu 16.04 & 20.04)"
   package:
     state: latest
     name:
-      - openjdk-8-jdk-headless
+      - openjdk-11-jdk-headless
   when: ansible_os_family == 'Debian' and ( ansible_distribution_major_version == '16' or ansible_distribution_major_version == '20')
