@@ -1,12 +1,25 @@
 ---
+- name: "Extract SNAPSHOT version number when snapshot URL is given"
+  set_fact:
+    icat_lucene_download_url: "{{ icat_lucene_snapshot_url }}"
+    icat_lucene_version: "{{ icat_lucene_snapshot_url | regex_search( '[0-9]*.[0-9]*.[0-9]*-SNAPSHOT' ) }}"
+    icat_lucene_download_filename: "{{ icat_lucene_snapshot_url | regex_search('icat.lucene.[^\/]*-distro.zip') }}"
+  when: icat_lucene_snapshot_url is defined
+
+- name: "Set download URL when snapshot URL is not given"
+  set_fact:
+    icat_lucene_download_url: https://repo.icatproject.org/repo/org/icatproject/icat.lucene/{{ icat_lucene_version }}/icat.lucene-{{ icat_lucene_version }}-distro.zip
+    icat_lucene_download_filename: icat.lucene-{{ icat_lucene_version }}-distro.zip
+  when: icat_lucene_snapshot_url is not defined
+
 - name: "Check icat_lucene package"
   stat:
-    path: /home/{{ payara_user }}/downloads/icat.lucene-{{ icat_lucene_version }}-distro.zip
+    path: /home/{{ payara_user }}/downloads/{{ icat_lucene_download_filename }}
   register: packageResult
 
 - name: "Download icat_lucene"
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/icat.lucene/{{ icat_lucene_version }}/icat.lucene-{{ icat_lucene_version }}-distro.zip
+    url: "{{ icat_lucene_download_url }}"
     dest: /home/{{ payara_user }}/downloads
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
@@ -15,7 +28,7 @@
 
 - name: 'Unarchive icat_lucene if not installed'
   unarchive:
-    src: /home/{{ payara_user }}/downloads/icat.lucene-{{ icat_lucene_version }}-distro.zip
+    src: /home/{{ payara_user }}/downloads/{{ icat_lucene_download_filename }}
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: '{{ payara_user }}'
@@ -26,7 +39,7 @@
   find:
     paths: /home/{{ payara_user }}/install/icat.lucene/
     use_regex: yes
-    patterns: "^.*-(?!{{ icat_lucene_version }}).*\\.war$"
+    patterns: "^.*(?<!{{ icat_lucene_version }})\\.war$"
   register: warFilesResult
 
 - name: "Remove war files not matching the current version"
@@ -107,9 +120,9 @@
   notify:
     - "icat_lucene-handler"
 
-- name: "Setup icat_lucene if not setup"
+- name: "Setup icat_lucene if not setup or a different version is found"
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.icat_lucene is not defined) or (ansible_local.local.instantiations.icat_lucene != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.icat_lucene is not defined) or (ansible_local.local.instantiations.icat_lucene != 'true') or (ansible_local.local.versions.icat_lucene != icat_lucene_version)
 
 - name: "Set temporary fact to indicate icat_lucene is installed within play"
   set_fact:
