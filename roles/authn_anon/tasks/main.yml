@@ -1,12 +1,25 @@
 ---
+- name: "Extract SNAPSHOT version number when snapshot URL is given"
+  set_fact:
+    authn_anon_download_url: "{{ authn_anon_snapshot_url }}"
+    authn_anon_version: "{{ authn_anon_snapshot_url | regex_search( '[0-9]*.[0-9]*.[0-9]*-SNAPSHOT' ) }}"
+    authn_anon_download_filename: "{{ authn_anon_snapshot_url | regex_search('authn.anon.[^\/]*-distro.zip') }}"
+  when: authn_anon_snapshot_url is defined
+
+- name: "Set download URL when snapshot URL is not given"
+  set_fact:
+    authn_anon_download_url: https://repo.icatproject.org/repo/org/icatproject/authn.anon/{{ authn_anon_version }}/authn.anon-{{ authn_anon_version }}-distro.zip
+    authn_anon_download_filename: authn.anon-{{ authn_anon_version }}-distro.zip
+  when: authn_anon_snapshot_url is not defined
+
 - name: "Check authn_anon package"
   stat:
-    path: /home/{{ payara_user }}/downloads/authn.anon-{{ authn_anon_version }}-distro.zip
+    path: /home/{{ payara_user }}/downloads/{{ authn_anon_download_filename }}
   register: packageResult
 
 - name: "Download authn_anon"
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/authn.anon/{{ authn_anon_version }}/authn.anon-{{ authn_anon_version }}-distro.zip
+    url: "{{ authn_anon_download_url }}"
     dest: /home/{{ payara_user }}/downloads
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
@@ -15,7 +28,7 @@
 
 - name: "Unarchive authn_anon if not installed"
   unarchive:
-    src: /home/{{ payara_user }}/downloads/authn.anon-{{ authn_anon_version }}-distro.zip
+    src: /home/{{ payara_user }}/downloads/{{ authn_anon_download_filename }}
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: "{{ payara_user }}"
@@ -26,7 +39,7 @@
   find:
     paths: /home/{{ payara_user }}/install/authn.anon/
     use_regex: yes
-    patterns: "^.*-(?!{{ authn_anon_version }}).*\\.war$"
+    patterns: "^.*(?<!{{ authn_anon_version }})\\.war$"
   register: warFilesResult
 
 - name: "Remove war files not matching the current version"
@@ -82,9 +95,9 @@
   notify:
     - "authn_anon-handler"
 
-- name: "Setup authn_anon if not setup"
+- name: "Setup authn_anon if not setup or a different version is found"
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_anon is not defined) or (ansible_local.local.instantiations.authn_anon != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_anon is not defined) or (ansible_local.local.instantiations.authn_anon != 'true') or (ansible_local.local.versions.authn_anon != authn_anon_version)
 
 - name: "Set temporary fact to indicate authn_anon is installed within play"
   set_fact:
