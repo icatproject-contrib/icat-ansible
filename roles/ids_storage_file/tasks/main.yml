@@ -35,18 +35,19 @@
     group: '{{ payara_user }}'
   when: ansible_local.local.instantiations.ids_storage_file is not defined or ansible_local.local.versions.ids_storage_file != ids_storage_file_version
 
-- name: "Find any war files not matching the current version"
+# IDS Storage File uses jar files, not war files like other ICAT components
+- name: "Find any jar files not matching the current version"
   find:
     paths: /home/{{ payara_user }}/install/ids.storage_file/
     use_regex: yes
-    patterns: "^.*(?<!{{ ids_storage_file_version }})\\.war$"
-  register: warFilesResult
+    patterns: "^.*(?<!{{ ids_storage_file_version }})\\.jar$"
+  register: jarFilesResult
 
-- name: "Remove war files not matching the current version"
+- name: "Remove jar files not matching the current version"
   file:
     path: "{{ item.path }}"
     state: absent
-  with_items: "{{ warFilesResult.files }}"
+  with_items: "{{ jarFilesResult.files }}"
 
 - name: "Check setup.properties file existence"
   local_action: stat path={{ role_path }}/files/setup.properties
