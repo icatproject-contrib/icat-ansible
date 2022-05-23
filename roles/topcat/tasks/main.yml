@@ -4,14 +4,27 @@
     name: jq
     state: present
 
+- name: "Extract SNAPSHOT version number when snapshot URL is given"
+  set_fact:
+    topcat_download_url: "{{ topcat_snapshot_url }}"
+    topcat_version: "{{ topcat_snapshot_url | regex_search( '[0-9]*.[0-9]*.[0-9]*-SNAPSHOT' ) }}"
+    topcat_download_filename: "{{ topcat_snapshot_url | regex_search('topcat.[^\/]*-distro.zip') }}"
+  when: topcat_snapshot_url is defined
+
+- name: "Set download URL when snapshot URL is not given"
+  set_fact:
+    topcat_download_url: https://repo.icatproject.org/repo/org/icatproject/topcat/{{ topcat_version }}/topcat-{{ topcat_version }}-distro.zip
+    topcat_download_filename: topcat-{{ topcat_version }}-distro.zip
+  when: topcat_snapshot_url is not defined
+
 - name: "Check topcat package"
   stat:
-    path: /home/{{ payara_user }}/downloads/topcat-{{ topcat_version }}-distro.zip
+    path: /home/{{ payara_user }}/downloads/{{ topcat_download_filename }}
   register: packageResult
 
 - name: "Download topcat"
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/topcat/{{ topcat_version }}/topcat-{{ topcat_version }}-distro.zip
+    url: "{{ topcat_download_url }}"
     dest: /home/{{ payara_user }}/downloads
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
@@ -20,7 +33,7 @@
 
 - name: 'Unarchive topcat if not installed'
   unarchive:
-    src: /home/{{ payara_user }}/downloads/topcat-{{ topcat_version }}-distro.zip
+    src: /home/{{ payara_user }}/downloads/{{ topcat_download_filename }}
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: '{{ payara_user }}'
@@ -31,7 +44,7 @@
   find:
     paths: /home/{{ payara_user }}/install/topcat/
     use_regex: yes
-    patterns: "^.*-(?!{{ topcat_version }}).*\\.war$"
+    patterns: "^.*(?<!{{ topcat_version }})\\.war$"
   register: warFilesResult
 
 - name: "Remove war files not matching the current version"
@@ -234,6 +247,6 @@
   notify:
     - "topcat-handler"
 
-- name: "Setup topcat if not setup"
+- name: "Setup topcat if not setup or a different version is found"
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.topcat is not defined) or (ansible_local.local.instantiations.topcat != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.topcat is not defined) or (ansible_local.local.instantiations.topcat != 'true') or (ansible_local.local.versions.topcat != topcat_version)

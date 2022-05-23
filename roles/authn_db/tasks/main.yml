@@ -1,12 +1,25 @@
 ---
+- name: "Extract SNAPSHOT version number when snapshot URL is given"
+  set_fact:
+    authn_db_download_url: "{{ authn_db_snapshot_url }}"
+    authn_db_version: "{{ authn_db_snapshot_url | regex_search( '[0-9]*.[0-9]*.[0-9]*-SNAPSHOT' ) }}"
+    authn_db_download_filename: "{{ authn_db_snapshot_url | regex_search('authn.db.[^\/]*-distro.zip') }}"
+  when: authn_db_snapshot_url is defined
+
+- name: "Set download URL when snapshot URL is not given"
+  set_fact:
+    authn_db_download_url: https://repo.icatproject.org/repo/org/icatproject/authn.db/{{ authn_db_version }}/authn.db-{{ authn_db_version }}-distro.zip
+    authn_db_download_filename: authn.db-{{ authn_db_version }}-distro.zip
+  when: authn_db_snapshot_url is not defined
+
 - name: "Check authn_db package"
   stat:
-    path: /home/{{ payara_user }}/downloads/authn.db-{{ authn_db_version }}-distro.zip
+    path: /home/{{ payara_user }}/downloads/{{ authn_db_download_filename }}
   register: packageResult
 
 - name: "Download authn_db"
   get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/authn.db/{{ authn_db_version }}/authn.db-{{ authn_db_version }}-distro.zip
+    url: "{{ authn_db_download_url }}"
     dest: /home/{{ payara_user }}/downloads
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
@@ -15,7 +28,7 @@
 
 - name: 'Unarchive authn_db if not installed'
   unarchive:
-    src: /home/{{ payara_user }}/downloads/authn.db-{{ authn_db_version }}-distro.zip
+    src: /home/{{ payara_user }}/downloads/{{ authn_db_download_filename }}
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: '{{ payara_user }}'
@@ -26,7 +39,7 @@
   find:
     paths: /home/{{ payara_user }}/install/authn.db/
     use_regex: yes
-    patterns: "^.*-(?!{{ authn_db_version }}).*\\.war$"
+    patterns: "^.*(?<!{{ authn_db_version }})\\.war$"
   register: warFilesResult
 
 - name: "Remove war files not matching the current version"
@@ -110,9 +123,9 @@
   notify:
     - "authn_db-handler"
 
-- name: "Setup authn_db if not setup"
+- name: "Setup authn_db if not setup or a different version is found"
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_db is not defined) or (ansible_local.local.instantiations.authn_db != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_db is not defined) or (ansible_local.local.instantiations.authn_db != 'true') or (ansible_local.local.versions.authn_db != authn_db_version)
 
 - name: "Setup default database users"
   import_tasks: create_default_users.yml
