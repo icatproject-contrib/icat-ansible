@@ -145,7 +145,7 @@
 
 - name: 'Setup payara if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.payara is not defined) or (ansible_local.local.instantiations.payara != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.payara is not defined) or (ansible_local.local.instantiations.payara != 'true') or (ansible_local.local.versions.payara != payara_version)
 
 - name: 'Check payara domain'
   stat:
