@@ -1,0 +1,4 @@
+---
+java_pkgs:
+  - java-11-openjdk-headless
+  - java-11-openjdk-devel
