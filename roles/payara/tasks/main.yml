@@ -132,15 +132,15 @@
 - name: 'Make sure we are using the correct java version for payara for Debian systems (Ubuntu 16.04 & 20.04)'
   lineinfile:
     path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/config/asenv.conf
-    line: 'AS_JAVA="/usr/lib/jvm/java-1.11.0-openjdk-amd64"'
-    regexp: '^AS_JAVA="\/usr\/lib\/jvm\/java-1\.11\.0-openjdk-amd64"$'
+    line: 'AS_JAVA="/usr/lib/jvm/java-1.{{ java_version }}.0-openjdk-amd64"'
+    regexp: '^AS_JAVA='
   when: ansible_os_family == 'Debian' and ( ansible_distribution_major_version == '16' or ansible_distribution_major_version == '20')
 
 - name: 'Make sure we are using the correct java version for payara for Red Hat systems (EL 7)'
   lineinfile:
     path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/config/asenv.conf
-    line: 'AS_JAVA="/usr/lib/jvm/java-11-openjdk"'
-    regexp: '^AS_JAVA="\/usr\/lib\/jvm\/java-11-openjdk"$'
+    line: 'AS_JAVA="/usr/lib/jvm/java-{{ java_version }}-openjdk"'
+    regexp: '^AS_JAVA='
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
 
 - name: 'Setup payara if not setup'
