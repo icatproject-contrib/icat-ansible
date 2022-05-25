@@ -4,28 +4,20 @@
     name: jq
     state: present
 
-- name: "Extract SNAPSHOT version number when snapshot URL is given"
-  set_fact:
-    topcat_download_url: "{{ topcat_snapshot_url }}"
-    topcat_version: "{{ topcat_snapshot_url | regex_search( '[0-9]*.[0-9]*.[0-9]*-SNAPSHOT' ) }}"
-    topcat_download_filename: "{{ topcat_snapshot_url | regex_search('topcat.[^\/]*-distro.zip') }}"
-  when: topcat_snapshot_url is defined
-
-- name: "Set download URL when snapshot URL is not given"
-  set_fact:
-    topcat_download_url: https://repo.icatproject.org/repo/org/icatproject/topcat/{{ topcat_version }}/topcat-{{ topcat_version }}-distro.zip
-    topcat_download_filename: topcat-{{ topcat_version }}-distro.zip
-  when: topcat_snapshot_url is not defined
-
 - name: "Check topcat package"
   stat:
-    path: /home/{{ payara_user }}/downloads/{{ topcat_download_filename }}
+    path: /home/{{ payara_user }}/downloads/topcat-{{ topcat_version }}-distro.zip
   register: packageResult
 
 - name: "Download topcat"
-  get_url:
-    url: "{{ topcat_download_url }}"
-    dest: /home/{{ payara_user }}/downloads
+  community.general.maven_artifact:
+    repository_url: "https://repo.icatproject.org/repo"
+    group_id: "org.icatproject"
+    artifact_id: "topcat"
+    version: "{{ topcat_version }}"
+    classifier: "distro"
+    extension: "zip"
+    dest: "/home/{{ payara_user }}/downloads/topcat-{{ topcat_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
@@ -33,7 +25,7 @@
 
 - name: 'Unarchive topcat if not installed'
   unarchive:
-    src: /home/{{ payara_user }}/downloads/{{ topcat_download_filename }}
+    src: /home/{{ payara_user }}/downloads/topcat-{{ topcat_version }}-distro.zip
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: '{{ payara_user }}'

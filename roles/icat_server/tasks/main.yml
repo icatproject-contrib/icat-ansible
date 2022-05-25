@@ -13,28 +13,20 @@
     state: latest
     name: "{{ icat_server_pkgs }}"
 
-- name: "Extract SNAPSHOT version number when snapshot URL is given"
-  set_fact:
-    icat_server_download_url: "{{ icat_server_snapshot_url }}"
-    icat_server_version: "{{ icat_server_snapshot_url | regex_search( '[0-9]*.[0-9]*.[0-9]*-SNAPSHOT' ) }}"
-    icat_server_download_filename: "{{ icat_server_snapshot_url | regex_search('icat.server.[^\/]*-distro.zip') }}"
-  when: icat_server_snapshot_url is defined
-
-- name: "Set download URL when snapshot URL is not given"
-  set_fact:
-    icat_server_download_url: https://repo.icatproject.org/repo/org/icatproject/icat.server/{{ icat_server_version }}/icat.server-{{ icat_server_version }}-distro.zip
-    icat_server_download_filename: icat.server-{{ icat_server_version }}-distro.zip
-  when: icat_server_snapshot_url is not defined
-
 - name: "Check icat_server package"
   stat:
-    path: /home/{{ payara_user }}/downloads/{{ icat_server_download_filename }}
+    path: /home/{{ payara_user }}/downloads/icat.server-{{ icat_server_version }}-distro.zip
   register: packageResult
 
 - name: "Download icat_server"
-  get_url:
-    url: "{{ icat_server_download_url }}"
-    dest: /home/{{ payara_user }}/downloads
+  community.general.maven_artifact:
+    repository_url: "https://repo.icatproject.org/repo"
+    group_id: "org.icatproject"
+    artifact_id: "icat.server"
+    version: "{{ icat_server_version }}"
+    classifier: "distro"
+    extension: "zip"
+    dest: "/home/{{ payara_user }}/downloads/icat.server-{{ icat_server_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
@@ -42,7 +34,7 @@
 
 - name: "Unarchive icat_server if not installed"
   unarchive:
-    src: /home/{{ payara_user }}/downloads/{{ icat_server_download_filename }}
+    src: /home/{{ payara_user }}/downloads/icat.server-{{ icat_server_version }}-distro.zip
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: "{{ payara_user }}"

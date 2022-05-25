@@ -1,26 +1,18 @@
 ---
-- name: "Extract SNAPSHOT version number when snapshot URL is given"
-  set_fact:
-    authn_ldap_download_url: "{{ authn_ldap_snapshot_url }}"
-    authn_ldap_version: "{{ authn_ldap_snapshot_url | regex_search( '[0-9]*.[0-9]*.[0-9]*-SNAPSHOT' ) }}"
-    authn_ldap_download_filename: "{{ authn_ldap_snapshot_url | regex_search('authn.ldap.[^\/]*-distro.zip') }}"
-  when: authn_ldap_snapshot_url is defined
-
-- name: "Set download URL when snapshot URL is not given"
-  set_fact:
-    authn_ldap_download_url: https://repo.icatproject.org/repo/org/icatproject/authn.ldap/{{ authn_ldap_version }}/authn.ldap-{{ authn_ldap_version }}-distro.zip
-    authn_ldap_download_filename: authn.ldap-{{ authn_ldap_version }}-distro.zip
-  when: authn_ldap_snapshot_url is not defined
-
 - name: "Check authn_ldap package"
   stat:
-    path: /home/{{ payara_user }}/downloads/{{ authn_ldap_download_filename }}
+    path: /home/{{ payara_user }}/downloads/authn.ldap-{{ authn_ldap_version }}-distro.zip
   register: packageResult
 
 - name: "Download authn_ldap"
-  get_url:
-    url: "{{ authn_ldap_download_url }}"
-    dest: /home/{{ payara_user }}/downloads
+  community.general.maven_artifact:
+    repository_url: "https://repo.icatproject.org/repo"
+    group_id: "org.icatproject"
+    artifact_id: "authn.ldap"
+    version: "{{ authn_ldap_version }}"
+    classifier: "distro"
+    extension: "zip"
+    dest: "/home/{{ payara_user }}/downloads/n.ldap-{{ authn_ldap_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
@@ -28,7 +20,7 @@
 
 - name: "Unarchive authn_ldap if not installed"
   unarchive:
-    src: /home/{{ payara_user }}/downloads/{{ authn_ldap_download_filename }}
+    src: /home/{{ payara_user }}/downloads/authn.ldap-{{ authn_ldap_version }}-distro.zip
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: "{{ payara_user }}"
