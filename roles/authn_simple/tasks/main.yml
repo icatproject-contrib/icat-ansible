@@ -1,26 +1,18 @@
 ---
-- name: "Extract SNAPSHOT version number when snapshot URL is given"
-  set_fact:
-    authn_simple_download_url: "{{ authn_simple_snapshot_url }}"
-    authn_simple_version: "{{ authn_simple_snapshot_url | regex_search( '[0-9]*.[0-9]*.[0-9]*-SNAPSHOT' ) }}"
-    authn_simple_download_filename: "{{ authn_simple_snapshot_url | regex_search('authn.simple.[^\/]*-distro.zip') }}"
-  when: authn_simple_snapshot_url is defined
-
-- name: "Set download URL when snapshot URL is not given"
-  set_fact:
-    authn_simple_download_url: https://repo.icatproject.org/repo/org/icatproject/authn.simple/{{ authn_simple_version }}/authn.simple-{{ authn_simple_version }}-distro.zip
-    authn_simple_download_filename: authn.simple-{{ authn_simple_version }}-distro.zip
-  when: authn_simple_snapshot_url is not defined
-
 - name: "Check authn_simple package"
   stat:
-    path: /home/{{ payara_user }}/downloads/{{ authn_simple_download_filename }}
+    path: /home/{{ payara_user }}/downloads/authn.simple-{{ authn_simple_version }}-distro.zip
   register: packageResult
 
 - name: "Download authn_simple"
-  get_url:
-    url: "{{ authn_simple_download_url }}"
-    dest: /home/{{ payara_user }}/downloads
+  community.general.maven_artifact:
+    repository_url: "https://repo.icatproject.org/repo"
+    group_id: "org.icatproject"
+    artifact_id: "authn.simple"
+    version: "{{ authn_simple_version }}"
+    classifier: "distro"
+    extension: "zip"
+    dest: "/home/{{ payara_user }}/downloads/n.simple-{{ authn_simple_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
@@ -28,7 +20,7 @@
 
 - name: 'Unarchive authn_simple if not installed'
   unarchive:
-    src: /home/{{ payara_user }}/downloads/{{ authn_simple_download_filename }}
+    src: /home/{{ payara_user }}/downloads/authn.simple-{{ authn_simple_version }}-distro.zip
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: '{{ payara_user }}'

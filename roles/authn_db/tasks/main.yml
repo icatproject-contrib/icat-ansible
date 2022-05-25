@@ -1,26 +1,18 @@
 ---
-- name: "Extract SNAPSHOT version number when snapshot URL is given"
-  set_fact:
-    authn_db_download_url: "{{ authn_db_snapshot_url }}"
-    authn_db_version: "{{ authn_db_snapshot_url | regex_search( '[0-9]*.[0-9]*.[0-9]*-SNAPSHOT' ) }}"
-    authn_db_download_filename: "{{ authn_db_snapshot_url | regex_search('authn.db.[^\/]*-distro.zip') }}"
-  when: authn_db_snapshot_url is defined
-
-- name: "Set download URL when snapshot URL is not given"
-  set_fact:
-    authn_db_download_url: https://repo.icatproject.org/repo/org/icatproject/authn.db/{{ authn_db_version }}/authn.db-{{ authn_db_version }}-distro.zip
-    authn_db_download_filename: authn.db-{{ authn_db_version }}-distro.zip
-  when: authn_db_snapshot_url is not defined
-
 - name: "Check authn_db package"
   stat:
-    path: /home/{{ payara_user }}/downloads/{{ authn_db_download_filename }}
+    path: /home/{{ payara_user }}/downloads/authn.db-{{ authn_db_version }}-distro.zip
   register: packageResult
 
 - name: "Download authn_db"
-  get_url:
-    url: "{{ authn_db_download_url }}"
-    dest: /home/{{ payara_user }}/downloads
+  community.general.maven_artifact:
+    repository_url: "https://repo.icatproject.org/repo"
+    group_id: "org.icatproject"
+    artifact_id: "authn.db"
+    version: "{{ authn_db_version }}"
+    classifier: "distro"
+    extension: "zip"
+    dest: "/home/{{ payara_user }}/downloads/n.db-{{ authn_db_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
@@ -28,7 +20,7 @@
 
 - name: 'Unarchive authn_db if not installed'
   unarchive:
-    src: /home/{{ payara_user }}/downloads/{{ authn_db_download_filename }}
+    src: /home/{{ payara_user }}/downloads/authn.db-{{ authn_db_version }}-distro.zip
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: '{{ payara_user }}'

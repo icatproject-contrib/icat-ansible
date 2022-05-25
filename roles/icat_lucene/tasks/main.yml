@@ -1,26 +1,18 @@
 ---
-- name: "Extract SNAPSHOT version number when snapshot URL is given"
-  set_fact:
-    icat_lucene_download_url: "{{ icat_lucene_snapshot_url }}"
-    icat_lucene_version: "{{ icat_lucene_snapshot_url | regex_search( '[0-9]*.[0-9]*.[0-9]*-SNAPSHOT' ) }}"
-    icat_lucene_download_filename: "{{ icat_lucene_snapshot_url | regex_search('icat.lucene.[^\/]*-distro.zip') }}"
-  when: icat_lucene_snapshot_url is defined
-
-- name: "Set download URL when snapshot URL is not given"
-  set_fact:
-    icat_lucene_download_url: https://repo.icatproject.org/repo/org/icatproject/icat.lucene/{{ icat_lucene_version }}/icat.lucene-{{ icat_lucene_version }}-distro.zip
-    icat_lucene_download_filename: icat.lucene-{{ icat_lucene_version }}-distro.zip
-  when: icat_lucene_snapshot_url is not defined
-
 - name: "Check icat_lucene package"
   stat:
-    path: /home/{{ payara_user }}/downloads/{{ icat_lucene_download_filename }}
+    path: /home/{{ payara_user }}/downloads/icat.lucene-{{ icat_lucene_version }}-distro.zip
   register: packageResult
 
 - name: "Download icat_lucene"
-  get_url:
-    url: "{{ icat_lucene_download_url }}"
-    dest: /home/{{ payara_user }}/downloads
+  community.general.maven_artifact:
+    repository_url: "https://repo.icatproject.org/repo"
+    group_id: "org.icatproject"
+    artifact_id: "icat.lucene"
+    version: "{{ icat_lucene_version }}"
+    classifier: "distro"
+    extension: "zip"
+    dest: "/home/{{ payara_user }}/downloads/icat.lucene-{{ icat_lucene_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
@@ -28,7 +20,7 @@
 
 - name: 'Unarchive icat_lucene if not installed'
   unarchive:
-    src: /home/{{ payara_user }}/downloads/{{ icat_lucene_download_filename }}
+    src: /home/{{ payara_user }}/downloads/icat.lucene-{{ icat_lucene_version }}-distro.zip
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: '{{ payara_user }}'
