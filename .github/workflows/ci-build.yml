@@ -41,4 +41,7 @@ jobs:
     - name: Run ICAT Ansible Playbook
       run: |
         ansible-playbook hosts_all.yml -i hosts --vault-password-file vault_pass.txt -vv
-
+    
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      if: ${{ always() }}
