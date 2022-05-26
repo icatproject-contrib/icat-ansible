@@ -12,7 +12,7 @@
     version: "{{ authn_anon_version }}"
     classifier: "distro"
     extension: "zip"
-    dest: "/home/{{ payara_user }}/downloads/n.anon-{{ authn_anon_version }}-distro.zip"
+    dest: "/home/{{ payara_user }}/downloads/authn.anon-{{ authn_anon_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
