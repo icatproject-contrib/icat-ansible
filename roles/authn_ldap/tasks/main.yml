@@ -12,7 +12,7 @@
     version: "{{ authn_ldap_version }}"
     classifier: "distro"
     extension: "zip"
-    dest: "/home/{{ payara_user }}/downloads/n.ldap-{{ authn_ldap_version }}-distro.zip"
+    dest: "/home/{{ payara_user }}/downloads/authn.ldap-{{ authn_ldap_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664

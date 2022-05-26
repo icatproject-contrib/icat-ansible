@@ -12,7 +12,7 @@
     version: "{{ authn_simple_version }}"
     classifier: "distro"
     extension: "zip"
-    dest: "/home/{{ payara_user }}/downloads/n.simple-{{ authn_simple_version }}-distro.zip"
+    dest: "/home/{{ payara_user }}/downloads/authn.simple-{{ authn_simple_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
