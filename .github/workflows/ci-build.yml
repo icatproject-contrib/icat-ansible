@@ -39,11 +39,11 @@ jobs:
         sudo rm -rf /var/lib/mysql* /etc/mysql
     
     - name: Install lxml
-      run: sudo apt-get install python-lxml
+      run: sudo apt-get install python3-lxml
 
     - name: Run ICAT Ansible Playbook
       run: |
-        ansible-playbook hosts_all.yml -i hosts --vault-password-file vault_pass.txt -e 'ansible_python_interpreter=/usr/bin/python3' -vv
+        ansible-playbook hosts_all.yml -i hosts --vault-password-file vault_pass.txt -vv
     
     - name: Setup tmate session
       uses: mxschmitt/action-tmate@v3
