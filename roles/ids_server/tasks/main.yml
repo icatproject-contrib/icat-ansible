@@ -64,6 +64,14 @@
     group: "{{ payara_user }}"
     mode: 0775
 
+- name: "Create filesCheck output directory"
+  file:
+    path: /home/{{ payara_user }}/logs
+    state: directory
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0775
+
 - name: "Check setup.properties file existence"
   local_action: stat path={{ role_path }}/files/setup.properties
   become: false
