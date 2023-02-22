@@ -106,3 +106,7 @@
 - name: "Setup icat_server if not setup"
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.icat_server is not defined) or (ansible_local.local.instantiations.icat_server != 'true')
+
+- name: "Setup db triggers if enabled and not setup"
+  import_tasks: tasks/setup-db-triggers.yml
+  when: icat_server_install_db_triggers and ((ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.icat_server_db_triggers is not defined) or (ansible_local.local.instantiations.icat_server_db_triggers != 'true'))
