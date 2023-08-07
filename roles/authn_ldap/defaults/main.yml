@@ -1,4 +1,4 @@
 ---
-authn_ldap_version: "3.0.0-SNAPSHOT"
+authn_ldap_version: "3.0.0"
 authn_ldap_provider_url: "ldap://logon05.fed.cclrc.ac.uk"
 authn_ldap_mechanism_enabled: true

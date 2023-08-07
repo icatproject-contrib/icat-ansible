@@ -1,4 +1,4 @@
 ---
 
-icat_lucene_version: '2.0.0-SNAPSHOT'
+icat_lucene_version: '2.0.2'
 icat_lucene_data_dir: 'data/lucene'
