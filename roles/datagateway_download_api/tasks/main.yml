@@ -1,0 +1,121 @@
+---
+
+- name: "Check datagateway-download-api package"
+  stat:
+    path: /home/{{ payara_user }}/downloads/datagateway-download-api-{{ datagateway_download_api_version }}-distro.zip
+  register: packageResult
+
+- name: "Download datagateway-download-api"
+  community.general.maven_artifact:
+    repository_url: "https://repo.icatproject.org/repo"
+    group_id: "org.icatproject"
+    artifact_id: "datagateway-download-api"
+    version: "{{ datagateway_download_api_version }}"
+    classifier: "distro"
+    extension: "zip"
+    dest: "/home/{{ payara_user }}/downloads/datagateway-download-api-{{ datagateway_download_api_version }}-distro.zip"
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: packageResult.stat.exists is defined and packageResult.stat.exists == false
+
+- name: 'Unarchive datagateway-download-api if not installed'
+  unarchive:
+    src: /home/{{ payara_user }}/downloads/datagateway-download-api-{{ datagateway_download_api_version }}-distro.zip
+    dest: /home/{{ payara_user }}/install
+    remote_src: true
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+  when: ansible_local.local.instantiations.datagateway_download_api is not defined or ansible_local.local.versions.datagateway_download_api != datagateway_download_api_version
+
+- name: "Find any war files not matching the current version"
+  find:
+    paths: /home/{{ payara_user }}/install/datagateway-download-api/
+    use_regex: yes
+    patterns: "^.*(?<!{{ datagateway_download_api_version }})\\.war$"
+  register: warFilesResult
+
+- name: "Remove war files not matching the current version"
+  file:
+    path: "{{ item.path }}"
+    state: absent
+  with_items: "{{ warFilesResult.files }}"
+
+- name: "Create database for datagateway-download-api"
+  mysql_db:
+    name: "{{ topcat_database }}"
+    login_user: "{{ db_root_username }}"
+    login_password: "{{ db_root_password }}"
+  when: (ansible_local is defined) and (ansible_local.local is defined) and (ansible_local.local.instantiations is defined) and (ansible_local.local.instantiations.mariadb is defined) and (ansible_local.local.instantiations.mariadb == 'true')
+
+- name: "Create user for datagateway-download-api database"
+  mysql_user:
+    name: "{{ db_topcat_username }}"
+    password: "{{ db_topcat_password }}"
+    priv: "{{ topcat_database }}.*:ALL,GRANT"
+    login_user: "{{ db_root_username }}"
+    login_password: "{{ db_root_password }}"
+  when: (ansible_local is defined) and (ansible_local.local is defined) and (ansible_local.local.instantiations is defined) and (ansible_local.local.instantiations.mariadb is defined) and (ansible_local.local.instantiations.mariadb == 'true')
+
+- name: "Check setup.properties file existence"
+  local_action: stat path={{ role_path }}/files/setup.properties
+  become: false
+  register: setupPropertiesResult
+
+- name: "Configure setup.properties via copying"
+  copy:
+    src: files/setup.properties
+    dest: /home/{{ payara_user }}/install/datagateway-download-api/setup.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0600
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
+  notify:
+    - "datagateway_download_api-handler"
+
+- name: "Configure setup.properties via templating"
+  import_tasks: tasks/create-setup-properties.yml
+  when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false
+  notify:
+    - "datagateway_download_api-handler"
+
+- name: "Check run.properties file existence"
+  local_action: stat path={{ role_path }}/files/run.properties
+  become: false
+  register: runPropertiesResult
+
+- name: "Configure run.properties via copying"
+  copy:
+    src: files/run.properties
+    dest: /home/{{ payara_user }}/install/datagateway-download-api/run.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
+  notify:
+    - "datagateway_download_api-handler"
+
+- name: "Configure run.properties via templating"
+  template:
+    src: templates/run.properties.j2
+    dest: /home/{{ payara_user }}/install/datagateway-download-api/run.properties
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
+  notify:
+    - "datagateway_download_api-handler"
+
+- name: "Configure datagateway-download-api logback.xml"
+  copy:
+    src: files/logback.xml
+    dest: /home/{{ payara_user }}/install/datagateway-download-api/logback.xml
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0664
+  notify:
+    - "datagateway_download_api-handler"
+
+- name: "Setup datagateway-download-api if not setup or a different version is found"
+  import_tasks: tasks/installation.yml
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.datagateway_download_api is not defined) or (ansible_local.local.instantiations.datagateway_download_api != 'true') or (ansible_local.local.versions.datagateway_download_api != datagateway_download_api_version)

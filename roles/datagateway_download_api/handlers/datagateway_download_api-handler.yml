@@ -3,8 +3,8 @@
 - name: 'Import: Check payara is running'
   import_tasks: "{{ role_path }}/../payara/tasks/status.yml"
 
-- name: 'Re-install topcat'
-  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/topcat; python2 setup -vv install"'
+- name: 'Re-install datagateway-download-api'
+  shell: 'su -l {{ payara_user }} -c "cd /home/{{ payara_user }}/install/datagateway-download-api; ./setup -vv install"'
   become: true
   become_user: root
   args:
