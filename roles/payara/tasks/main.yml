@@ -143,6 +143,12 @@
     regexp: '^AS_JAVA='
   when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
 
+- name: 'Temporary fix for https://github.com/payara/Payara/issues/6344'
+  lineinfile:
+    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/config/asenv.conf
+    line: 'export JAVA_TOOL_OPTIONS="-Djdk.util.zip.disableZip64ExtraFieldValidation=true --add-opens=java.base/java.io=ALL-UNNAMED"'
+    regexp: 'JAVA_TOOL_OPTIONS='
+
 - name: 'Setup payara if not setup'
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.payara is not defined) or (ansible_local.local.instantiations.payara != 'true') or (ansible_local.local.versions.payara != payara_version)
