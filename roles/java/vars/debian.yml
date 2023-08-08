@@ -1,0 +1,6 @@
+---
+
+java_pkgs:
+  - openjdk-{{ java_version }}-jdk-headless
+
+java_dir: /usr/lib/jvm/java-{{ java_version }}-openjdk-amd64

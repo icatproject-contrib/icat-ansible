@@ -2,15 +2,12 @@
 - include_vars: vars/redhat.yml
   when: ansible_os_family == 'RedHat'
 
-- include_vars: vars/debian-16.yml
-  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '16'
-
-- include_vars: vars/debian-20.yml
-  when: ansible_os_family == 'Debian' and ansible_distribution_major_version == '20'
+- include_vars: vars/debian.yml
+  when: ansible_os_family == 'Debian'
 
 - name: "Install common icat_server dependencies"
   package:
-    state: latest
+    state: present
     name: "{{ icat_server_pkgs }}"
 
 - name: "Check icat_server package"

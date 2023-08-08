@@ -129,19 +129,11 @@
     executable: /bin/bash
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- name: 'Make sure we are using the correct java version for payara for Debian systems (Ubuntu 16.04 & 20.04)'
+- name: 'Make sure we are using the correct java version for payara'
   lineinfile:
     path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/config/asenv.conf
-    line: 'AS_JAVA="/usr/lib/jvm/java-1.{{ java_version }}.0-openjdk-amd64"'
+    line: 'AS_JAVA="{{ java_dir }}"'
     regexp: '^AS_JAVA='
-  when: ansible_os_family == 'Debian' and ( ansible_distribution_major_version == '16' or ansible_distribution_major_version == '20')
-
-- name: 'Make sure we are using the correct java version for payara for Red Hat systems (EL 7)'
-  lineinfile:
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/config/asenv.conf
-    line: 'AS_JAVA="/usr/lib/jvm/java-{{ java_version }}-openjdk"'
-    regexp: '^AS_JAVA='
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
 
 - name: 'Temporary fix for https://github.com/payara/Payara/issues/6344'
   lineinfile:

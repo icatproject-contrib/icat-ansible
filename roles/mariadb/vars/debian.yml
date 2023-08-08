@@ -2,8 +2,6 @@
 mariadb_daemon: mysql
 mariadb_config_dir: /etc/mysql/conf.d
 mariadb_pkgs:
-  - mariadb-client-10.3
-  - mariadb-server-10.3
   - mariadb-server
   - mariadb-client
   - python3-mysqldb

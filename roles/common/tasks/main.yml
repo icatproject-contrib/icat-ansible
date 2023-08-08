@@ -1,17 +1,8 @@
 ---
-- name: "Update apt cache if running on Debian system"
-  apt:
-    update_cache: yes
-  when: ansible_os_family == 'Debian'
-
-- name: "Update yum cache if running on RedHat system"
-  yum:
-    update_cache: yes
-  when: ansible_os_family == 'RedHat'
 
 - name: "Installing common packages"
   package:
-    state: latest
+    state: present
     name:
       - htop
       - unzip
