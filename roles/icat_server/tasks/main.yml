@@ -101,10 +101,6 @@
   notify:
     - "icat_server-handler"
 
-- name: "Run tasks for icat_server versions <= 4.8"
-  import_tasks: tasks/compat48.yml
-  when: icat_server_compat48 is defined and icat_server_compat48
-
 - name: "Setup icat_server if not setup or a different version is found"
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.icat_server is not defined) or (ansible_local.local.instantiations.icat_server != 'true') or (ansible_local.local.versions.icat_server != icat_server_version)

@@ -104,10 +104,6 @@
   notify:
     - "authn_simple-handler"
 
-- name: "Run tasks for authn_simple versions 1.x"
-  import_tasks: tasks/compat1x.yml
-  when: authn_simple_compat1x is defined and authn_simple_compat1x
-
 - name: "Setup authn_simple if not setup or a different version is found"
   import_tasks: tasks/installation.yml
   when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_simple is not defined) or (ansible_local.local.instantiations.authn_simple != 'true') or (ansible_local.local.versions.authn_simple != authn_simple_version)

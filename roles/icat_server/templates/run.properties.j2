@@ -31,11 +31,7 @@ authn.db.admin = {{ icat_server_authn_db_admin }}
 {% endif %}
 
 {% if ansible_local.local.instantiations.authn_ldap is defined and ansible_local.local.instantiations.authn_ldap == 'true' %}
-{% if authn_ldap_compat1x is defined and authn_ldap_compat1x %}
-authn.ldap.jndi = java:global/authn.ldap-{{ authn_ldap_version }}/LDAP_Authenticator
-{% else %}
 authn.ldap.url = https://{{ authn_ldap_url }}:8181
-{% endif %}
 authn.ldap.admin = {{ icat_server_authn_ldap_admin }}
 authn.ldap.friendly = Federal Id
 {% else %}
@@ -45,11 +41,7 @@ authn.ldap.friendly = Federal Id
 {% endif %}
 
 {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}
-{% if authn_simple_compat1x is defined and authn_simple_compat1x %}
-authn.simple.jndi = java:global/authn.simple-{{ authn_simple_version }}/SIMPLE_Authenticator
-{% else %}
 authn.simple.url = https://{{ authn_simple_url }}:8181 
-{% endif %}
 authn.simple.friendly = Simple
 {% else %}
 !authn.simple.url = https://localhost:8181 
@@ -80,13 +72,7 @@ notification.Dataset = CU
 notification.Datafile = CU
 
 # Call logging setup
-{% if icat_server_compat46 is defined and icat_server_compat46 %}
-log.list = file table
-log.file = S
-log.table = S
-{% else %}
 log.list = SESSION WRITE READ INFO
-{% endif %}
 
 # Lucene
 {% if ansible_local.local.instantiations.icat_lucene is defined and ansible_local.local.instantiations.icat_lucene == 'true' %}
