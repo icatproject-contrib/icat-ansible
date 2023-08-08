@@ -18,6 +18,9 @@ jobs:
     - name: Checkout ICAT Ansible
       uses: actions/checkout@v2
     
+    - name: Run apt update
+      run: sudo apt-get update
+
     - name: Install requirements
       run: pip install -r requirements.txt
 
