@@ -1,8 +1,9 @@
 ---
 
 payara_version: '6.2023.7'
-payara_directory: 'payara{{ payara_version }}'
+payara_dir: '/home/{{ payara_user }}/payara{{ payara_version }}'
 payara_domain: 'domain1'
+payara_domain_dir: '{{ payara_dir }}/glassfish/domains/{{ payara_domain }}'
 install_mysql_connector_java: '{{ ansible_local.local.instantiations.mariadb | default(false) }}'
 mysql_connector_java_version: 5.1.49
 install_ojdbc8_jar: false

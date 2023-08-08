@@ -39,13 +39,13 @@
 # Payara 6+ creates its trust store in PKCS12 format, however the javax.net.ssl.trustStore parameter in ~/.m2/settings.xml only seems to work with JKS format
 - name: "Create JKS-format trust store"
   command:
-    cmd: keytool -importkeystore -srckeystore /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/config/cacerts.p12 -destkeystore /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/config/cacerts.jks -deststoretype jks
+    cmd: keytool -importkeystore -srckeystore {{ payara_domain_dir }}/config/cacerts.p12 -destkeystore {{ payara_domain_dir }}/config/cacerts.jks -deststoretype jks
     stdin: |
       changeit
       changeit
       changeit
   args:
-    creates: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/config/cacerts.jks
+    creates: "{{ payara_domain_dir }}/config/cacerts.jks"
 
 - name: "Make test ids main folder"
   file:

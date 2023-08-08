@@ -12,7 +12,7 @@
 # customize values for your needs
 NAME="{{ payara_user }}"
 GLASSFISH_USER=$NAME
-GLASSFISH_DIR="/home/$NAME/{{ payara_directory }}"
+GLASSFISH_DIR="{{ payara_dir }}"
 ASADMIN="$GLASSFISH_DIR/glassfish/bin/asadmin"
 GF_DOMAIN=$2
 
