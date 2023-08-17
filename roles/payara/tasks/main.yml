@@ -135,10 +135,10 @@
     line: 'AS_JAVA="{{ java_dir }}"'
     regexp: '^AS_JAVA='
 
-- name: 'Temporary fix for https://github.com/payara/Payara/issues/6344'
+- name: 'Temporary fix for Java 17'
   lineinfile:
     path: '{{ payara_dir }}/glassfish/config/asenv.conf'
-    line: 'export JAVA_TOOL_OPTIONS="-Djdk.util.zip.disableZip64ExtraFieldValidation=true --add-opens=java.base/java.io=ALL-UNNAMED"'
+    line: 'export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.io=ALL-UNNAMED"'
     regexp: 'JAVA_TOOL_OPTIONS='
 
 - name: 'Setup payara if not setup'
