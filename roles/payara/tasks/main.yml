@@ -157,7 +157,7 @@
     owner: root
     group: root
     mode: 0775
-  when: (install_mysql_connector_java | bool) or (install_ojdbc8_jar | bool)
+  when: (install_mysql_connector_java | bool) or (install_ojdbc11_jar | bool)
 
 - name: 'Download mysql-connector-java.jar'
   get_url:
@@ -181,29 +181,35 @@
   when: install_mysql_connector_java | bool
   notify: payara-handler
 
-- name: 'Download ojdbc8.jar'
+- name: 'Download ojdbc11.jar'
   get_url:
-    url: https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc8/{{ ojdbc8_jar_version }}/ojdbc8-{{ ojdbc8_jar_version }}.jar
-    dest: /usr/local/share/java/ojdbc8-{{ ojdbc8_jar_version }}.jar
+    url: https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/{{ ojdbc11_jar_version }}/ojdbc11-{{ ojdbc11_jar_version }}.jar
+    dest: /usr/local/share/java/ojdbc11-{{ ojdbc11_jar_version }}.jar
     owner: root
     group: root
     mode: 0644
-  when: install_ojdbc8_jar | bool
+  when: install_ojdbc11_jar | bool
   notify: payara-handler
 
-# Path is for `lib/ext` due to https://github.com/payara/Payara/issues/4613
-# For Java 11, `java.lib.ext` has been removed so this jar won't be detected in `lib/ext`
-# See https://github.com/icatproject-contrib/icat-ansible/pull/83#issuecomment-1078845685 for further details
-- name: 'Create symlink to ojdbc8.jar'
+- name: 'Create domain lib/ext directory'
   file:
-    src: /usr/local/share/java/ojdbc8-{{ ojdbc8_jar_version }}.jar
-    path: '{{ payara_domain_dir }}/lib/ext/ojdbc8.jar'
+    state: directory
+    path: '{{ payara_domain_dir }}/lib/ext'
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+  when: install_ojdbc11_jar | bool
+  notify: payara-handler
+
+- name: 'Create symlink to ojdbc11.jar'
+  file:
+    src: /usr/local/share/java/ojdbc11-{{ ojdbc11_jar_version }}.jar
+    path: '{{ payara_domain_dir }}/lib/ext/ojdbc11.jar'
     state: link
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
     follow: no
     force: yes
-  when: install_ojdbc8_jar | bool
+  when: install_ojdbc11_jar | bool
   notify: payara-handler
 
 - meta: flush_handlers
