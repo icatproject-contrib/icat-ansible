@@ -5,9 +5,14 @@
   register: packageResult
 
 - name: "Download authn_simple"
-  get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/authn.simple/{{ authn_simple_version }}/authn.simple-{{ authn_simple_version }}-distro.zip
-    dest: /home/{{ payara_user }}/downloads
+  community.general.maven_artifact:
+    repository_url: "https://repo.icatproject.org/repo"
+    group_id: "org.icatproject"
+    artifact_id: "authn.simple"
+    version: "{{ authn_simple_version }}"
+    classifier: "distro"
+    extension: "zip"
+    dest: "/home/{{ payara_user }}/downloads/authn.simple-{{ authn_simple_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
@@ -26,7 +31,7 @@
   find:
     paths: /home/{{ payara_user }}/install/authn.simple/
     use_regex: yes
-    patterns: "^.*-(?!{{ authn_simple_version }}).*\\.war$"
+    patterns: "^.*(?<!{{ authn_simple_version }})\\.war$"
   register: warFilesResult
 
 - name: "Remove war files not matching the current version"
@@ -99,10 +104,6 @@
   notify:
     - "authn_simple-handler"
 
-- name: "Run tasks for authn_simple versions 1.x"
-  import_tasks: tasks/compat1x.yml
-  when: authn_simple_compat1x is defined and authn_simple_compat1x
-
-- name: "Setup authn_simple if not setup"
+- name: "Setup authn_simple if not setup or a different version is found"
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_simple is not defined) or (ansible_local.local.instantiations.authn_simple != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.authn_simple is not defined) or (ansible_local.local.instantiations.authn_simple != 'true') or (ansible_local.local.versions.authn_simple != authn_simple_version)

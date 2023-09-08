@@ -14,7 +14,7 @@
 
 # MySQL Database
 db.target = mysql
-db.driver = com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+db.driver = com.mysql.cj.jdbc.MysqlDataSource
 db.url = jdbc:mysql://{{ db_topcat_hostname }}:3306/{{ topcat_database }}
 db.username = {{ db_topcat_username }}
 db.password = {{ db_topcat_password }}

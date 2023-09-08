@@ -1,15 +1,12 @@
 ---
-- name: "Install java packages for Red Hat systems (EL 7)"
-  package:
-    state: latest
-    name:
-      - java-1.8.0-openjdk-headless
-      - java-1.8.0-openjdk-devel
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
 
-- name: "Install java packages for Debian systems (Ubuntu 16.04 & 20.04)"
+- include_vars: vars/redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- include_vars: vars/debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: "Install Java packages"
   package:
-    state: latest
-    name:
-      - openjdk-8-jdk-headless
-  when: ansible_os_family == 'Debian' and ( ansible_distribution_major_version == '16' or ansible_distribution_major_version == '20')
+    state: present
+    name: "{{ java_pkgs }}"

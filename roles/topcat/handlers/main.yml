@@ -1,4 +1,0 @@
----
-
-- name: "topcat-handler"
-  include_tasks: handlers/topcat-handler.yml

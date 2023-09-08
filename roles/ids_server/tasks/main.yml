@@ -5,9 +5,14 @@
   register: packageResult
 
 - name: "Download ids_server"
-  get_url:
-    url: https://repo.icatproject.org/repo/org/icatproject/ids.server/{{ ids_server_version }}/ids.server-{{ ids_server_version }}-distro.zip
-    dest: /home/{{ payara_user }}/downloads
+  community.general.maven_artifact:
+    repository_url: "https://repo.icatproject.org/repo"
+    group_id: "org.icatproject"
+    artifact_id: "ids.server"
+    version: "{{ ids_server_version }}"
+    classifier: "distro"
+    extension: "zip"
+    dest: "/home/{{ payara_user }}/downloads/ids.server-{{ ids_server_version }}-distro.zip"
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
@@ -26,7 +31,7 @@
   find:
     paths: /home/{{ payara_user }}/install/ids.server/
     use_regex: yes
-    patterns: "^.*-(?!{{ ids_server_version }}).*\\.war$"
+    patterns: "^.*(?<!{{ ids_server_version }})\\.war$"
   register: warFilesResult
 
 - name: "Remove war files not matching the current version"
@@ -54,6 +59,14 @@
 - name: "Create cache data directory"
   file:
     path: /home/{{ payara_user }}/data/cache
+    state: directory
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user }}"
+    mode: 0775
+
+- name: "Create filesCheck output directory"
+  file:
+    path: /home/{{ payara_user }}/logs
     state: directory
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
@@ -118,6 +131,6 @@
   notify:
     - "ids_server-handler"
 
-- name: "Setup ids_server if not setup"
+- name: "Setup ids_server if not setup or a different version is found"
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.ids_server is not defined) or (ansible_local.local.instantiations.ids_server != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.ids_server is not defined) or (ansible_local.local.instantiations.ids_server != 'true') or (ansible_local.local.versions.ids_server != ids_server_version)

@@ -1,22 +1,20 @@
 ---
-- name: "Update apt cache if running on Debian system"
-  apt:
-    update_cache: yes
-  when: ansible_os_family == 'Debian'
-
-- name: "Update yum cache if running on RedHat system"
-  yum:
-    update_cache: yes
-  when: ansible_os_family == 'RedHat'
 
 - name: "Installing common packages"
   package:
-    state: latest
+    state: present
     name:
       - htop
       - unzip
       - vim
       - wget
+
+- name: "Install python3-lxml"
+  package:
+    state: present
+    name:
+      - python3-lxml
+  when: not (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
 
 - name: "Create ansible config directory on remote hosts"
   file:

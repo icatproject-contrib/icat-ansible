@@ -1,7 +1,4 @@
 # Oracle
-{% if icat_server_compat46 is defined and icat_server_compat46 %}
-!db.vendor = oracle
-{% endif %}
 !db.driver = oracle.jdbc.pool.OracleDataSource
 !db.url = jdbc:oracle:thin:@//{{ db_icat_hostname }}:{{ db_icat_oracle_port }}/{{ icat_database }}
 !db.username = {{ db_icat_username }}
@@ -12,10 +9,7 @@
 !db.logging = FINE
 
 # MySQL
-{% if icat_server_compat46 is defined and icat_server_compat46 %}
-db.vendor = mysql
-{% endif %}
-db.driver = com.mysql.jdbc.jdbc2.optional.MysqlDataSource
+db.driver = com.mysql.cj.jdbc.MysqlDataSource
 db.url = jdbc:mysql://{{ db_icat_hostname }}:{{ db_icat_mariadb_port }}/{{ icat_database }}
 db.username = {{ db_icat_username }}
 db.password = {{ db_icat_password }}

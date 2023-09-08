@@ -7,9 +7,9 @@
     group: "{{ payara_user }}"
     mode: 0775
 
-- name: "Create a stash directory for topcat configs"
+- name: "Create a stash directory for datagateway-download-api configs"
   file:
-    path: /home/{{ payara_user }}/stash/topcat
+    path: /home/{{ payara_user }}/stash/datagateway-download-api
     state: directory
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
@@ -18,26 +18,26 @@
 - name: "Copy over {{ payara_user }} setup.properties"
   template:
     src: "{{ role_path }}/../payara/templates/setup.properties.j2"
-    dest: /home/{{ payara_user }}/stash/topcat/1-part
+    dest: /home/{{ payara_user }}/stash/datagateway-download-api/1-part
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
 
-- name: "Copy over topcat-setup.properties"
+- name: "Copy over setup.properties"
   template:
-    src: templates/topcat-setup.properties.j2
-    dest: /home/{{ payara_user }}/stash/topcat/2-part
+    src: templates/setup.properties.j2
+    dest: /home/{{ payara_user }}/stash/datagateway-download-api/2-part
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0664
 
-- name: "Configure topcat-setup.properties by concatenation of files in the stash"
+- name: "Configure setup.properties by concatenation of files in the stash"
   assemble:
-    src: /home/{{ payara_user }}/stash/topcat
-    dest: /home/{{ payara_user }}/install/topcat/topcat-setup.properties
+    src: /home/{{ payara_user }}/stash/datagateway-download-api
+    dest: /home/{{ payara_user }}/install/datagateway-download-api/setup.properties
     delimiter: '\n'
     owner: "{{ payara_user }}"
     group: "{{ payara_user }}"
     mode: 0600
   notify:
-    - "topcat-handler"
+    - "datagateway_download_api-handler"

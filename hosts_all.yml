@@ -17,5 +17,5 @@
     - role: icat_server
     - role: ids_storage_file
     - role: ids_server
-    - role: topcat
+    - role: datagateway_download_api
     - role: dev_common

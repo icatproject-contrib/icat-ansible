@@ -60,15 +60,15 @@
 - name: 'Add path to payara executable to PATH variable in .bash_profile'
   lineinfile:
     path: /home/{{ payara_user }}/.bash_profile
-    line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
-    regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
+    line: 'export PATH={{ payara_dir }}/bin:$PATH'
+    regexp: '^export PATH=\/.*\/payara.*\/bin:\$PATH$'
   when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == true
 
 - name: 'Add path to payara executable to PATH variable in .profile'
   lineinfile:
     path: /home/{{ payara_user }}/.profile
-    line: 'export PATH=$HOME/{{ payara_directory }}/bin:$PATH'
-    regexp: '^export PATH=\$HOME\/payara[0-9]+(\.{1}[0-9]+)*\/bin:\$PATH$'
+    line: 'export PATH={{ payara_dir }}/bin:$PATH'
+    regexp: '^export PATH=\/.*\/payara.*\/bin:\$PATH$'
   when: bashProfileResult.stat.exists is defined and bashProfileResult.stat.exists == false
 
 - name: 'Check payara package'
@@ -101,7 +101,7 @@
 
 - name: 'Check payara installation'
   stat:
-    path: /home/{{ payara_user }}/{{ payara_directory }}
+    path: '{{ payara_dir }}'
   register: installationResult
 
 - name: 'Delete contents of /home/{{ payara_user }}/unpackage'
@@ -122,34 +122,32 @@
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: 'Move contents of /home/{{ payara_user }}/unpackage'
-  shell: 'su -l {{ payara_user }} -c "mv /home/{{ payara_user }}/unpackage/payara* /home/{{ payara_user }}/payara{{ payara_version }}"'
+  shell: 'su -l {{ payara_user }} -c "mv /home/{{ payara_user }}/unpackage/payara* {{ payara_dir }}"'
   become: true
   become_user: root
   args:
     executable: /bin/bash
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
-- name: 'Make sure we are using the correct java version for payara for Debian systems (Ubuntu 16.04 & 20.04)'
+- name: 'Make sure we are using the correct java version for payara'
   lineinfile:
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/config/asenv.conf
-    line: 'AS_JAVA="/usr/lib/jvm/java-1.8.0-openjdk-amd64"'
-    regexp: '^AS_JAVA="\/usr\/lib\/jvm\/java-1\.8\.0-openjdk-amd64"$'
-  when: ansible_os_family == 'Debian' and ( ansible_distribution_major_version == '16' or ansible_distribution_major_version == '20')
+    path: '{{ payara_dir }}/glassfish/config/asenv.conf'
+    line: 'AS_JAVA="{{ java_dir }}"'
+    regexp: '^AS_JAVA='
 
-- name: 'Make sure we are using the correct java version for payara for Red Hat systems (EL 7)'
+- name: 'Temporary fix for Java 17'
   lineinfile:
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/config/asenv.conf
-    line: 'AS_JAVA="/usr/lib/jvm/java-1.8.0-openjdk"'
-    regexp: '^AS_JAVA="\/usr\/lib\/jvm\/java-1\.8\.0-openjdk"$'
-  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+    path: '{{ payara_dir }}/glassfish/config/asenv.conf'
+    line: 'export JAVA_TOOL_OPTIONS="--add-opens=java.base/java.io=ALL-UNNAMED"'
+    regexp: 'JAVA_TOOL_OPTIONS='
 
 - name: 'Setup payara if not setup'
   import_tasks: tasks/installation.yml
-  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.payara is not defined) or (ansible_local.local.instantiations.payara != 'true')
+  when: (ansible_local is not defined) or (ansible_local.local is not defined) or (ansible_local.local.instantiations is not defined) or (ansible_local.local.instantiations.payara is not defined) or (ansible_local.local.instantiations.payara != 'true') or (ansible_local.local.versions.payara != payara_version)
 
 - name: 'Check payara domain'
   stat:
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib
+    path: '{{ payara_domain_dir }}/lib'
   register: domainResult
 
 - name: 'Create directory for local jars'
@@ -159,53 +157,59 @@
     owner: root
     group: root
     mode: 0775
-  when: (install_mysql_connector_java | bool) or (install_ojdbc8_jar | bool)
+  when: (install_mysql_connector_j | bool) or (install_ojdbc11_jar | bool)
 
-- name: 'Download mysql-connector-java.jar'
+- name: 'Download mysql-connector-j.jar'
   get_url:
-    url: https://repo1.maven.org/maven2/mysql/mysql-connector-java/{{ mysql_connector_java_version }}/mysql-connector-java-{{ mysql_connector_java_version }}.jar
-    dest: /usr/local/share/java/mysql-connector-java-{{ mysql_connector_java_version }}.jar
+    url: https://repo1.maven.org/maven2/com/mysql/mysql-connector-j/{{ mysql_connector_j_version }}/mysql-connector-j-{{ mysql_connector_j_version }}.jar
+    dest: /usr/local/share/java/mysql-connector-j-{{ mysql_connector_j_version }}.jar
     owner: root
     group: root
     mode: 0644
-  when: install_mysql_connector_java | bool
+  when: install_mysql_connector_j | bool
   notify: payara-handler
 
-- name: 'Create symlink to mysql-connector-java.jar'
+- name: 'Create symlink to mysql-connector-j.jar'
   file:
-    src: /usr/local/share/java/mysql-connector-java-{{ mysql_connector_java_version }}.jar
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/mysql-connector-java.jar
+    src: /usr/local/share/java/mysql-connector-j-{{ mysql_connector_j_version }}.jar
+    path: '{{ payara_domain_dir }}/lib/mysql-connector-j.jar'
     state: link
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
     follow: no
     force: yes
-  when: install_mysql_connector_java | bool
+  when: install_mysql_connector_j | bool
   notify: payara-handler
 
-- name: 'Download ojdbc8.jar'
+- name: 'Download ojdbc11.jar'
   get_url:
-    url: https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc8/{{ ojdbc8_jar_version }}/ojdbc8-{{ ojdbc8_jar_version }}.jar
-    dest: /usr/local/share/java/ojdbc8-{{ ojdbc8_jar_version }}.jar
+    url: https://repo1.maven.org/maven2/com/oracle/database/jdbc/ojdbc11/{{ ojdbc11_jar_version }}/ojdbc11-{{ ojdbc11_jar_version }}.jar
+    dest: /usr/local/share/java/ojdbc11-{{ ojdbc11_jar_version }}.jar
     owner: root
     group: root
     mode: 0644
-  when: install_ojdbc8_jar | bool
+  when: install_ojdbc11_jar | bool
   notify: payara-handler
 
-# Path is for `lib/ext` due to https://github.com/payara/Payara/issues/4613
-# For Java 11, `java.lib.ext` has been removed so this jar won't be detected in `lib/ext`
-# See https://github.com/icatproject-contrib/icat-ansible/pull/83#issuecomment-1078845685 for further details
-- name: 'Create symlink to ojdbc8.jar'
+- name: 'Create domain lib/ext directory'
   file:
-    src: /usr/local/share/java/ojdbc8-{{ ojdbc8_jar_version }}.jar
-    path: /home/{{ payara_user }}/{{ payara_directory }}/glassfish/domains/{{ payara_domain }}/lib/ext/ojdbc8.jar
+    state: directory
+    path: '{{ payara_domain_dir }}/lib/ext'
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user }}'
+  when: install_ojdbc11_jar | bool
+  notify: payara-handler
+
+- name: 'Create symlink to ojdbc11.jar'
+  file:
+    src: /usr/local/share/java/ojdbc11-{{ ojdbc11_jar_version }}.jar
+    path: '{{ payara_domain_dir }}/lib/ext/ojdbc11.jar'
     state: link
     owner: '{{ payara_user }}'
     group: '{{ payara_user }}'
     follow: no
     force: yes
-  when: install_ojdbc8_jar | bool
+  when: install_ojdbc11_jar | bool
   notify: payara-handler
 
 - meta: flush_handlers

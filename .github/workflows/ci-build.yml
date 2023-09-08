@@ -9,11 +9,18 @@ on:
 jobs:
   run_all_roles:
     name: Run all ICAT Ansible roles
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        java_version: [11, 17]
+
     steps:
     - name: Checkout ICAT Ansible
       uses: actions/checkout@v2
     
+    - name: Run apt update
+      run: sudo apt-get update
+
     - name: Install requirements
       run: pip install -r requirements.txt
 
@@ -40,5 +47,5 @@ jobs:
 
     - name: Run ICAT Ansible Playbook
       run: |
-        ansible-playbook hosts_all.yml -i hosts --vault-password-file vault_pass.txt -vv
+        ansible-playbook hosts_all.yml -i hosts --vault-password-file vault_pass.txt -e java_version=${{ matrix.java_version }} -vv
 

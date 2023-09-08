@@ -1,0 +1,4 @@
+---
+
+- name: "datagateway_download_api-handler"
+  include_tasks: handlers/datagateway_download_api-handler.yml

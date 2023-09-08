@@ -1,5 +1,0 @@
----
-dev_common_pkgs:
-  - git
-  - maven
-  - python3-pip
