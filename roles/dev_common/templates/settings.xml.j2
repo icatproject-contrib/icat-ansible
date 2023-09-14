@@ -5,9 +5,9 @@
              <activeByDefault>true</activeByDefault>
          </activation>
          <properties>
-             <serverUrl>https://{{ icat_url }}:8181</serverUrl>
+             <serverUrl>{{ icat_url }}</serverUrl>
              {% if lucene_url is defined and lucene_url %}
-             <luceneUrl>https://{{ lucene_url }}:8181</luceneUrl>
+             <luceneUrl>{{ lucene_url }}</luceneUrl>
              {% endif %}
              <javax.net.ssl.trustStore>{{ payara_domain_dir }}/config/cacerts.jks</javax.net.ssl.trustStore>
              <containerHome>{{ payara_dir }}</containerHome>

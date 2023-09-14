@@ -7,8 +7,8 @@ importCacheSize = 50
 exportCacheSize = 50
 authn.list = db simple
 
-authn.db.url     = https://{{ authn_db_url }}:8181
-authn.simple.url     = https://{{ authn_simple_url }}:8181
+authn.db.url     = {{ authn_db_url }}
+authn.simple.url = {{ authn_simple_url }}
 
 notification.list = Dataset Datafile
 notification.Dataset = CU
@@ -16,7 +16,7 @@ notification.Datafile = CU
 
 log.list = SESSION WRITE READ INFO
 
-lucene.url = https://{{ lucene_url }}:8181
+lucene.url = {{ lucene_url }}
 lucene.populateBlockSize = 10000
 lucene.directory = ${HOME}/data/lucene
 lucene.backlogHandlerIntervalSeconds = 60

@@ -32,25 +32,25 @@ authn_reader_password: "{{ vault_authn_reader_password }}"
 authn_icatuser_password: "{{ vault_authn_icatuser_password }}"
 
 # Authn_simple server URL
-authn_simple_url: "{{ ansible_fqdn }}"
+authn_simple_url: "https://{{ ansible_fqdn }}:8181"
 
 # Authn_db server URL
-authn_db_url: "{{ ansible_fqdn }}"
+authn_db_url: "https://{{ ansible_fqdn }}:8181"
 
 # Authn_anon server URL
-authn_anon_url: "{{ ansible_fqdn }}"
+authn_anon_url: "https://{{ ansible_fqdn }}:8181"
 
 # Authn_ldap server URL
-authn_ldap_url: "{{ ansible_fqdn }}"
+authn_ldap_url: "https://{{ ansible_fqdn }}:8181"
 
 # ICAT Lucene server URL
-lucene_url: "{{ ansible_fqdn }}"
+lucene_url: "https://{{ ansible_fqdn }}:8181"
 
 # ICAT server URL
-icat_url: "{{ ansible_fqdn }}"
+icat_url: "https://{{ ansible_fqdn }}:8181"
 
 # IDS server URL
-ids_url: "{{ ansible_fqdn }}"
+ids_url: "https://{{ ansible_fqdn }}:8181"
 
 # DataGateway Download API database hostname, database name, username and password
 db_topcat_hostname: "localhost"

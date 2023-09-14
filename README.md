@@ -184,11 +184,11 @@ Create a playbook file to hold the list of roles you wish to install and any var
         icat_server_authn_list: "db ldap"
         icat_server_authn_ldap_admin: "false"
         icat_server_lucene_populateBlockSize: "10000"
-        authn_db_url: "{{ ansible_fqdn }}"
-        authn_anon_url: "{{ ansible_fqdn }}"
-        authn_ldap_url: "{{ ansible_fqdn }}"
-        lucene_url: "{{ ansible_fqdn }}"
-        icat_url: "{{ ansible_fqdn }}"
+        authn_db_url: "https://{{ ansible_fqdn }}:8181"
+        authn_anon_url: "https://{{ ansible_fqdn }}:8181"
+        authn_ldap_url: "https://{{ ansible_fqdn }}:8181"
+        lucene_url: "https://{{ ansible_fqdn }}:8181"
+        icat_url: "https://{{ ansible_fqdn }}:8181"
 
 
     - role: 'dev_common'
