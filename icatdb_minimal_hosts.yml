@@ -13,3 +13,7 @@
     - role: authn_anon
     - role: icat_lucene
     - role: icat_server
+  tasks:
+    - name: Pause for 1 minute to allow Payara to start before the handlers run
+      pause:
+        minutes: 1
