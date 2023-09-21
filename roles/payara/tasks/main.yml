@@ -1,7 +1,7 @@
 ---
 - name: 'Create payara user group'
   group:
-    name: '{{ payara_user }}'
+    name: '{{ payara_user_group }}'
     state: present
 
 - name: 'Create payara user'
@@ -9,7 +9,7 @@
     name: '{{ payara_user }}'
     createhome: true
     local: '{{ payara_user_local }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     shell: /bin/bash
 
 - name: 'Create downloads directory'
@@ -17,7 +17,7 @@
     path: /home/{{ payara_user }}/downloads
     state: directory
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     mode: 0775
 
 - name: 'Create install directory'
@@ -25,7 +25,7 @@
     path: /home/{{ payara_user }}/install
     state: directory
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     mode: 0775
 
 - name: 'Create scripts directory'
@@ -33,7 +33,7 @@
     path: /home/{{ payara_user }}/scripts
     state: directory
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     mode: 0775
 
 - name: 'Create unpackage directory'
@@ -41,7 +41,7 @@
     path: /home/{{ payara_user }}/unpackage
     state: directory
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     mode: 0775
 
 - name: 'Install payara init script'
@@ -81,7 +81,7 @@
     url: http://search.maven.org/remotecontent?filepath=fish/payara/distributions/payara/{{ payara_version }}/payara-{{ payara_version }}.zip
     dest: /home/{{ payara_user }}/downloads
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
@@ -95,7 +95,7 @@
     url: https://icatproject.org/misc/scripts/setup-glassfish.py
     dest: /home/{{ payara_user }}/scripts
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     mode: 0664
   when: scriptResult.stat.exists is defined and scriptResult.stat.exists == false
 
@@ -118,7 +118,7 @@
     dest: /home/{{ payara_user }}/unpackage
     remote_src: true
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: 'Move contents of /home/{{ payara_user }}/unpackage'
@@ -169,7 +169,7 @@
     path: '{{ payara_domain_dir }}/lib/mysql-connector-j.jar'
     state: link
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     follow: no
     force: yes
   when: install_mysql_connector_j | bool
@@ -190,7 +190,7 @@
     state: directory
     path: '{{ payara_domain_dir }}/lib/ext'
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
   when: install_ojdbc11_jar | bool
   notify: payara-handler
 
@@ -200,7 +200,7 @@
     path: '{{ payara_domain_dir }}/lib/ext/ojdbc11.jar'
     state: link
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     follow: no
     force: yes
   when: install_ojdbc11_jar | bool

@@ -25,7 +25,7 @@
     path: /home/{{ payara_user }}/.m2
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Add maven settings file to maven home"
@@ -33,7 +33,7 @@
     src: templates/settings.xml.j2
     dest: /home/{{ payara_user }}/.m2/settings.xml
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
 
 # Payara 6+ creates its trust store in PKCS12 format, however the javax.net.ssl.trustStore parameter in ~/.m2/settings.xml only seems to work with JKS format
@@ -52,7 +52,7 @@
     path: /home/{{ payara_user }}/test/data/ids/main
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Make test ids archive folder"
@@ -60,7 +60,7 @@
     path: /home/{{ payara_user }}/test/data/ids/archive
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Make test ids cache folder"
@@ -68,5 +68,5 @@
     path: /home/{{ payara_user }}/test/data/ids/cache
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775

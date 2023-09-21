@@ -15,7 +15,7 @@
     extension: "zip"
     dest: "/home/{{ payara_user }}/downloads/datagateway-download-api-{{ datagateway_download_api_version }}-distro.zip"
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
@@ -25,7 +25,7 @@
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
   when: ansible_local.local.instantiations.datagateway_download_api is not defined or ansible_local.local.versions.datagateway_download_api != datagateway_download_api_version
 
 - name: "Find any war files not matching the current version"
@@ -67,7 +67,7 @@
     src: files/setup.properties
     dest: /home/{{ payara_user }}/install/datagateway-download-api/setup.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0600
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
   notify:
@@ -89,7 +89,7 @@
     src: files/run.properties
     dest: /home/{{ payara_user }}/install/datagateway-download-api/run.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
   notify:
@@ -100,7 +100,7 @@
     src: templates/run.properties.j2
     dest: /home/{{ payara_user }}/install/datagateway-download-api/run.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
   notify:
@@ -111,7 +111,7 @@
     src: files/logback.xml
     dest: /home/{{ payara_user }}/install/datagateway-download-api/logback.xml
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   notify:
     - "datagateway_download_api-handler"
