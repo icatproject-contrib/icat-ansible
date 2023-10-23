@@ -185,19 +185,23 @@
   when: install_ojdbc11_jar | bool
   notify: payara-handler
 
-- name: 'Create domain lib/ext directory'
-  file:
-    state: directory
-    path: '{{ payara_domain_dir }}/lib/ext'
-    owner: '{{ payara_user }}'
-    group: '{{ payara_user_group }}'
-  when: install_ojdbc11_jar | bool
-  notify: payara-handler
-
 - name: 'Create symlink to ojdbc11.jar'
   file:
     src: /usr/local/share/java/ojdbc11-{{ ojdbc11_jar_version }}.jar
-    path: '{{ payara_domain_dir }}/lib/ext/ojdbc11.jar'
+    path: '{{ payara_domain_dir }}/lib/ojdbc11.jar'
+    state: link
+    owner: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
+    follow: no
+    force: yes
+  when: install_ojdbc11_jar | bool
+  notify: payara-handler
+
+# The EclipseLink Oracle extension has to be in the same place as the OJDBC driver, since they must be loaded at the same time.
+- name: 'Create symlink to org.eclipse.persistence.oracle.jar'
+  file:
+    src: '{{ payara_dir }}/glassfish/modules/org.eclipse.persistence.oracle.jar'
+    path: '{{ payara_domain_dir }}/lib/org.eclipse.persistence.oracle.jar'
     state: link
     owner: '{{ payara_user }}'
     group: '{{ payara_user_group }}'
