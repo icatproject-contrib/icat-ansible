@@ -14,7 +14,7 @@
     extension: "zip"
     dest: "/home/{{ payara_user }}/downloads/ids.server-{{ ids_server_version }}-distro.zip"
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
@@ -24,7 +24,7 @@
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
   when: ansible_local.local.instantiations.ids_server is not defined or ansible_local.local.versions.ids_server != ids_server_version
 
 - name: "Find any war files not matching the current version"
@@ -45,7 +45,7 @@
     path: /home/{{ payara_user }}/data/main
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Create archive data directory"
@@ -53,7 +53,7 @@
     path: /home/{{ payara_user }}/data/archive
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Create cache data directory"
@@ -61,7 +61,7 @@
     path: /home/{{ payara_user }}/data/cache
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Create filesCheck output directory"
@@ -69,7 +69,7 @@
     path: /home/{{ payara_user }}/logs
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Check setup.properties file existence"
@@ -82,7 +82,7 @@
     src: files/setup.properties
     dest: /home/{{ payara_user }}/install/ids.server/setup.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0600
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
   notify:
@@ -104,7 +104,7 @@
     src: files/run.properties
     dest: /home/{{ payara_user }}/install/ids.server/run.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
   notify:
@@ -115,7 +115,7 @@
     src: templates/run.properties.j2
     dest: /home/{{ payara_user }}/install/ids.server/run.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
   notify:
@@ -126,7 +126,7 @@
     src: files/logback.xml
     dest: /home/{{ payara_user }}/install/ids.server/logback.xml
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   notify:
     - "ids_server-handler"

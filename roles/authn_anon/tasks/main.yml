@@ -14,7 +14,7 @@
     extension: "zip"
     dest: "/home/{{ payara_user }}/downloads/authn.anon-{{ authn_anon_version }}-distro.zip"
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
@@ -24,7 +24,7 @@
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
   when: ansible_local.local.instantiations.authn_anon is not defined or ansible_local.local.versions.authn_anon != authn_anon_version
 
 - name: "Find any war files not matching the current version"
@@ -45,7 +45,7 @@
     src: "{{ role_path }}/../payara/templates/setup.properties.j2"
     dest: /home/{{ payara_user }}/install/authn.anon/setup.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0600
   notify:
     - "authn_anon-handler"
@@ -60,7 +60,7 @@
     src: file/run.properties
     dest: /home/{{ payara_user }}/install/authn.anon/run.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
   notify:
@@ -71,7 +71,7 @@
     src: templates/run.properties.j2
     dest: /home/{{ payara_user }}/install/authn.anon/run.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
   notify:
@@ -82,7 +82,7 @@
     src: files/logback.xml
     dest: /home/{{ payara_user }}/install/authn.anon/logback.xml
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   notify:
     - "authn_anon-handler"

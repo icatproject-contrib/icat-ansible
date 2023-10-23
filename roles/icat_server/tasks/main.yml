@@ -25,7 +25,7 @@
     extension: "zip"
     dest: "/home/{{ payara_user }}/downloads/icat.server-{{ icat_server_version }}-distro.zip"
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
@@ -35,7 +35,7 @@
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
   when: ansible_local.local.instantiations.icat_server is not defined or ansible_local.local.versions.icat_server != icat_server_version
 
 - name: "Find any war files not matching the current version"
@@ -56,7 +56,7 @@
     path: /home/{{ payara_user }}/bin
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Add path to payara user bin directory for icat_server to PATH variable"
@@ -74,7 +74,7 @@
     src: files/setup.properties
     dest: /home/{{ payara_user }}/install/icat.server/setup.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0600
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
   notify:
@@ -96,7 +96,7 @@
     src: files/logback.xml
     dest: /home/{{ payara_user }}/install/icat.server/logback.xml
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   notify:
     - "icat_server-handler"

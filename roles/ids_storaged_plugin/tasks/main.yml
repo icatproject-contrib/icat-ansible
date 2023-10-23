@@ -9,7 +9,7 @@
     url: http://nexus.esc.rl.ac.uk:8081/nexus/service/local/repositories/releases/content/uk/ac/rl/esc/storaged-ids-plugin/{{ ids_storaged_plugin_version }}/storaged-ids-plugin-{{ ids_storaged_plugin_version }}-distro.zip 
     dest: /home/{{ payara_user }}/downloads
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: packageResult.stat.exists is defined and packageResult.stat.exists == false
 
@@ -24,7 +24,7 @@
     dest: /home/{{ payara_user }}/install
     remote_src: true
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
   when: installationResult.stat.exists is defined and installationResult.stat.exists == false
 
 - name: "Check setup.properties file existence"
@@ -37,7 +37,7 @@
     src: files/setup.properties
     dest: /home/{{ payara_user }}/install/storaged-ids-plugin/setup.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0600
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == true
   notify:
@@ -48,7 +48,7 @@
     src: "{{ role_path }}/../payara/templates/setup.properties.j2"
     dest: /home/{{ payara_user }}/install/storaged-ids-plugin/setup.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0600
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false
   notify:
@@ -59,7 +59,7 @@
     src: files/logback.xml
     dest: /home/{{ payara_user }}/install/storaged-ids-plugin/logback.xml
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   notify:
     - "ids_storaged_plugin-handler"

@@ -5,7 +5,7 @@
     path: /home/{{ payara_user }}/code
     state: directory
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     mode: 0775
 
 - name: 'Clone icat_server repository'
@@ -21,7 +21,7 @@
     src: templates/run.properties.j2
     dest: /home/{{ payara_user }}/code/icat.server/src/main/resources/run.properties
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     mode: 0664
   notify:
   - "icat_server_dev-handler"
@@ -31,7 +31,7 @@
     src: files/logback.xml
     dest: /home/{{ payara_user }}/code/icat.server/src/main/resources/logback.xml
     owner: '{{ payara_user }}'
-    group: '{{ payara_user }}'
+    group: '{{ payara_user_group }}'
     mode: 0664
   notify:
   - "icat_server_dev-handler"

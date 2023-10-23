@@ -1,6 +1,7 @@
 ---
 # Payara user and admin user's password
 payara_user: "glassfish"
+payara_user_group: "{{ payara_user }}"
 payara_admin_password: "{{ vault_payara_admin_password }}"
 
 # Database root user's username and password

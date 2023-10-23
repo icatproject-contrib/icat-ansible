@@ -4,7 +4,7 @@
     path: /home/{{ payara_user }}/stash
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Create a stash directory for datagateway-download-api configs"
@@ -12,7 +12,7 @@
     path: /home/{{ payara_user }}/stash/datagateway-download-api
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Copy over {{ payara_user }} setup.properties"
@@ -20,7 +20,7 @@
     src: "{{ role_path }}/../payara/templates/setup.properties.j2"
     dest: /home/{{ payara_user }}/stash/datagateway-download-api/1-part
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
 
 - name: "Copy over setup.properties"
@@ -28,7 +28,7 @@
     src: templates/setup.properties.j2
     dest: /home/{{ payara_user }}/stash/datagateway-download-api/2-part
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
 
 - name: "Configure setup.properties by concatenation of files in the stash"
@@ -37,7 +37,7 @@
     dest: /home/{{ payara_user }}/install/datagateway-download-api/setup.properties
     delimiter: '\n'
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0600
   notify:
     - "datagateway_download_api-handler"

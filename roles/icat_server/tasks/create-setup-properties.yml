@@ -3,7 +3,7 @@
     path: /home/{{ payara_user }}/stash
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Create a stash directory for icat_server configs"
@@ -11,7 +11,7 @@
     path: /home/{{ payara_user }}/stash/icat_server
     state: directory
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0775
 
 - name: "Copy over payara setup.properties"
@@ -19,7 +19,7 @@
     src: "{{ role_path }}/../payara/templates/setup.properties.j2"
     dest: /home/{{ payara_user }}/stash/icat_server/1-part
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
 
 - name: "Copy over icat_server setup.properties via templating [MariaDB]"
@@ -27,7 +27,7 @@
     src: templates/mariadb.setup.properties.j2
     dest: /home/{{ payara_user }}/stash/icat_server/2-part
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0644
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false and (ansible_local.local.instantiations.mariadb is defined and ansible_local.local.instantiations.mariadb == 'true')
 
@@ -36,7 +36,7 @@
     src: templates/oracle.setup.properties.j2
     dest: /home/{{ payara_user }}/stash/icat-server/2-part
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0644
   when: setupPropertiesResult.stat.exists is defined and setupPropertiesResult.stat.exists == false and (ansible_local.local.instantiations.mariadb is not defined or ansible_local.local.instantiations.mariadb == 'false')
 
@@ -46,7 +46,7 @@
     dest: /home/{{ payara_user }}/install/icat.server/setup.properties
     delimiter: '\n'
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0600
   notify:
     - "icat_server-handler"

@@ -10,7 +10,7 @@
     src: files/run.properties
     dest: /home/{{ payara_user }}/install/icat.server/run.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == true
 
@@ -21,6 +21,6 @@
     src: '{{ role_path }}/../icat_server/templates/run.properties.j2'
     dest: /home/{{ payara_user }}/install/icat.server/run.properties
     owner: "{{ payara_user }}"
-    group: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
     mode: 0664
   when: runPropertiesResult.stat.exists is defined and runPropertiesResult.stat.exists == false
