@@ -16,3 +16,7 @@
     - role: ids_storage_file
     - role: ids_server
     - role: datagateway_download_api
+  tasks:
+    - name: Pause for 1 minute to allow Payara to start before the handlers run
+      pause:
+        minutes: 1
