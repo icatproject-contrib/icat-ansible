@@ -3,6 +3,12 @@
 - name: 'Setup ids_storage_file'
   include_tasks: handlers/ids_storage_file-handler.yml
 
+# needed to fix CI failing because of the payara restart in ids.storage_file setup script
+# can remove when the Payara issue is resolved
+- name: "Set temporary fact to indicate ids_storage_file was installed in this play (use this to skip the handler from running again later)"
+  set_fact:
+    ids_storage_file_installed: true
+
 - name: 'Set fact on host to record that ids_storage_file has been instantiated'
   ini_file:
     path: /etc/ansible/facts.d/local.fact

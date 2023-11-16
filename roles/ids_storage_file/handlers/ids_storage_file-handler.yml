@@ -9,4 +9,4 @@
   become_user: root
   args:
     executable: /bin/bash
-  when: payaraStatus.rc == 0
+  when: payaraStatus.rc == 0 and (not ids_storage_file_installed is defined or ids_storage_file_installed != true)
