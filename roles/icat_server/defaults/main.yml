@@ -7,3 +7,4 @@ icat_server_authn_list: "{% if ansible_local.local.instantiations.authn_simple i
 icat_server_authn_ldap_admin: "true"
 icat_server_lucene_populateBlockSize: "1000"
 icat_server_install_db_triggers: true
+icat_server_search_dir: /home/{{ payara_user }}/data/search
