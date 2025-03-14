@@ -12,4 +12,5 @@
     - role: authn_simple
     - role: authn_db
     - role: icat_lucene
+    - role: icat_server
     - role: dev_common

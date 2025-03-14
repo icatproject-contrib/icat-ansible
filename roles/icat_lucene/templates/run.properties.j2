@@ -5,7 +5,9 @@ directory = /home/{{ payara_user }}/{{ icat_lucene_data_dir }}
 commitSeconds = 5
 ip = 127.0.0.1/32 0:0:0:0:0:0:0:1/128 10.0.0.1/8 {{ ansible_default_ipv4.address }}/32
 {% if icat_lucene_version is version('3.0.0', '>=') %}
-maxShardSize   = 2147483648
+maxShardSize   = 2147483519
 aggregateFiles = false
 facetFields    = datafileFormat.name instrument.name sample.type.name stringValue technique.name type.name
+units          = J: eV 1.602176634e-19; \u2103: celsius, degC; K: kelvin
+maxSearchTimeSeconds = 5
 {% endif %}

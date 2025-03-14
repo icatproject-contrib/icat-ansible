@@ -85,7 +85,7 @@ search.populateBlockSize = {{ icat_server_lucene_populateBlockSize }}
 # If search.searchBlockSize > maxIdsInQuery, then multiple auth checks may be needed for a single search
 # The optimal value depends on how likely a user's auth request fails: larger values are more efficient when rejection is more likely
 search.searchBlockSize = 1000
-search.directory = /home/{{ payara_user }}/{{ icat_lucene_data_dir }}
+search.directory = {{ icat_server_search_dir }}
 search.backlogHandlerIntervalSeconds = 60
 search.enqueuedRequestIntervalSeconds = 5
 search.aggregateFilesIntervalSeconds = 3600
