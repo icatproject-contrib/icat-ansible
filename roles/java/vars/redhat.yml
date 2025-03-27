@@ -3,4 +3,4 @@
 java_pkgs:
   - java-{{ java_version }}-openjdk-headless
 
-java_dir: /usr/lib/jvm/java-{{ java_version }}-openjdk
+java_dir: /usr/lib/jvm/jre-{{ java_version }}-openjdk

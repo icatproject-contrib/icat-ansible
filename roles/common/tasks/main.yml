@@ -14,7 +14,7 @@
     state: present
     name:
       - python3-lxml
-  when: not (ansible_os_family == "RedHat" and ansible_distribution_major_version == "7")
+  when: not (ansible_os_family in ['RedHat', 'Rocky'] and ansible_distribution_major_version == "7")
 
 - name: "Create ansible config directory on remote hosts"
   file:
