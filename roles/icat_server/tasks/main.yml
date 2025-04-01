@@ -91,6 +91,14 @@
   notify:
     - "icat_server-handler"
 
+- name: "Create icat_server search queues directory"
+  file:
+    path: "{{ icat_server_search_dir }}"
+    state: directory
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
+    mode: 0775
+
 - name: "Configure icat_server logback.xml"
   copy:
     src: files/logback.xml

@@ -7,7 +7,8 @@
          <properties>
              <serverUrl>{{ icat_url }}</serverUrl>
              {% if lucene_url is defined and lucene_url %}
-             <luceneUrl>{{ lucene_url }}</luceneUrl>
+             <searchEngine>LUCENE</searchEngine>
+             <searchUrls>{{ lucene_url }}</searchUrls>
              {% endif %}
              <javax.net.ssl.trustStore>{{ payara_domain_dir }}/config/cacerts.jks</javax.net.ssl.trustStore>
              <containerHome>{{ payara_dir }}</containerHome>
