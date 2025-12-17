@@ -47,6 +47,14 @@
   args:
     creates: "{{ payara_domain_dir }}/config/cacerts.jks"
 
+- name: "Make icat.server search queues directory"
+  file:
+    path: /home/{{ payara_user }}/data/search
+    state: directory
+    owner: "{{ payara_user }}"
+    group: "{{ payara_user_group }}"
+    mode: 0775
+
 - name: "Make test ids main folder"
   file:
     path: /home/{{ payara_user }}/test/data/ids/main
