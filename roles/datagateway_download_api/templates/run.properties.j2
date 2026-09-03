@@ -20,6 +20,26 @@ facility.LILS.idsUrl = {{ ids_url }}
 # If the property is not defined, Topcat will use the facility's idsUrl by default.
 
 facility.LILS.downloadType.https = {{ ids_url }}
+facility.LILS.downloadType.list = https globus stfc
+facility.LILS.downloadType.https.displayName = HTTPS
+facility.LILS.downloadType.https.description = Example description for HTTPS access method.
+# facility.LILS.downloadType.https.disallowedAuthn = simple db
+
+facility.LILS.downloadType.globus = {{ ids_url }}
+facility.LILS.downloadType.globus.displayName = Globus
+facility.LILS.downloadType.globus.description = Example description for Globus access method.
+# facility.LILS.downloadType.globus.allowedGroupings = principal_beamline_scientists admins
+
+facility.LILS.downloadType.stfc = {{ ids_url }}
+facility.LILS.downloadType.stfc.displayName = STFC
+facility.LILS.downloadType.stfc.description = Example description for STFC access method.
+facility.LILS.downloadType.stfc.disallowedAuthn = anon
+
+# Maximum number of Datafiles that can be included in a single cart request.
+# Investigations and Datasets are expanded into their constituent Datafiles for this count.
+facility.LILS.limit.count = 250000
+# Maximum total volume, in bytes, that can be included in a single cart request.
+facility.LILS.limit.size = 10000000000000
 
 # enable send email
 mail.enable = false
@@ -32,6 +52,7 @@ mail.enable = false
 # ${fileName} - the download name
 # ${size} - the download size
 # ${downloadUrl} - the download url
+# ${customValue} - optionally set by calls to setDownloadStatus where the status is complete
 mail.subject = TopCAT Download ${fileName} Ready
 
 # The email body message for https downloads. All subject tokens as above are available.
@@ -45,6 +66,10 @@ mail.body.smartclient = Hi ${userName}, \n\nYour ${size} SmartClient download ${
 
 # The email body message for SCARF downloads. All subject tokens as above are available.
 mail.body.scarf = Hi ${userName}, \n\nYour ${size} SCARF download ${fileName} is ready. Please see https:/example.com/#/scarf-faq for more information on how to download using SCARF.\n\nThank you for using TopCAT
+
+# The email body message for Ada downloads. All subject tokens as above are available.
+mail.body.ada = Hi ${userName}, \n\nYour ${size} recall ${fileName} is ready as an Ada data share. Please visit https:/example.com to redeem access using the following token.\n\n${customValue}\n\nThank you for using DataGateway
+mail.required.ada = true
 
 # The maximum number of datafiles for a getStatus call to the IDS for two level storage
 ids.getStatus.max = 100
@@ -85,7 +110,6 @@ anonUserName=anon/anon
 # anonUserName=anon/anon
 {% endif %}
 
-{% if datagateway_download_api_version is version('3.1.0', '>=') %}
 # If false, anonymous users will not be able to download via any method (queued or otherwise)
 anonDownloadEnabled=True
 
@@ -143,10 +167,14 @@ queue.priority.user = {"simple/{{ authn_root_username }}": 1}
 # queue.priority.instrumentScientist.default = 2
 # queue.priority.investigationUser.roles = {"ABC": 3}
 # queue.priority.investigationUser.default = 4
-# queue.priority.authenticated = 5
-queue.priority.default = 0
+queue.priority.authenticated = {"anon": 0}
+queue.priority.default = 5
+
+# Whether the API endpoint perform Lucene searches is enabled
+search.enabled = false
+# The maximum number of results to return in a single request to the Lucene component
+search.maxResults = 10000
 
 # Configurable limit for the length of the GET URL for requesting Datafiles by a list of file locations
 # The exact limit may depend on the server
 getUrlLimit=1024
-{% endif %}
