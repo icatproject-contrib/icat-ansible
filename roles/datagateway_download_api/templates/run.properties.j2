@@ -60,3 +60,93 @@ adminUserNames = {% if ansible_local.local.instantiations.authn_simple is define
 
 # The maximum number objects that can be cached before pruning will take place
 maxCacheSize = 100000
+
+# The following properties allow finer control over caching of Investigation sizes.
+# Investigations can change size over time, so setting a lifetime on cached values may be useful.
+# It may be useful not to cache zero-sized Investigations at all.
+# IMPORTANT: size requests are also cached in the browser, so check settings in topcat.json too.
+
+# Lifetime in seconds for cached Investigation sizes (default is 0, which means "immortal")
+# investigationSizeCacheLifetimeSeconds=600
+
+# Whether to cache zero-sized Investigations (default is false)
+# neverCacheZeroSizedInvestigations=false
+
+# Timeout for IDS connections.
+# Optional (default is no timeout). Can be in seconds (suffix 's'), minutes ('m') or milliseconds (no suffix)
+# ids.timeout=180000
+# ids.timeout=180s
+# ids.timeout=3m
+
+# Username that corresponds with the anonymous user - this is used to make anonymous carts unique
+{% if ansible_local.local.instantiations.authn_anon is defined and ansible_local.local.instantiations.authn_anon == 'true' %}
+anonUserName=anon/anon
+{% else %}
+# anonUserName=anon/anon
+{% endif %}
+
+{% if datagateway_download_api_version is version('3.1.0', '>=') %}
+# If false, anonymous users will not be able to download via any method (queued or otherwise)
+anonDownloadEnabled=True
+
+# Authentication plugin to use if it is not specified in the login request
+{% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}
+defaultPlugin=simple
+{% else %}
+# defaultPlugin=simple
+{% endif %}
+
+# Facility to use if it is not specified in the login request
+defaultFacilityName=LILS
+
+# Queued Downloads are authorized with the user's sessionId, but this may expire before
+# the Download is ready to be prepared so these will be submitted to the IDS with a
+# functional read all account.
+{% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}
+queue.account.LILS.plugin=simple
+queue.account.LILS.username={{ authn_root_username }}
+queue.account.LILS.password={{ authn_root_password }}
+{% else %}
+# queue.account.LILS.plugin=simple
+# queue.account.LILS.username={{ authn_root_username }}
+# queue.account.LILS.password={{ authn_root_password }}
+{% endif %}
+
+# Limit the number maximum of active RESTORING downloads. Does not affect user submitted carts,
+# but queued requests will only be started when there are less than this many RESTORING downloads.
+# Negative values will start all queued jobs immediately, regardless of load.
+queue.maxActiveDownloads = 10
+
+# Limit the number files per queued Download part. Multiple Datasets will be combined into part
+# Downloads based on their fileCount up to this limit. If a single Dataset has a fileCount
+# greater than this limit, it will still be submitted in a part by itself.
+queue.maxFileCount = 10000
+
+# When queueing Downloads a positive priority will allow a User to proceed.
+# Non-positive values will block that User from submitting a request to the queue.
+# When automatically moving jobs from the queued to the PREPARING state, all Downloads
+# from Users with priority 1 will be scheduled before 2 and so on.
+# Specific individuals can be identified with their ICAT username, this will take precedence over all other settings
+# Groupings of users can be identified by the name of the Grouping
+# InstrumentScientists can either be identified for specific Instrument.names, or a global default
+# InvestigationUsers can either be identified for specific InvestigationUser.roles, or a global default
+# Authenticated Users without InstrumentScientist or InvestigationUser status will use the authenticated priority
+# Anyone who does not meet a specific priority class will use the default
+# Users meeting multiple criteria will use the highest priority available (lowest number)
+{% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}
+queue.priority.user = {"simple/{{ authn_root_username }}": 1}
+{% else %}
+# queue.priority.user = {"simple/{{ authn_root_username }}": 1}
+{% endif %}
+# queue.priority.grouping = {"principal_beamline_scientists": 1}
+# queue.priority.instrumentScientist.instruments = {"ABC": 1}
+# queue.priority.instrumentScientist.default = 2
+# queue.priority.investigationUser.roles = {"ABC": 3}
+# queue.priority.investigationUser.default = 4
+# queue.priority.authenticated = 5
+queue.priority.default = 0
+
+# Configurable limit for the length of the GET URL for requesting Datafiles by a list of file locations
+# The exact limit may depend on the server
+getUrlLimit=1024
+{% endif %}
