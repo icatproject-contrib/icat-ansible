@@ -1,4 +1,4 @@
 ---
 
-# Either choose '11', '17' or '21'
-java_version: '11'
+# Either choose '21' or '25'
+java_version: '21'
