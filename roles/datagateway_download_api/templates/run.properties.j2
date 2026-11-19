@@ -161,7 +161,7 @@ queue.maxFileCount = 10000
 # Users meeting multiple criteria will use the highest priority available (lowest number)
 
 queue.priority.cart.default = 0
-queue.priority.cart.authenticated = {"orcid": 6, "anon": -1}
+queue.priority.cart.authenticated = {"orcid": 6, "anon": 6}
 
 {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}
 queue.priority.visit.user = {"simple/{{ authn_root_username }}": 1}
@@ -192,7 +192,7 @@ queue.priority.dataCollection.instrumentScientist.instruments = {"ABC": 1}
 queue.priority.dataCollection.instrumentScientist.default = 2
 queue.priority.dataCollection.investigationUser.roles = {"ABC": 3}
 queue.priority.dataCollection.investigationUser.default = 4
-queue.priority.dataCollection.authenticated = {"orcid": 6, "anon": -1}
+queue.priority.dataCollection.authenticated = {"orcid": 6, "anon": 6}
 queue.priority.dataCollection.default = 5
 
 # Whether the API endpoint perform Lucene searches is enabled
