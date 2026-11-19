@@ -148,6 +148,8 @@ queue.maxFileCount = 10000
 
 # When queueing Downloads a positive priority will allow a User to proceed.
 # Non-positive values will block that User from submitting a request to the queue.
+# Different Entities (cart, datacollection, visit, files) can be given queue priorities independently of each other.
+# A value of 0 for carts will allow legacy behaviour where submissions are not queued and start preparing immediately.
 # When automatically moving jobs from the queued to the PREPARING state, all Downloads
 # from Users with priority 1 will be scheduled before 2 and so on.
 # Specific individuals can be identified with their ICAT username, this will take precedence over all other settings
@@ -157,18 +159,41 @@ queue.maxFileCount = 10000
 # Authenticated Users without InstrumentScientist or InvestigationUser status will use the authenticated priority
 # Anyone who does not meet a specific priority class will use the default
 # Users meeting multiple criteria will use the highest priority available (lowest number)
+
+queue.priority.cart.default = 0
+queue.priority.cart.authenticated = {"orcid": 6, "anon": -1}
+
 {% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}
-queue.priority.user = {"simple/{{ authn_root_username }}": 1}
+queue.priority.visit.user = {"simple/{{ authn_root_username }}": 1}
 {% else %}
-# queue.priority.user = {"simple/{{ authn_root_username }}": 1}
+# queue.priority.visit.user = {"simple/{{ authn_root_username }}": 1}
 {% endif %}
-# queue.priority.grouping = {"principal_beamline_scientists": 1}
-# queue.priority.instrumentScientist.instruments = {"ABC": 1}
-# queue.priority.instrumentScientist.default = 2
-# queue.priority.investigationUser.roles = {"ABC": 3}
-# queue.priority.investigationUser.default = 4
-queue.priority.authenticated = {"anon": 0}
-queue.priority.default = 5
+queue.priority.visit.grouping = {"principal_beamline_scientists": 1}
+queue.priority.visit.instrumentScientist.instruments = {"ABC": 1}
+queue.priority.visit.instrumentScientist.default = 2
+queue.priority.visit.investigationUser.roles = {"ABC": 3}
+queue.priority.visit.investigationUser.default = 4
+queue.priority.visit.default = -1
+
+queue.priority.files.grouping = {"principal_beamline_scientists": 1}
+queue.priority.files.instrumentScientist.instruments = {"ABC": 1}
+queue.priority.files.instrumentScientist.default = 2
+queue.priority.files.investigationUser.roles = {"ABC": 3}
+queue.priority.files.investigationUser.default = 4
+queue.priority.files.default = -1
+
+{% if ansible_local.local.instantiations.authn_simple is defined and ansible_local.local.instantiations.authn_simple == 'true' %}
+queue.priority.dataCollection.user = {"simple/{{ authn_root_username }}": 1}
+{% else %}
+# queue.priority.dataCollection.user = {"simple/{{ authn_root_username }}": 1}
+{% endif %}
+queue.priority.dataCollection.grouping = {"principal_beamline_scientists": 1}
+queue.priority.dataCollection.instrumentScientist.instruments = {"ABC": 1}
+queue.priority.dataCollection.instrumentScientist.default = 2
+queue.priority.dataCollection.investigationUser.roles = {"ABC": 3}
+queue.priority.dataCollection.investigationUser.default = 4
+queue.priority.dataCollection.authenticated = {"orcid": 6, "anon": -1}
+queue.priority.dataCollection.default = 5
 
 # Whether the API endpoint perform Lucene searches is enabled
 search.enabled = false
